@@ -1,5 +1,6 @@
 /* global ethers */
 /* eslint prefer-const: "off" */
+const { ethers } = require("hardhat");
 
 const { getSelectors, FacetCutAction } = require('./libraries/diamond.js')
 const { getId, deployContract, createUpgradeable, createConfigFile } = require('./libraries/auxiliary.js');

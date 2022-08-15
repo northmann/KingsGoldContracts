@@ -56,17 +56,19 @@ async function deployFacets(owner, game) {
     console.log('Deploying facets')
     const FacetNames = [
         'DiamondLoupeFacet',
-        'OwnershipFacet'
+        'AccessControlFacet',
+        'MultiCallFacet',
+        'ProvinceFacet',
+        'TreasuryFacet',
+        'UserFacet'
+
     ]
     
     for (const FacetName of FacetNames) {
         console.log('Deploying facet:', FacetName);
 
-        const Facet = await ethers.getContractFactory(FacetName)
-        const facet = await Facet.deploy()
-        await facet.deployed()
+        const facet = await deployContract(FacetName);
 
-        console.log(`${FacetName} deployed: ${facet.address}`)
         cut.push({
             facetAddress: facet.address,
             action: FacetCutAction.Add,

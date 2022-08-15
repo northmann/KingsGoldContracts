@@ -1,3 +1,4 @@
+const { ethers } = require("hardhat");
 /* global describe it before ethers */
 
 const {

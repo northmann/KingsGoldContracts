@@ -47,7 +47,7 @@ import "./Roles.sol";
  * grant and revoke this role. Extra precautions should be taken to secure
  * accounts that have been granted it.
  */
-contract AccessControlFacet is Context, Roles, IAccessControl, ERC165 {
+contract AccessControlFacet is Context, Roles, IAccessControl { //ERC165
     bytes32 constant ACCESS_STORAGE_POSITION = keccak256("AccessControl.accessStorage");
 
     struct RoleData {
@@ -85,12 +85,12 @@ contract AccessControlFacet is Context, Roles, IAccessControl, ERC165 {
         _;
     }
 
-    /**
-     * @dev See {IERC165-supportsInterface}.
-     */
-    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
-        return interfaceId == type(IAccessControl).interfaceId || super.supportsInterface(interfaceId);
-    }
+    // /**
+    //  * @dev See {IERC165-supportsInterface}.
+    //  */
+    // function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
+    //     return interfaceId == type(IAccessControl).interfaceId || super.supportsInterface(interfaceId);
+    // }
 
     /**
      * @dev Returns `true` if `account` has been granted `role`.
