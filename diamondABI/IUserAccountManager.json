@@ -1,0 +1,99 @@
+[
+  {
+    "inputs": [],
+    "name": "ensureUserAccount",
+    "outputs": [
+      {
+        "internalType": "contract IUserAccount",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      }
+    ],
+    "name": "getUserAccount",
+    "outputs": [
+      {
+        "internalType": "contract IUserAccount",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IProvince",
+        "name": "_province",
+        "type": "address"
+      }
+    ],
+    "name": "grantProvinceRole",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IProvince",
+        "name": "_province",
+        "type": "address"
+      }
+    ],
+    "name": "grantSpenderRole",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IProvince",
+        "name": "_province",
+        "type": "address"
+      }
+    ],
+    "name": "grantTemporaryMinterRole",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IProvince",
+        "name": "_province",
+        "type": "address"
+      }
+    ],
+    "name": "revokeTemporaryMinterRole",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_eventContract",
+        "type": "address"
+      }
+    ],
+    "name": "setEventRole",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

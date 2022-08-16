@@ -9,7 +9,6 @@ import "../libraries/LibMeta.sol";
 import "../general/ReentrancyGuard.sol";
 
 
-
 contract ProvinceFacet is Game, ReentrancyGuard
 {
     using LibAppStorageExtensions for AppStorage;
@@ -34,6 +33,10 @@ contract ProvinceFacet is Game, ReentrancyGuard
     // --------------------------------------------------------------
     // View Functions
     // --------------------------------------------------------------
+
+    function getProvinceNFT() public view returns (IProvinceNFT provinceNFT) {
+            provinceNFT = s.provinceNFT;
+    }
 
     function getUserProvinceCount() public view returns (uint count) {
         count = s.getUser().provinces.length;

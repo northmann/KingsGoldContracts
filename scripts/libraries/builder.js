@@ -7,8 +7,9 @@ let cut = [];
 let diamondCutFacet;
 let diamond;
 let diamondInit;
+let provinceNFT;
 
-async function addKingsGold(user, game) {
+async function deployKingsGold(user, game) {
     if (!user) throw "Missing user instance";
 
     gold = await deployContract("KingsGold", game.address);
@@ -16,7 +17,15 @@ async function addKingsGold(user, game) {
     return gold;
 }
 
-async function addCommodities(user, game) {
+async function deployProvinceNFT(owner, game) {
+    if(!game) throw "Missing game instance";
+
+    provinceNFT = await createUpgradeable("ProvinceNFT", [game.address]);
+
+    return provinceNFT;
+}
+
+async function deployCommodities(user, game) {
     if (!user) throw "Missing user instance";
 
     food = await createUpgradeable("Food", [game.address]);
@@ -30,12 +39,15 @@ async function addCommodities(user, game) {
     return { food, wood, rock, iron };
 }
 
+
 // async function mintCommodities(user) {
 //     await food.mint(user.address, bigNumber100eth);        // Give me a lot of new coins
 //     await wood.mint(user.address, bigNumber100eth);        // Give me a lot of new coins
 //     await rock.mint(user.address, bigNumber100eth);        // Give me a lot of new coins
 //     await iron.mint(user.address, bigNumber100eth);        // Give me a lot of new coins
 // }
+
+
 
 async function deployDiamonBasics(owner) {
     // deploy DiamondCutFacet
@@ -45,7 +57,7 @@ async function deployDiamonBasics(owner) {
     // deploy DiamondInit
     diamondInit = await deployContract('DiamondInit');
 
-    return diamond;
+    return { diamond, diamondCutFacet, diamondInit };
 }
 
 
@@ -79,7 +91,7 @@ async function deployFacets(owner, game) {
 
 
 // upgrade diamond with facets
-async function upgradeDiamond(owner, game) {
+async function upgradeDiamond(owner, game, initArgs) {
     // upgrade diamond with facets
     console.log('')
     console.log('Diamond Cut:', cut)
@@ -87,7 +99,7 @@ async function upgradeDiamond(owner, game) {
     let tx
     let receipt
     // call to init function
-    let functionCall = diamondInit.interface.encodeFunctionData('init')
+    let functionCall = diamondInit.interface.encodeFunctionData('init', [initArgs])
     tx = await diamondCut.diamondCut(cut, diamondInit.address, functionCall)
     console.log('Diamond cut tx: ', tx.hash)
     receipt = await tx.wait()
@@ -101,16 +113,57 @@ async function upgradeDiamond(owner, game) {
 
 
 async function deploySingels(owner, game) {
-    await addKingsGold(owner, game);
-    await addCommodities(owner, game);
+    let r = {};
+    r.provinceNFT = await deployProvinceNFT(owner, game);
+    r.gold = await deployKingsGold(owner, game);
+    let commodities = await deployCommodities(owner, game);
+    r = { ...r, ...commodities };
+   
+    return r;
+}
+
+
+
+async function initArgs(singles) {
+    let r = {};
+    r.provinceNFT = singles.provinceNFT.address;
+    r.gold = singles.gold.address;
+    r.food = singles.food.address;
+    r.wood = singles.wood.address;
+    r.rock = singles.rock.address;
+    r.iron = singles.iron.address;
+
+    r.provinceLimit = 10;
+    r.baseProvinceCost = ethers.utils.parseEther('1');
+    r.baseCommodityReward = ethers.utils.parseEther('100');
+
+    // r.getArrayArgs = function (arr) { 
+    //     let x = [];
+    //     x.push(initArgs.provinceNFT);
+    //     x.push(initArgs.gold);
+    //     x.push(initArgs.food);
+    //     x.push(initArgs.wood);
+    //     x.push(initArgs.rock);
+    //     x.push(initArgs.iron);
+
+    //     x.push(initArgs.provinceLimit);
+    //     x.push(initArgs.baseProvinceCost);
+    //     x.push(initArgs.baseCommodityReward);
+
+    //     return x;
+    // }
+
+    return r;
 }
 
 module.exports = {
+    initArgs,
     deployDiamonBasics,
     deployFacets,
     upgradeDiamond,
-    addKingsGold,
-    addCommodities,
+    deployKingsGold,
+    deployCommodities,
+    deployProvinceNFT,
 //    mintCommodities,
     deploySingels
 };

@@ -1,0 +1,167 @@
+[
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_name",
+        "type": "string"
+      }
+    ],
+    "name": "createProvince",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getProvinceNFT",
+    "outputs": [
+      {
+        "internalType": "contract IProvinceNFT",
+        "name": "provinceNFT",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_index",
+        "type": "uint256"
+      }
+    ],
+    "name": "getUserProvince",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "id",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "vassal",
+            "type": "address"
+          },
+          {
+            "internalType": "uint32",
+            "name": "positionX",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "positionY",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "plains",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "forest",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "mountain",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint32",
+            "name": "hills",
+            "type": "uint32"
+          },
+          {
+            "internalType": "uint256",
+            "name": "populationTotal",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "populationAvailable",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "armyContract",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256[]",
+            "name": "eventList",
+            "type": "uint256[]"
+          },
+          {
+            "internalType": "uint256[]",
+            "name": "structureList",
+            "type": "uint256[]"
+          }
+        ],
+        "internalType": "struct Province",
+        "name": "province",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getUserProvinceCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "count",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_index",
+        "type": "uint256"
+      }
+    ],
+    "name": "getUserProvinceId",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]

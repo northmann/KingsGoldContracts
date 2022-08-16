@@ -1,0 +1,37 @@
+[
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [],
+    "name": "getUser",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256[]",
+            "name": "provinces",
+            "type": "uint256[]"
+          },
+          {
+            "internalType": "address",
+            "name": "kingdom",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "alliance",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct User",
+        "name": "user",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "provinceNFT",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "gold",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "food",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "wood",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "iron",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "rock",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "provinceLimit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "baseProvinceCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "baseCommodityReward",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct DiamondInit.Args",
+        "name": "_args",
+        "type": "tuple"
+      }
+    ],
+    "name": "init",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
+import "hardhat/console.sol";
 
 /******************************************************************************\
 * Author: Nick Mudge <nick@perfectabstractions.com> (https://twitter.com/mudgen)
@@ -14,15 +15,36 @@ import { IDiamondCut } from "../interfaces/IDiamondCut.sol";
 import { IERC173 } from "../interfaces/IERC173.sol";
 import { IERC165 } from "../interfaces/IERC165.sol";
 
+import "../libraries/LibAppStorage.sol";
+import "../interfaces/IProvinceNFT.sol";
+import "../interfaces/IKingsGold.sol";
+import "../interfaces/ICommodity.sol";
+
 // It is expected that this contract is customized if you want to deploy your diamond
 // with data from a deployment script. Use the init function to initialize state variables
 // of your diamond. Add parameters to the init funciton if you need to.
 
-contract DiamondInit {    
+contract DiamondInit is Game {    
+
+    struct Args {
+        address provinceNFT;
+        address gold;
+        address food;
+        address wood;
+        address iron;
+        address rock;
+
+        uint256 provinceLimit;
+        uint256 baseProvinceCost;
+        uint256 baseCommodityReward;
+
+        // string name;
+        // string symbol;
+    }
 
     // You can add parameters to this function in order to pass in 
     // data to set your own state variables
-    function init() external {
+    function init(Args memory _args) external {
         // adding ERC165 data
         LibDiamond.DiamondStorage storage ds = LibDiamond.diamondStorage();
         ds.supportedInterfaces[type(IERC165).interfaceId] = true;
@@ -30,12 +52,25 @@ contract DiamondInit {
         ds.supportedInterfaces[type(IDiamondLoupe).interfaceId] = true;
         ds.supportedInterfaces[type(IERC173).interfaceId] = true;
 
+        s.provinceNFT = IProvinceNFT(_args.provinceNFT);
+        s.gold = IKingsGold(_args.gold);
+        s.food = ICommodity(_args.food);
+        s.wood = ICommodity(_args.wood);
+        s.rock = ICommodity(_args.rock);
+        s.iron = ICommodity(_args.iron);
+        
+        s.provinceLimit = _args.provinceLimit;
+        s.baseProvinceCost = _args.baseProvinceCost;
+        s.baseCommodityReward = _args.baseCommodityReward;
+
         // add your own state variables 
         // EIP-2535 specifies that the `diamondCut` function takes two optional 
         // arguments: address _init and bytes calldata _calldata
         // These arguments are used to execute an arbitrary function using delegatecall
         // in order to set state variables in the diamond during deployment or an upgrade
         // More info here: https://eips.ethereum.org/EIPS/eip-2535#diamond-interface 
+
+        console.log("Initializing diamond completed");
     }
 
 

@@ -4,18 +4,27 @@ const { ethers } = require("hardhat");
 
 const { getSelectors, FacetCutAction } = require('./libraries/diamond.js')
 const { getId, deployContract, createUpgradeable, createConfigFile } = require('./libraries/auxiliary.js');
-const { deploySingels, deployDiamonBasics, deployFacets, upgradeDiamond } = require("./libraries/builder.js");
+const { deploySingels, deployDiamonBasics, deployFacets, upgradeDiamond, initArgs } = require("./libraries/builder.js");
 
 
 async function deployDiamond () {
   const accounts = await ethers.getSigners()
   const owner = accounts[0]
 
-  const game = await deployDiamonBasics(owner);
+  const { diamond, diamondCutFacet, diamondInit } = await deployDiamonBasics(owner);
 
-  await deploySingels(owner, game);
-  await deployFacets(owner, game);
-  await upgradeDiamond(owner, game);
+  let singles = await deploySingels(owner, diamond);
+  
+  await deployFacets(owner, diamond);
+
+  initializeData = await initArgs(singles);
+  
+  console.log("Init:", initializeData);
+  //let functionCall = diamondInit.interface.encodeFunctionData('init', [initializeData])
+ 
+  await upgradeDiamond(owner, diamond, initializeData);
+
+  return { diamond, diamondCutFacet, diamondInit, singles, initializeData };
 }
 
 // We recommend this pattern to be able to use async/await everywhere

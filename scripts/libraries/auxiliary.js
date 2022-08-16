@@ -1,6 +1,6 @@
 const { expect } = require("chai");
-const { ethers } = require("hardhat");
-//const { upgrades } = require("@openzeppelin/hardhat-upgrades");
+const { ethers, upgrades  } = require("hardhat");
+
 
 var fs = require('fs');
 

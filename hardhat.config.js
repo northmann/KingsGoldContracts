@@ -3,7 +3,10 @@
 require('@nomiclabs/hardhat-waffle');
 require("@nomiclabs/hardhat-ethers");
 require('@openzeppelin/hardhat-upgrades');
+require('hardhat-abi-exporter');
 
+
+require("./tasks/generateDiamondABI");
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -37,5 +40,27 @@ module.exports = {
       //   interval: [1000, 2000] // mine between 1000 and 2000 ms
       // }
     },
+  },
+  contractSizer: {
+    alphaSort: true,
+    disambiguatePaths: false,
+    runOnCompile: false,
+    strict: true,
+    only: [], //':ERC20$'
+  },
+  gasReporter: {
+    enabled: process.env.REPORT_GAS !== undefined,
+    currency: "USD",
+  },
+  abiExporter: {
+    path: './diamondABI',
+    runOnCompile: true,
+    except: ["IERC165.sol"],
+    clear: false,
+    flat: true,
+    spacing: 2
+  },
+  mocha: {
+    timeout: 20000000,
   }
 }
