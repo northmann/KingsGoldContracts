@@ -8,12 +8,16 @@ const {
   findAddressPositionInFacets
 } = require('../scripts/libraries/diamond.js')
 
-const { deployDiamond } = require('../scripts/deploy.js')
+const { deployDiamond }    = require('../scripts/deploy.js')
+const { fundUserWithGold } = require('../scripts/libraries/builder.js');
 
-const { assert } = require('chai')
+const { assert } = require('chai');
+const { BigNumber } = require("ethers");
+
+
 
 describe('GameTest', async function () {
-  let contracts = {}
+  let global = {}
   let diamond
   let diamondAddress
   let diamondCutFacet
@@ -25,33 +29,56 @@ describe('GameTest', async function () {
   let singles
   let initializeData
   const addresses = []
+  let bigNumber1eth = ethers.utils.parseUnits("1.0", "ether"); // 100 mill eth
+  let bigNumber100eth = ethers.utils.parseUnits("100.0", "ether"); // 100 mill eth
+
 
   before(async function () {
     this.timeout(20000);
 
-    contracts = await deployDiamond();
-    //const {diamond, diamondCutFacet, diamondInit, singles, initializeData } = await deployDiamond(); // The full deployment
-
+    global = await deployDiamond();
 
     //diamondCutFacet = await ethers.getContractAt('DiamondCutFacet', diamondAddress)
-    contracts.diamondLoupeFacet = await ethers.getContractAt('DiamondLoupeFacet', contracts.diamond.address)
+    global.diamondLoupeFacet = await ethers.getContractAt('DiamondLoupeFacet', global.diamond.address)
     //ownershipFacet = await ethers.getContractAt('OwnershipFacet', diamondAddress)
   })
 
   it('should have the correct provinceNFT address after initilization', async function () { // The full deployment
-      this.timeout(20000);
-      let provinceFacet = await ethers.getContractAt('ProvinceFacet', contracts.diamond.address)
+      let provinceFacet = await ethers.getContractAt('ProvinceFacet', global.diamond.address)
       let provinceNFTAddress = await provinceFacet.getProvinceNFT();
-      assert.equal(provinceNFTAddress, contracts.initializeData.provinceNFT);
+      assert.equal(provinceNFTAddress, global.initializeData.provinceNFT);
     })
 
-  // it('should have three facets -- call to facetAddresses function', async () => {
-  //   for (const address of await diamondLoupeFacet.facetAddresses()) {
-  //     addresses.push(address)
-  //   }
+    
+  it('should be able to give test user some gold coins', async function () { // The full deployment
+    await fundUserWithGold(global.user);
 
-  //   assert.equal(addresses.length, 3)
-  // })
+    let balance = await global.gold.balanceOf(global.user.address);
+    assert.equal(balance.toString(), bigNumber100eth.toString());
+  })
+
+  it('should be able to buy a province', async () => {
+    // First allow the game to spend my coins.
+    await fundUserWithGold(global.user);
+
+    let goldBalanceBefore = await global.gold.balanceOf(global.user.address);
+
+    let provinceFacet = await ethers.getContractAt('ProvinceFacet', global.diamond.address, global.user);
+    let tx = await provinceFacet.createProvince("Test");
+    await tx.wait();
+
+    let provinceCount = await provinceFacet.getUserProvinceCount();
+    assert.equal(provinceCount, 1);
+    
+    let province = await provinceFacet.getUserProvince(0);
+    assert.equal(province.name, "Test");
+
+    let goldBalanceAfter = await global.gold.balanceOf(global.user.address);
+    //let expectedBalance = bigNumber100eth.sub(initializeData.baseProvinceCost.mul(BigNumber.from(9)));
+    
+    let expectedBalance = goldBalanceBefore.sub(global.initializeData.baseProvinceCost);
+    assert.equal(goldBalanceAfter.toString(), expectedBalance.toString());
+  })
 
   // it('facets should have the right function selectors -- call to facetFunctionSelectors function', async () => {
   //   let selectors = getSelectors(diamondCutFacet)

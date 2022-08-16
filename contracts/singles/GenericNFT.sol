@@ -43,9 +43,11 @@ abstract contract GenericNFT is Initializable, ERC721Upgradeable, ERC721Enumerab
     }
 
     function mint(address to) public onlyGame returns(uint256) {
+        console.log("GenericNFT: Minting new token");
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
+        console.log("GenericNFT: Minting completed");
         return tokenId;
     }
 

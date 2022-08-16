@@ -65,11 +65,16 @@ contract ProvinceFacet is Game, ReentrancyGuard
     function createProvince(string memory _name) external nonReentrant returns(uint256) {  
         // TODO: Check name, no illegal chars
 
-
+        console.log("Creating province: ", _name);
         // Make sure that the user account exist and if not then created it automatically.
         User storage user = s.getUser();
 
+        console.log("User.kingdom: ", user.kingdom);
+        console.log("user.provinces.length: ", user.provinces.length);
+
         require(user.provinces.length <= s.provinceLimit, "Cannot exeed the limit of provinces"); 
+
+        console.log("Gold Balance: ", s.gold.balanceOf(msg.sender));
 
         // Check if the user has enough money to pay for the province
         require(s.baseProvinceCost <= s.gold.balanceOf(msg.sender), "Not enough tokens in reserve");
@@ -78,18 +83,24 @@ contract ProvinceFacet is Game, ReentrancyGuard
         if(!s.gold.transferFrom(msg.sender, address(this), s.baseProvinceCost))
             revert("KingsGold transfer failed from sender to treasury.");
 
-
         // Create the province 
         uint256 tokenId = s.provinceNFT.mint(msg.sender);
+
+        console.log("TokenId: ", tokenId);
 
         // Add the province to the user account
         s.createProvince(tokenId, _name);
 
+        console.log("User Province length: ", s.users[msg.sender].provinces.length);
+
+        console.log("Minting");
         // Mint resources to the user as a reward for creating a province.
         s.food.mint(msg.sender, s.baseCommodityReward);
         s.wood.mint(msg.sender, s.baseCommodityReward);
         s.rock.mint(msg.sender, s.baseCommodityReward);
         s.iron.mint(msg.sender, s.baseCommodityReward);
+
+        console.log("Minting done");
 
         return tokenId;
     }

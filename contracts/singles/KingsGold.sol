@@ -10,6 +10,7 @@ contract KingsGold is ERC20, ERC20Burnable, RemoteGameAccessControl {
 
     constructor(address _game) ERC20("KingsGold", "KSG") {
         __setGame(_game);
+        _mint(_game, 100000000 * 10 ** decimals()); // 100 mill
     }
 
     function mint(address to, uint256 amount) public onlyGame {

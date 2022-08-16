@@ -2,12 +2,21 @@ const { ethers } = require("hardhat");
 
 const { getSelectors, FacetCutAction } = require('./diamond.js')
 const { createBeacon, createUpgradeable, deployContract, getContractInstance, getId, writeSetting } = require("./Auxiliary.js");
+const { BigNumber } = require("ethers");
 
 let cut = [];
 let diamondCutFacet;
 let diamond;
 let diamondInit;
 let provinceNFT;
+let gold;
+
+const eth0 = BigNumber.from(0);
+const eth1 = ethers.utils.parseUnits("1.0", "ether");
+let bigNumber50eth = ethers.utils.parseUnits("50.0", "ether"); // 100 mill eth
+let bigNumber100eth = ethers.utils.parseUnits("100.0", "ether"); // 100 mill eth
+let bigNumber100Mill = ethers.utils.parseUnits("100000000.0", "ether"); // 100 mill eth
+
 
 async function deployKingsGold(user, game) {
     if (!user) throw "Missing user instance";
@@ -40,13 +49,28 @@ async function deployCommodities(user, game) {
 }
 
 
-// async function mintCommodities(user) {
-//     await food.mint(user.address, bigNumber100eth);        // Give me a lot of new coins
-//     await wood.mint(user.address, bigNumber100eth);        // Give me a lot of new coins
-//     await rock.mint(user.address, bigNumber100eth);        // Give me a lot of new coins
-//     await iron.mint(user.address, bigNumber100eth);        // Give me a lot of new coins
-// }
+async function mintCommodities(user) {
+    await food.mint(user.address, bigNumber100eth);        // Give me a lot of new coins
+    await wood.mint(user.address, bigNumber100eth);        // Give me a lot of new coins
+    await rock.mint(user.address, bigNumber100eth);        // Give me a lot of new coins
+    await iron.mint(user.address, bigNumber100eth);        // Give me a lot of new coins
+}
 
+async function fundUserWithGold(user) {
+    let balance = await gold.balanceOf(user.address);
+    if (balance.eq(eth0)) {
+        let treasuryFacet = await ethers.getContractAt('TreasuryFacet', diamond.address, user);
+
+        let tx = await treasuryFacet.buy({value: bigNumber100eth });
+        await tx.wait();
+
+        // Approve the Game contract to spend the gold
+        let userGoldInstance = await ethers.getContractAt('KingsGold', gold.address, user);
+        let approveTx = await userGoldInstance.approve(diamond.address, bigNumber100eth);
+        await approveTx.wait();
+
+    }
+}
 
 
 async function deployDiamonBasics(owner) {
@@ -165,5 +189,8 @@ module.exports = {
     deployCommodities,
     deployProvinceNFT,
 //    mintCommodities,
-    deploySingels
+    deploySingels,
+    fundUserWithGold,
+    eth1,
+    bigNumber100eth
 };

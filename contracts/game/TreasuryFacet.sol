@@ -30,9 +30,11 @@ contract TreasuryFacet is Game, ITreasury, ReentrancyGuard {
         require(amountTobuy > 0, "You need to send some ether");
         uint256 dexBalance = s.gold.balanceOf(address(this));
         require(amountTobuy <= dexBalance, "Not enough tokens in the reserve");
-        
+        console.log("Buying ", amountTobuy, " tokens");
         s.gold.transfer(msg.sender, amountTobuy);
         emit Bought(amountTobuy);
+        console.log("Buy function completed");
+
     }
 
     function sell(uint256 amount) public override nonReentrant { 

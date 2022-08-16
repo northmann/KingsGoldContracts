@@ -10,6 +10,7 @@ const { deploySingels, deployDiamonBasics, deployFacets, upgradeDiamond, initArg
 async function deployDiamond () {
   const accounts = await ethers.getSigners()
   const owner = accounts[0]
+  const user = accounts[1]
 
   const { diamond, diamondCutFacet, diamondInit } = await deployDiamonBasics(owner);
 
@@ -24,7 +25,7 @@ async function deployDiamond () {
  
   await upgradeDiamond(owner, diamond, initializeData);
 
-  return { diamond, diamondCutFacet, diamondInit, singles, initializeData };
+  return { diamond, diamondCutFacet, diamondInit, ...singles, initializeData, owner, user };
 }
 
 // We recommend this pattern to be able to use async/await everywhere
