@@ -9,7 +9,7 @@ import "./LibMeta.sol";
 library LibEventExtensions {
     using LibEventExtensions for StructureEvent;
     
-    function isState(StructureEvent storage self, EventState _state) public view {
+    function isState(StructureEvent storage self, EventState _state) internal view {
         require(_state == self.state, "Illegal state");
     }
 

@@ -7,6 +7,7 @@ import "hardhat/console.sol";
 import "../interfaces/IKingsGold.sol";
 import "../interfaces/IProvinceNFT.sol";
 import "../interfaces/ICommodity.sol";
+import "../game/AccessControlFacet.sol";
 
 
 //import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
@@ -251,7 +252,7 @@ library LibAppStorage {
 }
 
 
-contract Game {
+contract Game  {
     AppStorage internal s;
 }
 

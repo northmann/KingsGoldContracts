@@ -1,0 +1,196 @@
+[
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "enum AssetType",
+            "name": "typeId",
+            "type": "uint8"
+          },
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "requiredUserLevel",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256[]",
+            "name": "requiredAssets",
+            "type": "uint256[]"
+          }
+        ],
+        "internalType": "struct Asset",
+        "name": "asset",
+        "type": "tuple"
+      }
+    ],
+    "name": "setAppStoreAsset",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "enum AssetType",
+        "name": "_assetTypeId",
+        "type": "uint8"
+      },
+      {
+        "internalType": "enum EventAction",
+        "name": "_eventActionId",
+        "type": "uint8"
+      },
+      {
+        "components": [
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "manPower",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "manPowerAttrition",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "attrition",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "penalty",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "time",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "goldForTime",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "food",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "wood",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "rock",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "iron",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct ResourceFactor",
+            "name": "cost",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "manPower",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "manPowerAttrition",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "attrition",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "penalty",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "time",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "goldForTime",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "food",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "wood",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "rock",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "iron",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct ResourceFactor",
+            "name": "reward",
+            "type": "tuple"
+          },
+          {
+            "internalType": "uint256",
+            "name": "timeRequired",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "goldForTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "attrition",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct AssetAction",
+        "name": "_assetAction",
+        "type": "tuple"
+      }
+    ],
+    "name": "setAppStoreAssetAction",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]

@@ -44,6 +44,8 @@ describe('GameTest', async function () {
   })
 
   it('should have the correct provinceNFT address after initilization', async function () { // The full deployment
+      this.timeout(20000);
+
       let provinceFacet = await ethers.getContractAt('ProvinceFacet', global.diamond.address)
       let provinceNFTAddress = await provinceFacet.getProvinceNFT();
       assert.equal(provinceNFTAddress, global.initializeData.provinceNFT);

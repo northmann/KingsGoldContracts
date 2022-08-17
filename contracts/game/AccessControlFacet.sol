@@ -60,8 +60,16 @@ contract AccessControlFacet is Context, Roles, IAccessControl { //ERC165
     struct AccessStorage {
         mapping(bytes32 => RoleData) roles;
     }
-    
-    //mapping(bytes32 => RoleData) private _roles;
+
+    //     
+    constructor() {
+        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        _grantRole(MINTER_ROLE, msg.sender);
+        _grantRole(UPGRADER_ROLE, msg.sender);
+        _grantRole(CONFIG_ROLE, msg.sender);
+    }
+
+
 
     function accessStorage() internal pure returns (AccessStorage storage ds) {
         bytes32 position = ACCESS_STORAGE_POSITION;

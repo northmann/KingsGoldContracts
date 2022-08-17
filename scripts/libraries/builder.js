@@ -91,8 +91,9 @@ async function deployFacets(owner, game) {
     console.log('')
     console.log('Deploying facets')
     const FacetNames = [
-        'DiamondLoupeFacet',
         'AccessControlFacet',
+        'ConfigurationFacet',
+        'DiamondLoupeFacet',
         'MultiCallFacet',
         'ProvinceFacet',
         'TreasuryFacet',
@@ -101,15 +102,35 @@ async function deployFacets(owner, game) {
     ]
     
     for (const FacetName of FacetNames) {
-        console.log('Deploying facet:', FacetName);
 
         const facet = await deployContract(FacetName);
+        console.log('Deploying facet:', FacetName, ' with address:', facet.address);
 
         cut.push({
             facetAddress: facet.address,
             action: FacetCutAction.Add,
             functionSelectors: getSelectors(facet)
         })
+    }
+
+    checkSelectors();
+}
+
+async function checkSelectors() {
+    for (const facet of cut) {
+        for (const functionSelector of facet.functionSelectors) {
+
+            for(const innerFacet of cut) {
+                for (const innerFunctionSelector of innerFacet.functionSelectors) {
+                    if(innerFacet.facetAddress == facet.facetAddress) break;
+
+                    if (innerFunctionSelector === functionSelector) {
+
+                        throw Error(`Duplicate function selector: ${functionSelector} in facet: ${facet.facetAddress} and in facet: ${innerFacet.facetAddress}`);
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -149,6 +170,8 @@ async function deploySingels(owner, game) {
 
 
 async function initArgs(singles) {
+    let ethZero = ethers.utils.parseEther('0');
+
     let r = {};
     r.provinceNFT = singles.provinceNFT.address;
     r.gold = singles.gold.address;
@@ -157,25 +180,18 @@ async function initArgs(singles) {
     r.rock = singles.rock.address;
     r.iron = singles.iron.address;
 
-    r.provinceLimit = 10;
-    r.baseProvinceCost = ethers.utils.parseEther('1');
-    r.baseCommodityReward = ethers.utils.parseEther('100');
-
-    // r.getArrayArgs = function (arr) { 
-    //     let x = [];
-    //     x.push(initArgs.provinceNFT);
-    //     x.push(initArgs.gold);
-    //     x.push(initArgs.food);
-    //     x.push(initArgs.wood);
-    //     x.push(initArgs.rock);
-    //     x.push(initArgs.iron);
-
-    //     x.push(initArgs.provinceLimit);
-    //     x.push(initArgs.baseProvinceCost);
-    //     x.push(initArgs.baseCommodityReward);
-
-    //     return x;
-    // }
+    r.provinceLimit = ethZero;
+    r.baseProvinceCost = ethZero;
+    r.baseCommodityReward = ethZero;
+    r.baseGoldCost = ethZero;
+    r.baseUnit = ethZero;
+    r.timeBaseCost = ethZero;
+    r.goldForTimeBaseCost = ethZero;
+    r.foodBaseCost = ethZero;
+    r.woodBaseCost = ethZero;
+    r.rockBaseCost = ethZero;
+    r.ironBaseCost = ethZero;
+    r.vassalTribute = ethZero; 
 
     return r;
 }

@@ -12,7 +12,7 @@ library LibAppStorageExtensions {
     using LibAppStorageExtensions for AppStorage;
 
 
-    function getAsset(AppStorage storage self, AssetType _assetTypeId) public view returns (Asset storage) {
+    function getAsset(AppStorage storage self, AssetType _assetTypeId) internal view returns (Asset storage) {
         return self.assets[_assetTypeId];
     }
 

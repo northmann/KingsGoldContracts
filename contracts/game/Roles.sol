@@ -2,6 +2,7 @@
 // solhint-disable-next-line
 pragma solidity >0.8.4;
 
+
 contract Roles {
 
     // Constants is imbedded into the bytecode.
@@ -18,4 +19,5 @@ contract Roles {
     bytes32 public constant ARMY_ROLE = keccak256("ARMY_ROLE");
     bytes32 public constant MULTICALL_ROLE = keccak256("MULTICALL_ROLE");
     bytes32 public constant SPENDER_ROLE = keccak256("SPENDER_ROLE");
+    bytes32 public constant CONFIG_ROLE = keccak256("CONFIG_ROLE");
 }
