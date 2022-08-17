@@ -34,12 +34,18 @@ contract DiamondInit is Game {
         address iron;
         address rock;
 
+        uint256 baseGoldCost;
         uint256 provinceLimit;
         uint256 baseProvinceCost;
         uint256 baseCommodityReward;
-
-        // string name;
-        // string symbol;
+        uint256 baseUnit;
+        uint256 timeBaseCost;
+        uint256 goldForTimeBaseCost;
+        uint256 foodBaseCost;
+        uint256 woodBaseCost;
+        uint256 rockBaseCost;
+        uint256 ironBaseCost;
+        uint256 vassalTribute; // The percentage of asset income vassal pays to the owner of the province.
     }
 
     // You can add parameters to this function in order to pass in 
@@ -59,9 +65,18 @@ contract DiamondInit is Game {
         s.rock = ICommodity(_args.rock);
         s.iron = ICommodity(_args.iron);
         
-        s.provinceLimit = _args.provinceLimit;
-        s.baseProvinceCost = _args.baseProvinceCost;
-        s.baseCommodityReward = _args.baseCommodityReward;
+        s.baseGoldCost = (_args.baseGoldCost == 0) ? 1 ether : _args.baseGoldCost;
+        s.baseUnit = (_args.baseUnit == 0) ? 1 ether : _args.baseUnit;
+        s.provinceLimit = (_args.provinceLimit == 0) ? 9 : _args.provinceLimit;
+        s.baseProvinceCost = (_args.baseProvinceCost == 0) ? 9 ether : _args.baseProvinceCost;
+        s.baseCommodityReward = (_args.baseCommodityReward == 0) ? 100 ether : _args.baseCommodityReward;
+        s.timeBaseCost = (_args.timeBaseCost == 0) ? 1 ether : _args.timeBaseCost;
+        s.goldForTimeBaseCost = (_args.goldForTimeBaseCost == 0) ? 1 ether : _args.goldForTimeBaseCost;
+        s.foodBaseCost = (_args.foodBaseCost == 0) ? 1 ether : _args.foodBaseCost;
+        s.woodBaseCost = (_args.woodBaseCost == 0) ? 1 ether : _args.woodBaseCost;
+        s.rockBaseCost = (_args.rockBaseCost == 0) ? 1 ether : _args.rockBaseCost;
+        s.ironBaseCost = (_args.ironBaseCost == 0) ? 1 ether : _args.ironBaseCost;
+        s.vassalTribute = (_args.vassalTribute == 0) ? 50e16 : _args.vassalTribute; // 50%
 
         // add your own state variables 
         // EIP-2535 specifies that the `diamondCut` function takes two optional 

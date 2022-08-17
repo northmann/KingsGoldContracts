@@ -24,6 +24,51 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "enum EventAction",
+            "name": "action",
+            "type": "uint8"
+          },
+          {
+            "internalType": "enum AssetType",
+            "name": "assetTypeId",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "provinceId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "multiplier",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "rounds",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "hero",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct ProvinceFacet.Args",
+        "name": "args",
+        "type": "tuple"
+      }
+    ],
+    "name": "createStructureEvent",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "getProvinceNFT",
     "outputs": [
@@ -115,7 +160,7 @@
           },
           {
             "internalType": "uint256[]",
-            "name": "eventList",
+            "name": "activeStructureEvents",
             "type": "uint256[]"
           },
           {

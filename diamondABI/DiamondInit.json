@@ -35,6 +35,11 @@
           },
           {
             "internalType": "uint256",
+            "name": "baseGoldCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
             "name": "provinceLimit",
             "type": "uint256"
           },
@@ -46,6 +51,46 @@
           {
             "internalType": "uint256",
             "name": "baseCommodityReward",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "baseUnit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "timeBaseCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "goldForTimeBaseCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "foodBaseCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "woodBaseCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "rockBaseCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "ironBaseCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "vassalTribute",
             "type": "uint256"
           }
         ],

@@ -16,7 +16,7 @@ import "../interfaces/ICommodity.sol";
 // Minimal change-----
 // Roles added
 // GenericAccessControl added
-contract Commodity is Initializable, ERC20Upgradeable, ERC20BurnableUpgradeable, PausableUpgradeable, Roles, RemoteGameAccessControl, UUPSUpgradeable, ICommodity {
+abstract contract Commodity is Initializable, ERC20Upgradeable, ERC20BurnableUpgradeable, PausableUpgradeable, Roles, RemoteGameAccessControl, UUPSUpgradeable, ICommodity {
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -31,30 +31,17 @@ contract Commodity is Initializable, ERC20Upgradeable, ERC20BurnableUpgradeable,
         __UUPSUpgradeable_init();
     }
 
-    // The SPENDER_ROLE are typically only given to Province contracts.
-    // modifier onlySpender() {
-    //     require(userAccountManager.hasRole(SPENDER_ROLE, msg.sender), "Caller do not have the SPENDER_ROLE");
-    //     _;
-    // }
-
-    // Allow a contract to call this function and transfer on behalf of the original caller.
+    // Allow the game to call this function and transfer on behalf of the original caller.
     // This function ignores allowances.
-    function spendToTreasury(uint256 amount) public override onlyGame {
+    function spendToTreasury(address from, uint256 amount) public override onlyGame {
         // Spend from the original caller by a contract with the SPENDER_ROLE.
-        _transfer(tx.origin, game, amount);
+        _transfer(from, game, amount);
     }
 
     function mint(address to, uint256 amount) public override onlyGame {
         _mint(to, amount);
     }
 
-    // function setTreasury(ITreasury _treasury) public onlyRole(DEFAULT_ADMIN_ROLE) {
-    //     treasury = _treasury;
-    // }
-
-    // function mint_with_temp_account(address to, uint256 amount) public override onlyRole(TEMPORARY_MINTER_ROLE) {
-    //     _mint(to, amount);
-    // }
 
     function pause() public onlyRole(PAUSER_ROLE) {
         _pause();
