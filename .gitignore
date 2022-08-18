@@ -1,8 +1,9 @@
 node_modules
+diamondABI
+frontend
+.openzeppelin
 
 #Hardhat files
 cache
 artifacts
 .env
-diamondABI
-frontend

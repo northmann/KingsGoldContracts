@@ -37,18 +37,23 @@ contract ProvinceFacet is Game, ReentrancyGuard {
         count = s.getUser().provinces.length;
     }
 
-    function getUserProvinceId(uint256 _index) public view returns (uint256 id) {
-        User storage user = s.getUser();
-        require(user.provinces.length > 0, "User has no provinces");
-        require(_index < user.provinces.length, "Province index out of bounds");
+    // function getUserProvinceId(uint256 _index) public view returns (uint256 id) {
+    //     User storage user = s.getUser();
+    //     require(user.provinces.length > 0, "User has no provinces");
+    //     require(_index < user.provinces.length, "Province index out of bounds");
 
-        id = user.provinces[_index];
-    }
+    //     id = user.provinces[_index];
+    // }
 
-    function getUserProvince(uint256 _index) public view returns (Province memory province) {
-        uint256 id = getUserProvinceId(_index);
+    // function getUserProvince(uint256 _index) public view returns (Province memory province) {
+    //     uint256 id = getUserProvinceId(_index);
 
-        province = s.provinces[id];
+    //     province = s.provinces[id];
+    // }
+
+    function getProvince(uint256 _id) public view returns (Province memory province) {
+        province = s.getProvince(_id);
+        require(province.id == _id, "Province not found");
     }
 
     function getProvinceStructures(uint256 _provinceId) public view returns (Structure[] memory) {
@@ -64,42 +69,6 @@ contract ProvinceFacet is Game, ReentrancyGuard {
 
         return structures;
     }
-
-    // function getProvince(uint256 _provinceId) public view returns (
-    //     uint256 id,
-    //     string memory name,
-    //     address owner,
-    //     address vassal,
-    //     uint32 positionX,
-    //     uint32 positionY,
-    //     uint32 plains,   // Food
-    //     uint32 forest,   // Wood
-    //     uint32 mountain, // Stone
-    //     uint32 hills,    // Gold and iron ore
-    //     uint256 populationTotal,
-    //     uint256 populationAvailable,
-    //     address armyContract
-    // ) {
-    //     Province memory province = s.provinces[_provinceId];
-    //     require(province.id == 0, "Province do not exist");
-    //     require(province.id == _provinceId, "Province id mismatch");
-
-    //     return (
-    //         province.id,
-    //         province.name,
-    //         province.owner,
-    //         province.vassal,
-    //         province.positionX,
-    //         province.positionY,
-    //         province.plains,
-    //         province.forest,
-    //         province.mountain,
-    //         province.hills,
-    //         province.populationTotal,
-    //         province.populationAvailable,
-    //         province.armyContract
-    //     );
-    // }
 
     // --------------------------------------------------------------
     // External Functions

@@ -53,7 +53,7 @@ module.exports = {
     currency: "USD",
   },
   abiExporter: {
-    path: './diamondABI',
+    path: './frontend/src/abi',
     runOnCompile: true,
     except: ["IERC165.sol"],
     clear: false,

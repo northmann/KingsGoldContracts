@@ -1,7 +1,7 @@
 const { ethers } = require("hardhat");
 
 const { getSelectors, FacetCutAction } = require('./diamond.js')
-const { createBeacon, createUpgradeable, deployContract, getContractInstance, getId, writeSetting } = require("./Auxiliary.js");
+const { createBeacon, createUpgradeable, deployContract, getContractInstance, getId, writeSetting, createConfigFile } = require("./Auxiliary.js");
 const { BigNumber } = require("ethers");
 
 let cut = [];
@@ -23,6 +23,7 @@ async function deployKingsGold(user, diamond) {
     if (!user) throw "Missing user instance";
 
     gold = await deployContract("KingsGold", diamond.address);
+    writeSetting("KingsGold", gold.address);
 
     return gold;
 }
@@ -79,6 +80,8 @@ async function deployDiamonBasics(owner) {
     diamondCutFacet = await deployContract('DiamondCutFacet');
     // deploy Diamond
     diamond = await deployContract('Diamond', owner.address, diamondCutFacet.address);
+    writeSetting("Diamond", diamond.address);
+
     // deploy DiamondInit
     diamondInit = await deployContract('DiamondInit');
 
@@ -168,6 +171,10 @@ async function deploySingels(owner, diamond) {
     return r;
 }
 
+async function createContractConfigFile(path) {
+        await createConfigFile(path);
+    }
+    
 
 
 async function initArgs(singles) {
@@ -206,6 +213,7 @@ module.exports = {
 //    mintCommodities,
     deploySingels,
     fundUserWithGold,
+    createContractConfigFile,
     eth1,
     bigNumber100eth
 };

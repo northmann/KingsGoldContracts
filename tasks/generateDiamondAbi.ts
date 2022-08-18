@@ -37,6 +37,6 @@ task(
     abi.push(...json.abi);
   }
   let finalAbi = JSON.stringify(abi);
-  fs.writeFileSync("./diamondABI/diamond.json", finalAbi);
+  fs.writeFileSync("./frontend/src/abi/diamond.json", finalAbi);
   console.log("ABI written to diamondABI/diamond.json");
 });

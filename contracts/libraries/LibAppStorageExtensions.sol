@@ -18,7 +18,7 @@ library LibAppStorageExtensions {
 
     function getProvince(AppStorage storage self, uint256 _id) internal view returns (Province storage province) {
         province = self.provinces[_id];
-        require(province.owner == msg.sender || province.vassal == msg.sender, "Caller has no write access to Province");
+        //require(province.owner == msg.sender || province.vassal == msg.sender, "Caller has no write access to Province");
     }
 
     function getStructure(AppStorage storage self, uint256 _provinceId, AssetType _assetTypeId) internal view returns (Structure storage structure) {

@@ -9,13 +9,14 @@ var roles = undefined;
 
 
 function writeSetting(name, value) {
-    content.push(" \"" + name + "\": \"" + value + "\"");
+    let text = " \"" + name + "\": \"" + value + "\"";
+    content.push(text);
 }
 
 async function createConfigFile(path) {
-
     let data = "{\n\r" + content.join(",\n\r") + "\n\r}\n\r";
-    await fs.writeFileSync(path,data,{encoding:'utf8',flag:'w'});
+
+    await fs.writeFileSync(path, data ,{encoding:'utf8',flag:'w'});
 }
 
 async function createBeacon(contractName) {
@@ -40,7 +41,7 @@ async function deployContract(contractName, ...args) {
     const Contract = await ethers.getContractFactory(contractName);
     const instance = await Contract.deploy(...args);
     console.log(`${contractName} contract deployed to ${instance.address}`);
-    writeSetting(contractName, instance.address);
+    //writeSetting(contractName, instance.address);
 
     return instance;
 }
