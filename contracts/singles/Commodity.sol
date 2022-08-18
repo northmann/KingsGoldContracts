@@ -9,14 +9,15 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
 import "./RemoteGameAccessControl.sol";
-import "../game/Roles.sol";
 import "../interfaces/ICommodity.sol";
+
+import { LibRoles } from "../libraries/LibRoles.sol";
 
 
 // Minimal change-----
 // Roles added
 // GenericAccessControl added
-abstract contract Commodity is Initializable, ERC20Upgradeable, ERC20BurnableUpgradeable, PausableUpgradeable, Roles, RemoteGameAccessControl, UUPSUpgradeable, ICommodity {
+abstract contract Commodity is Initializable, ERC20Upgradeable, ERC20BurnableUpgradeable, PausableUpgradeable, RemoteGameAccessControl, UUPSUpgradeable, ICommodity {
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -43,11 +44,11 @@ abstract contract Commodity is Initializable, ERC20Upgradeable, ERC20BurnableUpg
     }
 
 
-    function pause() public onlyRole(PAUSER_ROLE) {
+    function pause() public onlyRole(LibRoles.PAUSER_ROLE) {
         _pause();
     }
 
-    function unpause() public onlyRole(PAUSER_ROLE) {
+    function unpause() public onlyRole(LibRoles.PAUSER_ROLE) {
         _unpause();
     }
 
@@ -62,7 +63,7 @@ abstract contract Commodity is Initializable, ERC20Upgradeable, ERC20BurnableUpg
 
     function _authorizeUpgrade(address newImplementation)
         internal
-        onlyRole(UPGRADER_ROLE)
+        onlyRole(LibRoles.UPGRADER_ROLE)
         override
     {}
 }

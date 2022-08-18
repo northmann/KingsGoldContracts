@@ -25,7 +25,7 @@ library LibAppStorageExtensions {
         structure = self.structures[_provinceId][_assetTypeId];
     }
 
-    function getStructureSafe(AppStorage storage self, uint256 _provinceId, AssetType _assetTypeId)
+    function addStructureSafe(AppStorage storage self, uint256 _provinceId, AssetType _assetTypeId)
         internal
         returns (Structure storage structure)
     {
@@ -35,9 +35,13 @@ library LibAppStorageExtensions {
             Asset storage asset = getAsset(self, _assetTypeId);
             structure.name = asset.name;
             structure.description = asset.description;
+
+            Province storage province = getProvince(self, _provinceId); 
+            province.structureList.push(_assetTypeId);
         }
     }
 
+ 
 
     function getStructureEvent(AppStorage storage self, uint256 _id) internal view returns (StructureEvent storage structureEvent) {
         structureEvent = self.structureEvents[msg.sender][_id];
@@ -50,7 +54,7 @@ library LibAppStorageExtensions {
     }
 
 
-    function createProvince(AppStorage storage self, uint _id, string memory _name) internal {
+    function createProvince(AppStorage storage self, uint256 _id, string memory _name) internal {
         require(self.provinces[_id].id == 0, "Province already exists");
 
         Province memory province = self.defaultProvince;

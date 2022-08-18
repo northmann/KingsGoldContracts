@@ -51,6 +51,56 @@ contract ProvinceFacet is Game, ReentrancyGuard {
         province = s.provinces[id];
     }
 
+    function getProvinceStructures(uint256 _provinceId) public view returns (Structure[] memory) {
+
+        Province memory province = s.provinces[_provinceId];
+        require(province.id == _provinceId, "Province id mismatch");
+
+        Structure[] memory structures = new Structure[](province.structureList.length);
+
+        for(uint256 i = 0; i < province.structureList.length; i++) {
+            structures[i] = s.structures[_provinceId][province.structureList[i]];
+        }
+
+        return structures;
+    }
+
+    // function getProvince(uint256 _provinceId) public view returns (
+    //     uint256 id,
+    //     string memory name,
+    //     address owner,
+    //     address vassal,
+    //     uint32 positionX,
+    //     uint32 positionY,
+    //     uint32 plains,   // Food
+    //     uint32 forest,   // Wood
+    //     uint32 mountain, // Stone
+    //     uint32 hills,    // Gold and iron ore
+    //     uint256 populationTotal,
+    //     uint256 populationAvailable,
+    //     address armyContract
+    // ) {
+    //     Province memory province = s.provinces[_provinceId];
+    //     require(province.id == 0, "Province do not exist");
+    //     require(province.id == _provinceId, "Province id mismatch");
+
+    //     return (
+    //         province.id,
+    //         province.name,
+    //         province.owner,
+    //         province.vassal,
+    //         province.positionX,
+    //         province.positionY,
+    //         province.plains,
+    //         province.forest,
+    //         province.mountain,
+    //         province.hills,
+    //         province.populationTotal,
+    //         province.populationAvailable,
+    //         province.armyContract
+    //     );
+    // }
+
     // --------------------------------------------------------------
     // External Functions
     // --------------------------------------------------------------
@@ -94,6 +144,11 @@ contract ProvinceFacet is Game, ReentrancyGuard {
         s.iron.mint(msg.sender, s.baseCommodityReward);
 
         console.log("Minting done");
+
+        console.log("Adding default one Farm to province");
+        Structure storage structure = s.addStructureSafe(tokenId, AssetType.Farm);
+        structure.available = structure.available + 1;
+        structure.total = structure.total + 1;
 
         return tokenId;
     }

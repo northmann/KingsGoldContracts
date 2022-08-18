@@ -5,6 +5,8 @@ const { ethers } = require("hardhat");
 const { getSelectors, FacetCutAction } = require('./libraries/diamond.js')
 const { getId, deployContract, createUpgradeable, createConfigFile } = require('./libraries/auxiliary.js');
 const { deploySingels, deployDiamonBasics, deployFacets, upgradeDiamond, initArgs } = require("./libraries/builder.js");
+const { deployData } = require("./libraries/configuration.js");
+
 
 
 async function deployDiamond () {
@@ -25,8 +27,15 @@ async function deployDiamond () {
  
   await upgradeDiamond(owner, diamond, initializeData);
 
+
+  //await testRoles(owner, diamond);
+  await deployData(owner, diamond);
+
+  console.log("Deploy done");
+
   return { diamond, diamondCutFacet, diamondInit, ...singles, initializeData, owner, user };
 }
+
 
 // We recommend this pattern to be able to use async/await everywhere
 // and properly handle errors.
@@ -39,4 +48,4 @@ if (require.main === module) {
     })
 }
 
-exports.deployDiamond = deployDiamond
+exports.deployDiamond = deployDiamond;

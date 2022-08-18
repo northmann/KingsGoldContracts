@@ -28,34 +28,34 @@
     },
     {
       "address": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
-      "txHash": "0x365b1b791daa6a686c1c4dfddb0cc7c3e9e3cffe400275c57bcc01dec67372fb",
+      "txHash": "0x1ae60e4d40f14f481eabe89b774bc229c3d0d54608357d337a98cbb773923ec1",
       "kind": "uups"
     },
     {
       "address": "0xa513E6E4b8f2a923D98304ec87F64353C4D5C853",
-      "txHash": "0x9f813b2d5707d2f1f05f241612c0b8268fb8c9d73465b6cbd56d2f683b55fb20",
+      "txHash": "0x05a13b55641370b28e9529c4e70117c0ae756ea1d6141f112a6b654f617c6e6c",
       "kind": "uups"
     },
     {
       "address": "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318",
-      "txHash": "0xc1b82af046cd3ea2dc26dfda112bbd5da833eadf585aae634da38cdb59bd3be2",
+      "txHash": "0x9aa7e0c51a61231de7e90d5f3d69db2c09a9d4d250fe599df85047316517cc0b",
       "kind": "uups"
     },
     {
       "address": "0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e",
-      "txHash": "0x1ced1e8693a8e3381a4892e94802c8814a0a79f01a76d675375cb4337d859968",
+      "txHash": "0x8db8277601e98aa17e9749efcb70406a7e8f0b584ad7b94c7423d99aeccc4097",
       "kind": "uups"
     },
     {
       "address": "0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82",
-      "txHash": "0x69822f8e360e0695f6d5334c1b0902d51309c9aae564df29b8e9d0138e6fedf0",
+      "txHash": "0xabdc750443f808b01450c3619916ffaeefc2442655556ffe5b6dee2d91221a8c",
       "kind": "uups"
     }
   ],
   "impls": {
-    "5a7fe4f1f965018304767a0e99727b2b21c8a74486653643b3e2d9150a6132d7": {
+    "9433ae1a4bba507b49084ed042c7171652b6183d4e96fe165792e5554804db31": {
       "address": "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
-      "txHash": "0xe5df3f50cf4eaf8fd6cd811dff90dcb595fc36fbaccd081bddf2e02b04a6a06c",
+      "txHash": "0x778fce54aa593e92050ad113e86179081bb4d3c865a862ddc3969b3f4730a1da",
       "layout": {
         "storage": [
           {
@@ -239,9 +239,9 @@
             "label": "_tokenIdCounter",
             "offset": 0,
             "slot": "402",
-            "type": "t_struct(Counter)3967_storage",
+            "type": "t_struct(Counter)3908_storage",
             "contract": "GenericNFT",
-            "src": "contracts\\singles\\GenericNFT.sol:21"
+            "src": "contracts\\singles\\GenericNFT.sol:23"
           }
         ],
         "types": {
@@ -301,7 +301,7 @@
             "label": "string",
             "numberOfBytes": "32"
           },
-          "t_struct(Counter)3967_storage": {
+          "t_struct(Counter)3908_storage": {
             "label": "struct CountersUpgradeable.Counter",
             "members": [
               {
@@ -324,9 +324,9 @@
         }
       }
     },
-    "7908bb741bb3bf0a31ec43ded2105000b2d40a67d9ae43c178b30bdab8636406": {
+    "bc472538f464299534b966eeeb22067b0aca468fdd48343bae2ff20c397b4988": {
       "address": "0x0165878A594ca255338adfa4d48449f69242Eb8F",
-      "txHash": "0x4ce2ff5454b6a216aaba39fe1f1f6a9c08bbc980ed8322c9b9f4037d58dc834c",
+      "txHash": "0x55d0f79276b6c0c12f9c01e8b07bd3e00b5134fe7ef53a53fe846d5ca982baba",
       "layout": {
         "storage": [
           {
@@ -495,9 +495,9 @@
         }
       }
     },
-    "792e00489203118cd0a5564994e16a32360bc9daaa6d4af7369ddbada317ad52": {
+    "dc4413399be0a63e5e90dc7b2f292b057cf6852154ffe925be1406cea9b36af0": {
       "address": "0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6",
-      "txHash": "0x20cdac82e0275b488afaefd2d6e9cdbfd77d1db2106b2eab7daccfedabc96137",
+      "txHash": "0xdd14e50cd26a7980e9e0c3eca91986af4ce7c3f6723eb60595c7779df85414ab",
       "layout": {
         "storage": [
           {
@@ -666,9 +666,9 @@
         }
       }
     },
-    "83c5043b061eb9a792e1d40cb18025a6b1631f0a2550c175add72406f953e055": {
+    "7431384288645f828a25b0e27926770793311875c32cf40798f6ae207284789c": {
       "address": "0x610178dA211FEF7D417bC0e6FeD39F05609AD788",
-      "txHash": "0x72c0e909184d3dcca3961fdaaed54488f99abc351fe9ecdf76c7e88c97061f29",
+      "txHash": "0xf0876742019950494a29dcdf3de21b89c7cee0f6428ee81baf33b21720eb3eac",
       "layout": {
         "storage": [
           {
@@ -837,9 +837,9 @@
         }
       }
     },
-    "bc8dba47cf29486573c4e40977f3455736794f20d24c3d3d1a1de3a9249360a0": {
+    "1106c12ac4d6b64cfe2a79788cc1705707381955becc624942db753fece4b879": {
       "address": "0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0",
-      "txHash": "0xcbd3f04d8a3167027908057402b5b4472ff283b1827aacb92f55a8fd4cb675a1",
+      "txHash": "0x270ec463fa259c63f3dd55e4a57744da96bfdb05da7d8f37166766a6685c0375",
       "layout": {
         "storage": [
           {

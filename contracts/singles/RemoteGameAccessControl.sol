@@ -5,9 +5,9 @@ import "hardhat/console.sol";
 
 import "@openzeppelin/contracts/access/IAccessControl.sol";
 
-import "../game/Roles.sol";
+import { LibRoles } from "../libraries/LibRoles.sol";
 
-contract RemoteGameAccessControl is Roles {
+contract RemoteGameAccessControl {
 
     address public game;
 
@@ -27,7 +27,7 @@ contract RemoteGameAccessControl is Roles {
     }
 
 
-    function setGame(address _game) public onlyRole(DEFAULT_ADMIN_ROLE) { 
+    function setGame(address _game) public onlyRole(LibRoles.DEFAULT_ADMIN_ROLE) { 
         __setGame(_game);
     }
 

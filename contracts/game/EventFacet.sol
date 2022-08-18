@@ -13,6 +13,18 @@ contract EventFacet is Game {
     using LibAppStorageExtensions for AppStorage;
     using LibEventExtensions for StructureEvent;
 
+
+    // --------------------------------------------------------------
+    // View Functions
+    // --------------------------------------------------------------
+
+    
+
+
+    // --------------------------------------------------------------
+    // Public Functions
+    // --------------------------------------------------------------
+
     /// When a user has paid for time, this method gets called.
     function payForTimeStructureEvent(uint256 _eventId)  public
     {
@@ -38,7 +50,7 @@ contract EventFacet is Game {
         // Add structure to province
         uint256 count = (structureEvent.multiplier * structureEvent.rounds);
 
-        Structure storage structure = s.getStructureSafe(structureEvent.provinceId, structureEvent.assetTypeId);
+        Structure storage structure = s.addStructureSafe(structureEvent.provinceId, structureEvent.assetTypeId);
         structure.available = structure.available + count;
         structure.total = structure.total + count;
 
@@ -65,7 +77,7 @@ contract EventFacet is Game {
         count =  count - structureEvent.reducedAmountOnTimePassed(count, structureEvent.calculatedCost);
         
         if(count > 0) {
-            Structure storage structure = s.getStructureSafe(structureEvent.provinceId, structureEvent.assetTypeId);
+            Structure storage structure = s.addStructureSafe(structureEvent.provinceId, structureEvent.assetTypeId);
             structure.available = structure.available + count;
             structure.total = structure.total + count;
         }

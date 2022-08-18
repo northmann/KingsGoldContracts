@@ -14,11 +14,16 @@ import { IDiamondLoupe } from "../interfaces/IDiamondLoupe.sol";
 import { IDiamondCut } from "../interfaces/IDiamondCut.sol";
 import { IERC173 } from "../interfaces/IERC173.sol";
 import { IERC165 } from "../interfaces/IERC165.sol";
+import { LibAccessControl } from "../libraries/LibAccessControl.sol";
+import { LibRoles } from "../libraries/LibRoles.sol";
+
 
 import "../libraries/LibAppStorage.sol";
 import "../interfaces/IProvinceNFT.sol";
 import "../interfaces/IKingsGold.sol";
 import "../interfaces/ICommodity.sol";
+
+
 
 // It is expected that this contract is customized if you want to deploy your diamond
 // with data from a deployment script. Use the init function to initialize state variables
@@ -57,6 +62,12 @@ contract DiamondInit is Game {
         ds.supportedInterfaces[type(IDiamondCut).interfaceId] = true;
         ds.supportedInterfaces[type(IDiamondLoupe).interfaceId] = true;
         ds.supportedInterfaces[type(IERC173).interfaceId] = true;
+
+        LibAccessControl._grantRole(LibRoles.DEFAULT_ADMIN_ROLE, msg.sender);
+        LibAccessControl._grantRole(LibRoles.MINTER_ROLE, msg.sender);
+        LibAccessControl._grantRole(LibRoles.UPGRADER_ROLE, msg.sender);
+        LibAccessControl._grantRole(LibRoles.CONFIG_ROLE, msg.sender);
+
 
         s.provinceNFT = IProvinceNFT(_args.provinceNFT);
         s.gold = IKingsGold(_args.gold);

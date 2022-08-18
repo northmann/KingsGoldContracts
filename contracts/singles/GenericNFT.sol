@@ -14,6 +14,8 @@ import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 import "./RemoteGameAccessControl.sol";
 
+import { LibRoles } from "../libraries/LibRoles.sol";
+
 
 abstract contract GenericNFT is Initializable, ERC721Upgradeable, ERC721EnumerableUpgradeable, PausableUpgradeable, ERC721BurnableUpgradeable, UUPSUpgradeable, RemoteGameAccessControl {
     using CountersUpgradeable for CountersUpgradeable.Counter;
@@ -34,11 +36,11 @@ abstract contract GenericNFT is Initializable, ERC721Upgradeable, ERC721Enumerab
         __UUPSUpgradeable_init();
     }
 
-    function pause() public onlyRole(PAUSER_ROLE) {
+    function pause() public onlyRole(LibRoles.PAUSER_ROLE) {
         _pause();
     }
 
-    function unpause() public onlyRole(PAUSER_ROLE) {
+    function unpause() public onlyRole(LibRoles.PAUSER_ROLE) {
         _unpause();
     }
 
@@ -61,7 +63,7 @@ abstract contract GenericNFT is Initializable, ERC721Upgradeable, ERC721Enumerab
 
     function _authorizeUpgrade(address newImplementation)
         internal
-        onlyRole(UPGRADER_ROLE)
+        onlyRole(LibRoles.UPGRADER_ROLE)
         override
     {}
 

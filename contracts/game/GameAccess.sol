@@ -4,8 +4,6 @@ pragma solidity >0.8.4;
 
 import "@openzeppelin/contracts/access/IAccessControl.sol";
 
-import "./Roles.sol";
-
 contract GameAccess {
 
     modifier requiredRole(bytes32 role) {

@@ -26,23 +26,6 @@ enum EventAction {
     Yield
 }
 
-enum StructureType {
-    None,
-    Farm,
-    Sawmill,
-    Blacksmith,
-    Quarry,
-    Barrack,
-    Stable,
-    Market,
-    Temple,
-    University,
-    Wall,
-    Watchtower,
-    Castle,
-    Fortress
-}
-
 enum AssetType {
     None,
     Farm,
@@ -58,7 +41,7 @@ enum AssetType {
     Watchtower,
     Castle,
     Fortress,
-    Population
+    Province
 
 }
 
@@ -86,11 +69,13 @@ struct ResourceFactor {
 
 // An asset can be a structure, population, items, troops, armies, etc.
 struct AssetAction {
+    AssetType assetTypeId;
+    EventAction actionId;
     ResourceFactor cost;    // The cost of resources for this asset
     ResourceFactor reward;  // The reward of resources for this asset
-    uint256 timeRequired;
-    uint256 goldForTime;
-    uint256 attrition;
+    // uint256 timeRequired;
+    // uint256 goldForTime;
+    // uint256 attrition;
 }
 
 struct Asset {
@@ -145,11 +130,7 @@ struct StructureEvent{
 
 
 struct Province {
-
-
     uint256 id;
-    //IContinent public override continent;
-    //IWorld public override world;
 
     string name;
 
@@ -170,7 +151,7 @@ struct Province {
     
     uint256[] activeStructureEvents;
 
-    uint256[] structureList;
+    AssetType[] structureList;
 }
 
 struct User {
@@ -256,23 +237,3 @@ contract Game  {
     AppStorage internal s;
 }
 
-// abstract contract AppStorage {
-
-//     bytes32 constant USERS_STORAGE_POSITION = keccak256("UserAccount.userStorage");
-
-//     struct UsersStorage {
-//         mapping(address => User) users;
-//     }
-
-
-//     function usersStorage() internal pure returns (UsersStorage storage ds) {
-//         bytes32 position = USERS_STORAGE_POSITION;
-//         assembly {
-//             ds.slot := position
-//         }
-//     }
-
-//     function getUser() internal view returns (User user) {
-//         usersStorage().users[msg.sender];
-//     }
-// }

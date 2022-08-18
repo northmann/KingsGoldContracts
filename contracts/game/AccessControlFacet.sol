@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/access/IAccessControl.sol";
 import "@openzeppelin/contracts/utils/Context.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 //import "@openzeppelin/contracts/utils/introspection/ERC165.sol";
-import "./Roles.sol";
+import "../libraries/LibAccessControl.sol";
 
 /**
  * @dev Contract module that allows children to implement role-based access
@@ -47,36 +47,18 @@ import "./Roles.sol";
  * grant and revoke this role. Extra precautions should be taken to secure
  * accounts that have been granted it.
  */
-contract AccessControlFacet is Context, Roles, IAccessControl { //ERC165
-    bytes32 constant ACCESS_STORAGE_POSITION = keccak256("AccessControl.accessStorage");
-
-
-
-    struct RoleData {
-        mapping(address => bool) members;
-        bytes32 adminRole;
-    }
-
-    struct AccessStorage {
-        mapping(bytes32 => RoleData) roles;
-    }
+contract AccessControlFacet is Context, IAccessControl { //ERC165
 
     //     
     constructor() {
-        _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
-        _grantRole(MINTER_ROLE, msg.sender);
-        _grantRole(UPGRADER_ROLE, msg.sender);
-        _grantRole(CONFIG_ROLE, msg.sender);
+        // _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        // _grantRole(MINTER_ROLE, msg.sender);
+        // _grantRole(UPGRADER_ROLE, msg.sender);
+        // _grantRole(CONFIG_ROLE, msg.sender);
     }
 
 
 
-    function accessStorage() internal pure returns (AccessStorage storage ds) {
-        bytes32 position = ACCESS_STORAGE_POSITION;
-        assembly {
-            ds.slot := position
-        }
-    }
 
 
 
@@ -106,7 +88,7 @@ contract AccessControlFacet is Context, Roles, IAccessControl { //ERC165
      * @dev Returns `true` if `account` has been granted `role`.
      */
     function hasRole(bytes32 role, address account) public view virtual override returns (bool) {
-        AccessStorage storage ds = accessStorage();
+        AccessStorage storage ds = LibAccessControl.accessStorage();
 
         return ds.roles[role].members[account];
     }
@@ -152,7 +134,7 @@ contract AccessControlFacet is Context, Roles, IAccessControl { //ERC165
      * To change a role's admin, use {_setRoleAdmin}.
      */
     function getRoleAdmin(bytes32 role) public view virtual override returns (bytes32) {
-        AccessStorage storage ds = accessStorage();
+        AccessStorage storage ds = LibAccessControl.accessStorage();
         return ds.roles[role].adminRole;
     }
 
@@ -240,7 +222,7 @@ contract AccessControlFacet is Context, Roles, IAccessControl { //ERC165
      */
     function _setRoleAdmin(bytes32 role, bytes32 adminRole) internal virtual {
         bytes32 previousAdminRole = getRoleAdmin(role);
-        AccessStorage storage ds = accessStorage();
+        AccessStorage storage ds = LibAccessControl.accessStorage();
         ds.roles[role].adminRole = adminRole;
         emit RoleAdminChanged(role, previousAdminRole, adminRole);
     }
@@ -254,7 +236,7 @@ contract AccessControlFacet is Context, Roles, IAccessControl { //ERC165
      */
     function _grantRole(bytes32 role, address account) internal virtual {
         if (!hasRole(role, account)) {
-            AccessStorage storage ds = accessStorage();
+            AccessStorage storage ds = LibAccessControl.accessStorage();
             ds.roles[role].members[account] = true;
             emit RoleGranted(role, account, _msgSender());
         }
@@ -269,7 +251,7 @@ contract AccessControlFacet is Context, Roles, IAccessControl { //ERC165
      */
     function _revokeRole(bytes32 role, address account) internal virtual {
         if (hasRole(role, account)) {
-            AccessStorage storage ds = accessStorage();
+            AccessStorage storage ds = LibAccessControl.accessStorage();
             ds.roles[role].members[account] = false;
             emit RoleRevoked(role, account, _msgSender());
         }

@@ -13,37 +13,38 @@ let gold;
 
 const eth0 = BigNumber.from(0);
 const eth1 = ethers.utils.parseUnits("1.0", "ether");
-let bigNumber50eth = ethers.utils.parseUnits("50.0", "ether"); // 100 mill eth
-let bigNumber100eth = ethers.utils.parseUnits("100.0", "ether"); // 100 mill eth
-let bigNumber100Mill = ethers.utils.parseUnits("100000000.0", "ether"); // 100 mill eth
+const bigNumber50eth = ethers.utils.parseUnits("50.0", "ether"); // 100 mill eth
+const bigNumber100eth = ethers.utils.parseUnits("100.0", "ether"); // 100 mill eth
+const bigNumber100Mill = ethers.utils.parseUnits("100000000.0", "ether"); // 100 mill eth
+const ethZero = ethers.utils.parseEther('0');
 
 
-async function deployKingsGold(user, game) {
+async function deployKingsGold(user, diamond) {
     if (!user) throw "Missing user instance";
 
-    gold = await deployContract("KingsGold", game.address);
+    gold = await deployContract("KingsGold", diamond.address);
 
     return gold;
 }
 
-async function deployProvinceNFT(owner, game) {
-    if(!game) throw "Missing game instance";
+async function deployProvinceNFT(owner, diamond) {
+    if(!diamond) throw "Missing diamond instance";
 
-    provinceNFT = await createUpgradeable("ProvinceNFT", [game.address]);
+    provinceNFT = await createUpgradeable("ProvinceNFT", [diamond.address]);
 
     return provinceNFT;
 }
 
-async function deployCommodities(user, game) {
+async function deployCommodities(user, diamond) {
     if (!user) throw "Missing user instance";
 
-    food = await createUpgradeable("Food", [game.address]);
+    food = await createUpgradeable("Food", [diamond.address]);
 
-    wood = await createUpgradeable("Wood", [game.address]);
+    wood = await createUpgradeable("Wood", [diamond.address]);
 
-    rock = await createUpgradeable("Rock", [game.address]);
+    rock = await createUpgradeable("Rock", [diamond.address]);
 
-    iron = await createUpgradeable("Iron", [game.address]);
+    iron = await createUpgradeable("Iron", [diamond.address]);
 
     return { food, wood, rock, iron };
 }
@@ -64,7 +65,7 @@ async function fundUserWithGold(user) {
         let tx = await treasuryFacet.buy({value: bigNumber100eth });
         await tx.wait();
 
-        // Approve the Game contract to spend the gold
+        // Approve the diamond contract to spend the gold
         let userGoldInstance = await ethers.getContractAt('KingsGold', gold.address, user);
         let approveTx = await userGoldInstance.approve(diamond.address, bigNumber100eth);
         await approveTx.wait();
@@ -86,7 +87,7 @@ async function deployDiamonBasics(owner) {
 
 
 
-async function deployFacets(owner, game) {
+async function deployFacets(owner, diamond) {
     // deploy facets
     console.log('')
     console.log('Deploying facets')
@@ -136,11 +137,11 @@ async function checkSelectors() {
 
 
 // upgrade diamond with facets
-async function upgradeDiamond(owner, game, initArgs) {
+async function upgradeDiamond(owner, diamond, initArgs) {
     // upgrade diamond with facets
     console.log('')
     console.log('Diamond Cut:', cut)
-    const diamondCut = await ethers.getContractAt('IDiamondCut', game.address)
+    const diamondCut = await ethers.getContractAt('IDiamondCut', diamond.address)
     let tx
     let receipt
     // call to init function
@@ -157,11 +158,11 @@ async function upgradeDiamond(owner, game, initArgs) {
 
 
 
-async function deploySingels(owner, game) {
+async function deploySingels(owner, diamond) {
     let r = {};
-    r.provinceNFT = await deployProvinceNFT(owner, game);
-    r.gold = await deployKingsGold(owner, game);
-    let commodities = await deployCommodities(owner, game);
+    r.provinceNFT = await deployProvinceNFT(owner, diamond);
+    r.gold = await deployKingsGold(owner, diamond);
+    let commodities = await deployCommodities(owner, diamond);
     r = { ...r, ...commodities };
    
     return r;
@@ -170,8 +171,6 @@ async function deploySingels(owner, game) {
 
 
 async function initArgs(singles) {
-    let ethZero = ethers.utils.parseEther('0');
-
     let r = {};
     r.provinceNFT = singles.provinceNFT.address;
     r.gold = singles.gold.address;
