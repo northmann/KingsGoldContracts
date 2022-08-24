@@ -3,7 +3,7 @@
 const { ethers } = require("hardhat");
 
 const { getSelectors, FacetCutAction } = require('./libraries/diamond.js')
-const { deploySingels, deployDiamonBasics, deployFacets, upgradeDiamond, initArgs, createContractConfigFile } = require("./libraries/builder.js");
+const { deploySingels, deployDiamonBasics, deployFacets, upgradeDiamond, initArgs, createContractConfigFile, initPlayer } = require("./libraries/builder.js");
 const { deployData } = require("./libraries/configuration.js");
 
 
@@ -12,6 +12,7 @@ async function deployDiamond () {
   const accounts = await ethers.getSigners()
   const owner = accounts[0]
   const user = accounts[1]
+  const user2 = accounts[2]
 
   const { diamond, diamondCutFacet, diamondInit } = await deployDiamonBasics(owner);
 
@@ -36,30 +37,32 @@ async function deployDiamond () {
   //await testRoles(owner, diamond);
   await deployData(owner, diamond);
 
+  await initPlayer(owner, diamond, "0xF046bCa0D18dA64f65Ff2268a84f2F5B87683C47");
+
   console.log("Deploy done");
 
-  const metaMaskAddr = "0xEeB996A982DE087835e3bBead662f64BE228F531";
-  tx = await owner.sendTransaction({
-      to: metaMaskAddr,
-      value: ethers.utils.parseEther("100") // 100 ether
-    });
+  // const metaMaskAddr = "0xEeB996A982DE087835e3bBead662f64BE228F531";
+  // tx = await owner.sendTransaction({
+  //     to: metaMaskAddr,
+  //     value: ethers.utils.parseEther("100") // 100 ether
+  //   });
 
-  await tx.wait();
-  console.log("Test metamask address funded: ", metaMaskAddr);
+  // await tx.wait();
+  // console.log("Test metamask address funded: ", metaMaskAddr);
 
-  const account9 = "0xF046bCa0D18dA64f65Ff2268a84f2F5B87683C47";
-  tx = await owner.sendTransaction({
-    to: account9,
-    value: ethers.utils.parseEther("100") // 100 ether
-  });
+  // const account9 = "0xF046bCa0D18dA64f65Ff2268a84f2F5B87683C47";
+  // tx = await owner.sendTransaction({
+  //   to: account9,
+  //   value: ethers.utils.parseEther("100") // 100 ether
+  // });
 
-  await tx.wait();
-  console.log("Test account9 address funded: ", metaMaskAddr);
-
-
+  // await tx.wait();
+  // console.log("Test account9 address funded: ", metaMaskAddr);
 
 
-  return { diamond, diamondCutFacet, diamondInit, ...singles, initializeData, owner, user };
+
+
+  return { diamond, diamondCutFacet, diamondInit, ...singles, initializeData, owner, user, user2 };
 }
 
 

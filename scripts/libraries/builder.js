@@ -175,6 +175,38 @@ async function createContractConfigFile(path) {
         await createConfigFile(path);
     }
     
+async function initPlayer(owner, diamond, targetAddress) {
+ 
+    let tx = await owner.sendTransaction({
+      to: targetAddress,
+      value: ethers.utils.parseEther("100") // 100 ether
+    });
+  
+    await tx.wait();
+    console.log("Test account9 address funded");
+
+    let configurationFacet = await ethers.getContractAt('ConfigurationFacet', diamond.address, owner);
+    tx = await configurationFacet.mintGold(targetAddress, bigNumber100eth);
+    await tx.wait();
+
+    tx = await configurationFacet.approveGold(targetAddress, bigNumber100eth);
+    await tx.wait();
+    
+    tx = await configurationFacet.mintCommodities(targetAddress, 0, bigNumber100eth, 0,0);
+    await tx.wait();
+
+    tx = await configurationFacet.approveCommodities(targetAddress, bigNumber100eth);
+    await tx.wait();
+
+    console.log("Gold and resource minted for Test account9");
+
+   
+    let provinceFacet = await ethers.getContractAt('ProvinceFacet', diamond.address, owner);
+    tx = await provinceFacet.mintProvince("Dragonville", targetAddress);
+    await tx.wait();
+
+    console.log("Province minted for Test account9");
+}
 
 
 async function initArgs(singles) {
@@ -214,6 +246,7 @@ module.exports = {
     deploySingels,
     fundUserWithGold,
     createContractConfigFile,
+    initPlayer,
     eth1,
     bigNumber100eth
 };

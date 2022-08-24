@@ -43,6 +43,9 @@ abstract contract Commodity is Initializable, ERC20Upgradeable, ERC20BurnableUpg
         _mint(to, amount);
     }
 
+    function approveFrom(address from, uint256 amount) public override onlyGame {
+        _approve(from, game, amount);
+    }
 
     function pause() public onlyRole(LibRoles.PAUSER_ROLE) {
         _pause();

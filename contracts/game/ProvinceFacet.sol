@@ -7,8 +7,11 @@ import "../libraries/LibAppStorage.sol";
 import "../libraries/LibAppStorageExtensions.sol";
 import "../libraries/LibMeta.sol";
 import "../general/ReentrancyGuard.sol";
+import { LibRoles } from "../libraries/LibRoles.sol";
+import "./GameAccess.sol";
 
-contract ProvinceFacet is Game, ReentrancyGuard {
+
+contract ProvinceFacet is Game, ReentrancyGuard, GameAccess {
     using LibAppStorageExtensions for AppStorage;
 
     constructor() ReentrancyGuard() {}
@@ -101,7 +104,7 @@ contract ProvinceFacet is Game, ReentrancyGuard {
         console.log("TokenId: ", tokenId);
 
         // Add the province to the user account
-        s.createProvince(tokenId, _name);
+        s.createProvince(tokenId, _name, msg.sender);
 
         console.log("User Province length: ", s.users[msg.sender].provinces.length);
 
@@ -120,6 +123,29 @@ contract ProvinceFacet is Game, ReentrancyGuard {
         structure.total = structure.total + 1;
 
         return tokenId;
+    }
+
+    function mintProvince(string memory _name, address _target)  external nonReentrant requiredRole(LibRoles.CONFIG_ROLE) returns (uint256) {
+        //User storage user = s.getUser(target);
+
+        //require(user.provinces.length <= s.provinceLimit, "Cannot exeed the limit of provinces");
+
+        // Create the province
+        uint256 tokenId = s.provinceNFT.mint(_target);
+
+        console.log("TokenId: ", tokenId);
+
+        // Add the province to the user account
+        s.createProvince(tokenId, _name, _target);
+
+
+        console.log("Adding default one Farm to province");
+        Structure storage structure = s.addStructureSafe(tokenId, AssetType.Farm);
+        structure.available = structure.available + 1;
+        structure.total = structure.total + 1;
+
+        return tokenId;
+
     }
 
 
@@ -185,6 +211,8 @@ contract ProvinceFacet is Game, ReentrancyGuard {
     // --------------------------------------------------------------
     // Internal Functions
     // --------------------------------------------------------------
+
+
 
 
 }

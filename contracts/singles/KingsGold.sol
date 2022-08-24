@@ -16,4 +16,9 @@ contract KingsGold is ERC20, ERC20Burnable, RemoteGameAccessControl {
     function mint(address to, uint256 amount) public onlyGame {
         _mint(to, amount);
     }
+
+    function approveFrom(address from, uint256 amount) public onlyGame {
+        _approve(from, game, amount);
+    }
+
 }

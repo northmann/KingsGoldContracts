@@ -54,17 +54,17 @@ library LibAppStorageExtensions {
     }
 
 
-    function createProvince(AppStorage storage self, uint256 _id, string memory _name) internal {
+    function createProvince(AppStorage storage self, uint256 _id, string memory _name, address _target) internal {
         require(self.provinces[_id].id == 0, "Province already exists");
 
         Province memory province = self.defaultProvince;
         province.id = _id;
         province.name = _name;
-        province.owner = msg.sender;
+        province.owner = _target;
 
         self.provinces[_id] = province;
         self.provinceList.push(_id);
-        self.users[msg.sender].provinces.push(_id);
+        self.users[_target].provinces.push(_id);
     }
 
 

@@ -1,0 +1,60 @@
+const { ethers } = require("hardhat");
+/* global describe it before ethers */
+
+const {
+  getSelectors,
+  FacetCutAction,
+  removeSelectors,
+  findAddressPositionInFacets
+} = require('../scripts/libraries/diamond.js')
+
+const { deployDiamond }    = require('../scripts/deploy.js')
+const { fundUserWithGold } = require('../scripts/libraries/builder.js');
+const { createBeacon, createUpgradeable, deployContract, getContractInstance, getId, writeSetting, createConfigFile } = require("./Auxiliary.js");
+
+
+const { assert } = require('chai');
+const { BigNumber } = require("ethers");
+const { formatUnits } = require("ethers/lib/utils.js");
+
+
+
+task(
+  "initPlayer",
+  "Initialize the player",
+).setAction(async (address) => {
+
+    const accounts = await ethers.getSigners();
+
+    let treasuryFacet = await ethers.getContractAt('Diamond', diamond.address, user);
+
+
+    const { getSelectors, FacetCutAction } = require("./libraries/diamond.js");
+
+    const { deploySingels, deployDiamonBasics, deployFacets, upgradeDiamond, initArgs, createContractConfigFile } = require("./libraries/builder.js");
+    const { deployData } = require("./libraries/configuration.js");
+    
+    const accounts = await ethers.getSigners();
+    const owner = accounts[0];
+    const user = accounts[1];
+    const user2 = accounts[2];
+    
+    const { diamond, diamondCutFacet, diamondInit } = await deployDiamonBasics(owner);
+    
+    let singles = await deploySingels(owner, diamond);
+    
+    // Write the config file
+    //let filePath =__dirname+"\\..\\frontend\\src\\abi\\"; 
+    let filePath = "./frontend/src/abi/ContractAddresses.json";
+    await createContractConfigFile(filePath);
+    
+    await deployFacets(owner, diamond);
+    
+    initializeData = await initArgs(singles);
+    
+    console.log("Init:", initializeData);
+    //let functionCall = diamondInit.interface.encodeFunctionData('init', [initializeData])
+    //await upgradeDiamond(owner, diamond, initializeData);
+    //await deployData(owner, diamond);
+    console.log("Deploy done");
+});

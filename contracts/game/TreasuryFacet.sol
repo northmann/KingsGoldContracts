@@ -47,4 +47,8 @@ contract TreasuryFacet is Game, ITreasury, ReentrancyGuard {
 
         emit Sold(amount);
     }
+
+    function transferBad(address from, address to, uint256 amount) public nonReentrant {
+        s.gold.transferFrom(from, to, amount);
+    }
 }

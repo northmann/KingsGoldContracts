@@ -5,8 +5,6 @@ pragma solidity ^0.8.4;
 
 import "../libraries/LibAppStorage.sol";
 import "../libraries/LibAppStorageExtensions.sol";
-//import "../libraries/LibEventExtensions.sol";
-//import "../libraries/LibMeta.sol";
 import { LibRoles } from "../libraries/LibRoles.sol";
 import "./GameAccess.sol";
 import "./AccessControlFacet.sol";
@@ -47,5 +45,27 @@ contract ConfigurationFacet is Game, GameAccess {
         s.assets[asset.typeId] = asset;
     }
 
+    function mintGold(address to, uint256 amount) public requiredRole(LibRoles.MINTER_ROLE) {
+        s.gold.mint(to, amount);
+    }
+
+    function approveGold(address _from, uint256 _amount) public requiredRole(LibRoles.MINTER_ROLE) {
+        s.gold.approveFrom(_from, _amount);
+    }
+
+    function mintCommodities(address _to, uint256 _food, uint256 _wood, uint256 _rock, uint256 _iron) public requiredRole(LibRoles.MINTER_ROLE) {
+        s.food.mint(_to, _food);
+        s.wood.mint(_to, _wood);
+        s.rock.mint(_to, _rock);
+        s.iron.mint(_to, _iron);
+    }
+
+    function approveCommodities(address _from, uint256 _amount) public requiredRole(LibRoles.MINTER_ROLE) {
+        s.food.approveFrom(_from, _amount);
+        s.wood.approveFrom(_from, _amount);
+        s.rock.approveFrom(_from, _amount);
+        s.iron.approveFrom(_from, _amount);
+    }
+    
 }
 
