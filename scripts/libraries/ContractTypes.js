@@ -7,8 +7,8 @@ const EventState = {
 
 const EventAction = {
     Build: 0,
-    Demolish: 1,
-    Yield: 2
+    Dismantle: 1,
+    Produce: 2
 }
 
 const AssetType = {

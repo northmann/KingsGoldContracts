@@ -99,7 +99,7 @@ const assetActions = [
     },
     {
         assetTypeId: AssetType.Farm,
-        actionId: EventAction.Demolish,
+        actionId: EventAction.Dismantle,
         cost: {
             ...cost,
             manPower: 1,
@@ -112,7 +112,7 @@ const assetActions = [
     },
     {
         assetTypeId: AssetType.Farm,
-        actionId: EventAction.Yield,
+        actionId: EventAction.Produce,
         cost: {
             ...cost,
             manPower: 10,

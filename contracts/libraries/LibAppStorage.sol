@@ -22,8 +22,8 @@ enum EventState {
 
 enum EventAction {
     Build,
-    Demolish,
-    Yield
+    Dismantle,
+    Produce
 }
 
 enum AssetType {
@@ -73,9 +73,6 @@ struct AssetAction {
     EventAction actionId;
     ResourceFactor cost;    // The cost of resources for this asset
     ResourceFactor reward;  // The reward of resources for this asset
-    // uint256 timeRequired;
-    // uint256 goldForTime;
-    // uint256 attrition;
 }
 
 struct Asset {
@@ -83,9 +80,7 @@ struct Asset {
     string name;
     string description;
 
-    // AssetData build;
-    // AssetData demolish;
-    // AssetData yield;
+    // AssetData produce;
 
     uint256 requiredUserLevel;
     uint256[] requiredAssets; // Assets required to build this asset
@@ -107,14 +102,14 @@ struct StructureEvent{
     EventState state; // The state of the event.
     AssetType assetTypeId;    // A mapping id to an asset
     uint256 provinceId; // The province this event is in.
-    uint256 multiplier; // Multiply the effect of the event. More Farms create more yield etc.
+    uint256 multiplier; // Multiply the effect of the event. More Farms create more produce etc.
     uint256 rounds; // Repeat the event a number of rounds.
     uint256 hero; // TokenId of the hero NFT.
 
     // Auto initialized fields
     // The user who created the event. (msg.Sender). 
     // If the user is a vassal of the province, 
-    // then yield events are split between the vassal and owner of the province.
+    // then produce events are split between the vassal and owner of the province.
     address userAddress; 
 
     uint256 creationTime; // The time the event was created.
