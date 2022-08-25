@@ -97,6 +97,7 @@ struct Structure {
 
 struct StructureEvent{
 
+    uint256 id;
     // Function parameter fields
     EventAction action;
     EventState state; // The state of the event.
@@ -144,7 +145,7 @@ struct Province {
     uint256 populationAvailable;
     address armyContract;
     
-    uint256[] activeStructureEvents;
+    //uint256[] activeStructureEventList;
 
     AssetType[] structureList;
 }
@@ -182,11 +183,12 @@ struct AppStorage {
     mapping(uint256 => mapping(AssetType => Structure)) structures; // ProvinceID => StructureID (AssetTypeId) => Structure
 
     //mapping(address => uint256[]) structureEventList; // All finished structure events for a user. Also used for generating ID's for new events.
-    mapping(address => uint256[]) activeStructureEventList; // All active structure events for a user.
 
-    mapping(address => mapping(uint256 => StructureEvent)) structureEvents; // Structure events are indexed by the user who created the event. 
-
-    mapping(address => uint256[]) eventHistory; // All events that a user have ever done. Not on the User struct as the list can become very large.
+    mapping(uint256 => StructureEvent) structureEvents; // Structure events are indexed by the user who created the event. 
+    mapping(uint256 => uint256[]) provinceActiveStructureEventList; // All active structure events for a user.
+    mapping(uint256 => uint256[]) provinceStructureEventList; // All active structure events for a user.
+    mapping(address => uint256[]) userActiveStructureEventList; // All active structure events for a user.
+    mapping(address => uint256[]) userStructureEventList; // All events that a user have ever done. Not on the User struct as the list can become very large.
 
     mapping(address => mapping (address => bool)) allianceApprovals; // Alliances can approve other users to join their alliance.
     mapping(address => Ally[]) alliances; 

@@ -44,8 +44,7 @@ library LibAppStorageExtensions {
  
 
     function getStructureEvent(AppStorage storage self, uint256 _id) internal view returns (StructureEvent storage structureEvent) {
-        structureEvent = self.structureEvents[msg.sender][_id];
-        require(structureEvent.userAddress == msg.sender, "Illegal user");
+        structureEvent = self.structureEvents[_id];
     }
 
 

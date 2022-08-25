@@ -73,6 +73,23 @@ contract ProvinceFacet is Game, ReentrancyGuard, GameAccess {
         return structures;
     }
 
+    function getProvinceActiveStructureEvents(uint256 _provinceId) public view returns (StructureEvent[] memory) {
+
+        Province memory province = s.provinces[_provinceId];
+        require(province.id == _provinceId, "Province id mismatch");
+
+        uint256 length = s.provinceActiveStructureEventList[_provinceId].length;
+
+        StructureEvent[] memory structureEvents = new StructureEvent[](length);
+
+        for(uint256 i = 0; i < length; i++) {
+            structureEvents[i] = s.structureEvents[s.provinceActiveStructureEventList[_provinceId][i]];
+        }
+
+        return structureEvents;
+    }
+
+
     // --------------------------------------------------------------
     // External Functions
     // --------------------------------------------------------------
@@ -158,6 +175,10 @@ contract ProvinceFacet is Game, ReentrancyGuard, GameAccess {
         uint256 hero;
     }
 
+    function pack(uint256 high, uint256 low) internal pure returns (uint256 packed) {
+        return uint256(high) << 128 | uint256(low);
+    }
+
     function createStructureEvent(Args calldata args
     ) external {
         // check that the hero exist and is controlled by user.
@@ -170,8 +191,12 @@ contract ProvinceFacet is Game, ReentrancyGuard, GameAccess {
 
         console.log("createStructureEvent create Event");
 
+        
+        uint256 eventId = pack(args.provinceId, s.provinceStructureEventList[args.provinceId].length);
+
         StructureEvent memory e;
 
+        e.id = eventId;
         e.action = args.action;
         e.assetTypeId = args.assetTypeId;
         e.provinceId = args.provinceId;
@@ -204,9 +229,13 @@ contract ProvinceFacet is Game, ReentrancyGuard, GameAccess {
         uint256 index = user.structureEventCount+1; // Get the index of the event. Zero index is empty!
         user.structureEventCount = index; // Increase the count of events.
 
-        s.structureEvents[msg.sender][index] = e; // Add the event to the user's event mapping.
-        s.activeStructureEventList[msg.sender].push(index);
+        s.structureEvents[eventId] = e; // Add the event to the user's event mapping.
+        s.provinceActiveStructureEventList[args.provinceId].push(eventId);
+        s.provinceStructureEventList[args.provinceId].push(eventId);
+        s.userActiveStructureEventList[msg.sender].push(eventId);
+        s.userStructureEventList[msg.sender].push(eventId);
     }
+
 
     // --------------------------------------------------------------
     // Internal Functions
