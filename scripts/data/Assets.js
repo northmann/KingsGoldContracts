@@ -36,11 +36,11 @@ const eth100 = ethers.utils.parseUnits("100.0", "ether"); // 100 mill eth
 // }
 
 const cost = {
-        manPower: eth10,
-        manPowerAttrition: 0,
+        manPower: BigNumber.from(10),
+        manPowerAttrition: BigNumber.from(0),
         attrition: eth0_1,
         penalty: eth0_5,
-        time: eth4,
+        time: BigNumber.from(60*60*4), // 4 hours
         goldForTime: eth1,
         food: eth0,
         wood: eth0,
@@ -117,7 +117,6 @@ const assetActions = [
             ...cost,
             manPower: 10,
             goldForTime: eth1,
-            time: eth4,
         },
         reward: {
             ...reward,

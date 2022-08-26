@@ -134,6 +134,10 @@ contract ProvinceFacet is Game, ReentrancyGuard, GameAccess {
 
         console.log("Minting done");
 
+        console.log("Adding population to province");
+        
+
+
         console.log("Adding default one Farm to province");
         Structure storage structure = s.addStructureSafe(tokenId, AssetType.Farm);
         structure.available = structure.available + 1;
@@ -179,8 +183,8 @@ contract ProvinceFacet is Game, ReentrancyGuard, GameAccess {
         return uint256(high) << 128 | uint256(low);
     }
 
-    function createStructureEvent(Args calldata args
-    ) external {
+    function createStructureEvent(Args calldata args) external nonReentrant {
+        
         // check that the hero exist and is controlled by user.
         console.log("createStructureEvent start");
 

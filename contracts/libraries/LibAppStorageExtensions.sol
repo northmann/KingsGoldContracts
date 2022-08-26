@@ -60,6 +60,8 @@ library LibAppStorageExtensions {
         province.id = _id;
         province.name = _name;
         province.owner = _target;
+        province.populationAvailable = 100;
+        province.populationTotal = 100;
 
         self.provinces[_id] = province;
         self.provinceList.push(_id);
