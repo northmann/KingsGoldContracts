@@ -12,6 +12,11 @@ library LibAppStorageExtensions {
     using LibAppStorageExtensions for AppStorage;
 
 
+    // --------------------------------------------------------------
+    // View Functions
+    // --------------------------------------------------------------
+
+
     function getAsset(AppStorage storage self, AssetType _assetTypeId) internal view returns (Asset storage) {
         return self.assets[_assetTypeId];
     }
@@ -25,24 +30,6 @@ library LibAppStorageExtensions {
         structure = self.structures[_provinceId][_assetTypeId];
     }
 
-    function addStructureSafe(AppStorage storage self, uint256 _provinceId, AssetType _assetTypeId)
-        internal
-        returns (Structure storage structure)
-    {
-        structure = getStructure(self, _provinceId, _assetTypeId);
-        if(structure.assetTypeId == AssetType.None) {
-            structure.assetTypeId = _assetTypeId;
-            Asset storage asset = getAsset(self, _assetTypeId);
-            structure.name = asset.name;
-            structure.description = asset.description;
-
-            Province storage province = getProvince(self, _provinceId); 
-            province.structureList.push(_assetTypeId);
-        }
-    }
-
- 
-
     function getStructureEvent(AppStorage storage self, uint256 _id) internal view returns (StructureEvent storage structureEvent) {
         structureEvent = self.structureEvents[_id];
     }
@@ -50,24 +37,8 @@ library LibAppStorageExtensions {
 
     function getUser(AppStorage storage self) internal view returns (User storage user) {
         user = self.users[LibMeta.msgSender()];
+        console.log("s.getUser() - msg.sender: %s - number of provinces: %s", LibMeta.msgSender(), user.provinces.length);
     }
-
-
-    function createProvince(AppStorage storage self, uint256 _id, string memory _name, address _target) internal {
-        require(self.provinces[_id].id == 0, "Province already exists");
-
-        Province memory province = self.defaultProvince;
-        province.id = _id;
-        province.name = _name;
-        province.owner = _target;
-        province.populationAvailable = 100;
-        province.populationTotal = 100;
-
-        self.provinces[_id] = province;
-        self.provinceList.push(_id);
-        self.users[_target].provinces.push(_id);
-    }
-
 
     function getAssetAction(AppStorage storage self, AssetType _assetTypeId, EventAction _action) internal view returns (AssetAction memory assetAction) {
         bytes32 assetActionID = keccak256(abi.encodePacked(_assetTypeId, _action));
@@ -87,6 +58,50 @@ library LibAppStorageExtensions {
         result.rock = _rounds * _multiplier * _cost.rock;
         result.iron = _rounds * _multiplier * _cost.iron;
     }
+
+
+    // --------------------------------------------------------------
+    // Write Functions
+    // --------------------------------------------------------------
+
+    function addStructureSafe(AppStorage storage self, uint256 _provinceId, AssetType _assetTypeId)
+        internal
+        returns (Structure storage structure)
+    {
+        structure = getStructure(self, _provinceId, _assetTypeId);
+        if(structure.assetTypeId == AssetType.None) {
+            structure.assetTypeId = _assetTypeId;
+            Asset storage asset = getAsset(self, _assetTypeId);
+            structure.name = asset.name;
+            structure.description = asset.description;
+
+            Province storage province = getProvince(self, _provinceId); 
+            province.structureList.push(_assetTypeId);
+
+            self.provinceCheckpoint[_provinceId].structures = block.timestamp;
+        }
+    }
+
+ 
+    function createProvince(AppStorage storage self, uint256 _id, string memory _name, address _target) internal {
+        require(self.provinces[_id].id == 0, "Province already exists");
+
+        Province memory province = self.defaultProvince;
+        province.id = _id;
+        province.name = _name;
+        province.owner = _target;
+        province.populationAvailable = 100;
+        province.populationTotal = 100;
+
+        self.provinces[_id] = province;
+        self.provinceList.push(_id);
+        self.users[_target].provinces.push(_id);
+
+        self.provinceCheckpoint[_id].province = block.timestamp;
+
+    }
+
+
 
     // function penalizeAmount(uint256 _amount)
     //     internal

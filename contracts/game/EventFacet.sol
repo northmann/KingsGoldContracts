@@ -56,7 +56,7 @@ contract EventFacet is Game {
 
         console.log("Update the population");
         // Update the population
-        structureEvent.updatePopulation(province, structureEvent.calculatedCost);
+        structureEvent.updatePopulation(s, province, structureEvent.calculatedCost);
 
         structureEvent.state = EventState.Completed;
     }
@@ -85,7 +85,7 @@ contract EventFacet is Game {
         // E.g;
         // Calculate penalty
         Province storage province = s.getProvince(structureEvent.provinceId);
-        structureEvent.updatePopulation(province, structureEvent.calculatedCost);
+        structureEvent.updatePopulation(s, province, structureEvent.calculatedCost);
 
         structureEvent.state = EventState.Cancelled;
     }

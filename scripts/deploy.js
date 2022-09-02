@@ -20,7 +20,7 @@ async function deployDiamond () {
 
   // Write the config file
   //let filePath =__dirname+"\\..\\frontend\\src\\abi\\"; 
-  let filePath = "./frontend/src/abi/ContractAddresses.json";
+  let filePath = "./src/ContractAddresses.json";
   await createContractConfigFile(filePath);
 
   
@@ -35,11 +35,21 @@ async function deployDiamond () {
 
 
   //await testRoles(owner, diamond);
-  await deployData(owner, diamond);
+  await deployData(owner, diamond.address);
 
   await initPlayer(owner, diamond, "0xF046bCa0D18dA64f65Ff2268a84f2F5B87683C47");
 
+
+  
+
   console.log("Deploy done");
+
+  console.log("Diamond address: ", diamond.address);
+  console.log("Owner address: ", owner.address);
+  console.log("User address: ", user.address);
+  console.log("User2 address: ", user2.address);
+  
+
 
   // const metaMaskAddr = "0xEeB996A982DE087835e3bBead662f64BE228F531";
   // tx = await owner.sendTransaction({

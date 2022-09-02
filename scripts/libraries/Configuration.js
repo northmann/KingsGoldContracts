@@ -13,40 +13,43 @@ let contract;
 
 
 
-async function initAppStoreAssets(owner, diamond) {
-    contract = contract || await ethers.getContractAt('ConfigurationFacet', diamond.address, owner);
+async function initAppStoreAssets(owner, diamondAddress) {
+  let contract = await ethers.getContractAt('ConfigurationFacet', diamondAddress, owner);
 
-    let assets = getAssetData();
-    //let asset = assets[0];
-    //console.log(asset);
+  let assets = getAssetData();
+  //let asset = assets[0];
+  //console.log(asset);
 
-    let tx = await contract.setAppStoreAssets(assets);
-    await tx.wait();
-    console.log("Assets initialized");
+  let tx = await contract.setAppStoreAssets(assets);
+  await tx.wait();
+  console.log("Assets initialized");
 }
 
-async function initAppStoreAssetAction(owner, diamond) {
-  contract = contract || await ethers.getContractAt('ConfigurationFacet', diamond.address, owner);
+async function initAppStoreAssetAction(owner, diamondAddress) {
+  let contract = await ethers.getContractAt('ConfigurationFacet', diamondAddress, owner);
 
-  let assetActions = getAssetActionData();
+  let arr = getAssetActionData();
 
-  // let assetActionArg = assetActionArgs[0];
-  //console.log(assetActions);
-  //await contract.setAppStoreAssetAction(assetActionArg.typeId, assetActionArg.actionId, assetActionArg.item);
-
-  let tx = await contract.setAppStoreAssetActions(assetActions);
+  let tx = await contract.setAppStoreAssetActions(arr);
   await tx.wait();
+
   console.log("AssetActions initialized");
 }
 
-async function deployData(owner, diamond) {
-  await initAppStoreAssets(owner, diamond);
-  await initAppStoreAssetAction(owner, diamond);
+async function deployData(owner, diamondAddress) {
+  await initAppStoreAssets(owner, diamondAddress);
+  await initAppStoreAssetAction(owner, diamondAddress);
+
+  console.log("Data initialized");
+  let userContract = await ethers.getContractAt('UserFacet', diamondAddress, owner);
+  const tx = await userContract.setKingdom();
+  await tx.wait();
+  console.log("Kingdom initialized");
 }
 
 
-async function testRoles(owner, diamond) {
-  let ac = await ethers.getContractAt('AccessControlFacet', diamond.address, owner);
+async function testRoles(owner, diamondAddress) {
+  let ac = await ethers.getContractAt('AccessControlFacet', diamondAddress, owner);
 
   const CONFIG_ROLE = utils.keccak256(utils.toUtf8Bytes("CONFIG_ROLE"));
   //const DEFAULT_ADMIN_ROLE = utils.keccak256(utils.toUtf8Bytes("CONFIG_ROLE"));
@@ -54,10 +57,6 @@ async function testRoles(owner, diamond) {
   console.log("Owner has role of CONFIG_ROLE: ", await ac.hasRole(CONFIG_ROLE, owner.address));
 
 }
-
-
-
-
 
 module.exports = {
   initAppStoreAssets,

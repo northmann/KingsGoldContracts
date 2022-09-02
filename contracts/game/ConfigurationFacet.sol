@@ -15,6 +15,34 @@ contract ConfigurationFacet is Game, GameAccess {
 
     using LibAppStorageExtensions for AppStorage;
 
+    // --------------------------------------------------------------
+    // View Functions
+    // --------------------------------------------------------------
+    function getAsset(AssetType _assetTypeId) public view returns (Asset memory asset) {
+        asset = s.assets[_assetTypeId];
+    }
+
+    function getAssets() public view returns (Asset[] memory) {
+
+        uint256 size = uint256(AssetType.Last);
+        Asset[] memory assets = new Asset[](size);
+
+        for(uint256 i = 0; i <= size; i++) {
+            assets[i] = s.assets[AssetType(i)];
+        }
+        return assets;
+    }
+
+    function getAssetAction(AssetType _assetTypeId, EventAction _eventActionId) public view returns(AssetAction memory assetAction) 
+    {
+        bytes32 assetActionID = keccak256(abi.encodePacked(_assetTypeId, _eventActionId));
+        assetAction = s.assetActions[assetActionID];
+    }
+
+    // --------------------------------------------------------------
+    // External Functions
+    // --------------------------------------------------------------
+
     function addStructure(uint256 _provinceID, AssetType _assetTypeId, uint256 _count) public requiredRole(LibRoles.CONFIG_ROLE) {
         Structure storage structure = s.addStructureSafe(_provinceID, _assetTypeId);
         structure.available = structure.available + _count;
@@ -30,7 +58,7 @@ contract ConfigurationFacet is Game, GameAccess {
     }
 
     function setAppStoreAssetAction(AssetAction memory _assetAction) public requiredRole(LibRoles.CONFIG_ROLE) {
-        bytes32 assetActionID = keccak256(abi.encodePacked(_assetAction.assetTypeId, _assetAction.actionId));
+        bytes32 assetActionID = keccak256(abi.encodePacked(_assetAction.assetTypeId, _assetAction.eventActionId));
         s.assetActions[assetActionID] = _assetAction;
     }
 

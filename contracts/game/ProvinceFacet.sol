@@ -36,9 +36,9 @@ contract ProvinceFacet is Game, ReentrancyGuard, GameAccess {
         provinceNFT = s.provinceNFT;
     }
 
-    function getUserProvinceCount() public view returns (uint256 count) {
-        count = s.getUser().provinces.length;
-    }
+    // function getUserProvinceCount() public view returns (uint256 count) {
+    //     count = s.getUser().provinces.length;
+    // }
 
     // function getUserProvinceId(uint256 _index) public view returns (uint256 id) {
     //     User storage user = s.getUser();
@@ -89,6 +89,9 @@ contract ProvinceFacet is Game, ReentrancyGuard, GameAccess {
         return structureEvents;
     }
 
+    function getProvinceCheckpoint(uint256 _provinceId) public view returns (ProvinceCheckpoint memory checkpoint) {
+        checkpoint = s.provinceCheckpoint[_provinceId];
+    }
 
     // --------------------------------------------------------------
     // External Functions
@@ -171,7 +174,7 @@ contract ProvinceFacet is Game, ReentrancyGuard, GameAccess {
 
 
     struct Args {
-        EventAction action;
+        EventAction eventActionId;
         AssetType assetTypeId;
         uint256 provinceId;
         uint256 multiplier;
@@ -201,7 +204,7 @@ contract ProvinceFacet is Game, ReentrancyGuard, GameAccess {
         StructureEvent memory e;
 
         e.id = eventId;
-        e.action = args.action;
+        e.eventActionId = args.eventActionId;
         e.assetTypeId = args.assetTypeId;
         e.provinceId = args.provinceId;
         e.multiplier = args.multiplier;
@@ -211,7 +214,7 @@ contract ProvinceFacet is Game, ReentrancyGuard, GameAccess {
         e.creationTime = block.timestamp;
         e.state = EventState.Active;
 
-        AssetAction memory assetAction = s.getAssetAction(args.assetTypeId, args.action);
+        AssetAction memory assetAction = s.getAssetAction(args.assetTypeId, args.eventActionId);
 
         console.log("createStructure calculate cost");
 
@@ -234,10 +237,18 @@ contract ProvinceFacet is Game, ReentrancyGuard, GameAccess {
         user.structureEventCount = index; // Increase the count of events.
 
         s.structureEvents[eventId] = e; // Add the event to the user's event mapping.
+        
         s.provinceActiveStructureEventList[args.provinceId].push(eventId);
+        s.provinceCheckpoint[args.provinceId].activeStructureEvents = block.timestamp;
+
         s.provinceStructureEventList[args.provinceId].push(eventId);
+        s.provinceCheckpoint[args.provinceId].structureEvents = block.timestamp;
+
         s.userActiveStructureEventList[msg.sender].push(eventId);
+        s.userCheckpoint[msg.sender].activeStructureEvents = block.timestamp;
+
         s.userStructureEventList[msg.sender].push(eventId);
+        s.userCheckpoint[msg.sender].structureEvents = block.timestamp;
     }
 
 

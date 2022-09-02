@@ -40,7 +40,7 @@ describe('GameTest', async function () {
     global = await deployDiamond();
 
     //diamondCutFacet = await ethers.getContractAt('DiamondCutFacet', diamondAddress)
-    global.diamondLoupeFacet = await ethers.getContractAt('DiamondLoupeFacet', global.diamond.address)
+    global.diamondLoupeFacet = await  ('DiamondLoupeFacet', global.diamond.address)
     //ownershipFacet = await ethers.getContractAt('OwnershipFacet', diamondAddress)
   })
 
@@ -70,8 +70,8 @@ describe('GameTest', async function () {
     let tx = await provinceFacet.createProvince("Test");
     await tx.wait();
 
-    let provinceCount = await provinceFacet.getUserProvinceCount();
-    assert.equal(provinceCount, 1);
+    // let provinceCount = await provinceFacet.getUserProvinceCount();
+    // assert.equal(provinceCount, 1);
     
     // let province = await provinceFacet.getUserProvince(0);
     // assert.equal(province.name, "Test");
@@ -81,27 +81,6 @@ describe('GameTest', async function () {
     
     let expectedBalance = goldBalanceBefore.sub(global.initializeData.baseProvinceCost);
     assert.equal(goldBalanceAfter.toString(), expectedBalance.toString());
-  })
-
-  it('should be able to spend my coins without my concent', async () => {
-    assert.notEqual(global.user.address, global.owner.address,"User and User2 addresses should not be the same");
-
-    await fundUserWithGold(global.user);
-    let goldBalanceBefore = await global.gold.balanceOf(global.user.address);
-    console.log("User balance before: ", formatUnits(goldBalanceBefore, 18));
-    
-    let treasuryFacet = await ethers.getContractAt('TreasuryFacet', global.diamond.address, global.user2);
-
-    let tx = await treasuryFacet.transferBad(global.user.address, global.user2.address, bigNumber1eth);
-    await tx.wait();
-    
-    let goldBalanceAfter = await global.gold.balanceOf(global.user.address);
-    console.log("User balance after: ", formatUnits(goldBalanceAfter, 18));
-    assert.equal(goldBalanceAfter.toString(), goldBalanceBefore.sub(bigNumber1eth).toString());
-    
-    let user2Balance = await global.gold.balanceOf(global.user2.address);
-    console.log("User2 balance: ", formatUnits(user2Balance, 18));
-    assert.equal(user2Balance.toString(), bigNumber1eth.toString());
   })
 
   // it('facets should have the right function selectors -- call to facetFunctionSelectors function', async () => {

@@ -17,8 +17,13 @@ contract UserFacet is Game
     // --------------------------------------------------------------
 
     
-    function getUser() public view returns (User memory user) {
-        user = s.users[msg.sender];
+    function getUser(address _target) public view returns (User memory user) {
+        user = s.users[_target];
+    }
+
+
+    function getUserCheckpoint(address _user) public view returns (UserCheckpoint memory checkpoint) {
+        checkpoint = s.userCheckpoint[_user];
     }
 
 

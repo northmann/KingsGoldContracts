@@ -6,7 +6,8 @@ require('@openzeppelin/hardhat-upgrades');
 require('hardhat-abi-exporter');
 
 
-require("./tasks/generateDiamondABI");
+//require("./tasks/generateDiamondABI");
+require("./tasks/ksg");
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -17,6 +18,8 @@ task('accounts', 'Prints the list of accounts', async () => {
     console.log(account.address)
   }
 })
+
+
 
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
@@ -53,7 +56,7 @@ module.exports = {
     currency: "USD",
   },
   abiExporter: {
-    path: './frontend/src/abi',
+    path: './src/abi',
     runOnCompile: true,
     except: ["IERC165.sol"],
     clear: false,

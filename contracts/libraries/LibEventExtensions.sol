@@ -9,6 +9,11 @@ import "./LibMeta.sol";
 library LibEventExtensions {
     using LibEventExtensions for StructureEvent;
     
+
+    // --------------------------------------------------------------
+    // View Functions
+    // --------------------------------------------------------------
+
     function isState(StructureEvent storage self, EventState _state) internal view {
         require(_state == self.state, "Illegal state");
     }
@@ -28,7 +33,12 @@ library LibEventExtensions {
         return reducedAmount;
     }
 
-    function updatePopulation(StructureEvent storage self, Province storage _province, ResourceFactor memory _cost) internal {
+    // --------------------------------------------------------------
+    // Write Functions
+    // --------------------------------------------------------------
+
+
+    function updatePopulation(StructureEvent storage self, AppStorage storage s, Province storage _province, ResourceFactor memory _cost) internal {
         assert(_cost.attrition <= 1e18); // Cannot be more than 100%
         //Calc mamPower Attrition
 
@@ -39,6 +49,8 @@ library LibEventExtensions {
         _province.populationAvailable = _province.populationAvailable + manPowerLeft;
         _province.populationTotal = _province.populationTotal + manPowerLeft;
 
+        // Update the province check point
+        s.provinceCheckpoint[_province.id].province = block.timestamp;
     }
 
 }

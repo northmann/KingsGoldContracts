@@ -1,8 +1,8 @@
 {
-  "name": "contracts-starter",
+  "name": "kingsgold",
   "version": "1.0.0",
-  "description": "Template for contract projects.",
-  "main": "index.js",
+  "description": "KingsGold Game project",
+  "main": "dist/assets.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,12 +10,8 @@
     "type": "git",
     "url": "git+https://github.com/mudgen/contracts-starter.git"
   },
-  "author": "Nick Mudge",
+  "author": "Northmann",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/mudgen/contracts-starter/issues"
-  },
-  "homepage": "https://github.com/mudgen/contracts-starter#readme",
   "devDependencies": {
     "@ethersproject/abi": "^5.6.4",
     "@nomiclabs/hardhat-ethers": "^2.1.0",

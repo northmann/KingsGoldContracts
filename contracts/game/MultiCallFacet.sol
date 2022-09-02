@@ -1,9 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
+import "hardhat/console.sol";
 
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+//import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-contract MultiCallFacet is ReentrancyGuard {
+contract MultiCallFacet  {
 
     event CallResult(bool success, bytes4 sig, bytes result);
 
@@ -16,12 +17,15 @@ contract MultiCallFacet is ReentrancyGuard {
         bytes returnData;
     }
 
+    // @dev Modified for the Diamond pattern.
+    // @dev useDapp uses the original contract owner as msg.sender and not the address of the caller.
     function aggregate(Call[] memory calls) public returns (uint256 blockNumber, bytes[] memory returnData) {
         blockNumber = block.number;
         returnData = new bytes[](calls.length);
         for(uint256 i = 0; i < calls.length; i++) {
             
             address target = calls[i].target;
+            //console.log("MultiCallFacet.aggregate - target: %s - address(this): %s - msg.sender: %s", target, address(this), msg.sender);
             if(target == address(this)) {
                 // Call target is this contract, so we use delegatecall as the data in on this contract.
                 (bool success, bytes memory ret) = target.delegatecall(calls[i].callData);
@@ -34,7 +38,6 @@ contract MultiCallFacet is ReentrancyGuard {
                 require(success, "Multicall aggregate: call failed");
                 returnData[i] = ret;
             }
-
         }
     }
     function blockAndAggregate(Call[] memory calls) public returns (uint256 blockNumber, bytes32 blockHash, Result[] memory returnData) {
@@ -69,6 +72,9 @@ contract MultiCallFacet is ReentrancyGuard {
         for(uint256 i = 0; i < calls.length; i++) {
 
             address target = calls[i].target;
+
+            //console.log("MultiCallFacet.tryAggregate - target: %s - address(this): %s - msg.sender: %s", target, address(this), msg.sender);
+
             if(target == address(this)) {
                 // Call target is this contract, so we use delegatecall as the data in on this contract.
                 (bool success, bytes memory ret) = target.delegatecall(calls[i].callData);
@@ -96,10 +102,13 @@ contract MultiCallFacet is ReentrancyGuard {
 
     // @author Northmann
     // @dev Executes a series of function calls that can change state. 
+    // @dev Designed to only work with the Diamond pattern on the same on contract.
     // @param _calls The calls to be executed.
-    function callFunctions(bytes[] calldata calls) external payable nonReentrant {
+    function callFunctions(bytes[] calldata calls) external payable  {
         // Prevents a malicious contract from calling on behalf of the origin caller.
         require(msg.sender == tx.origin, "callFunctions can only be called directly and not by a proxy");
+
+        //console.log("MultiCallFacet.callFunctions - msg.sender: %s", msg.sender);
 
         for(uint256 i = 0; i < calls.length; i++) {
             (bool success, bytes memory ret) = address(this).delegatecall(calls[i]); // callData is a result of abi.encodeWithSignature(func, args)
