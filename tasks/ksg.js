@@ -1,5 +1,5 @@
 //const { ethers } = require("hardhat");
-const { getAssetActionData, getAssetData } = require("../scripts/data/Assets");
+const { getAssetActionData, getAssetData } = require("../dist/Assets.js");
 
 task("user", "Prints an user json data")
   .addParam("contract", "The contract's address")
@@ -37,16 +37,26 @@ task("getProvinceStructures", "Prints getProvinceStructures json data")
   // ConfigurationFacet
   // --------------------------------------------------------------
 
-  task("assets", "Prints assets json data")
+  task("getAsset", "Prints assets json data")
   .addParam("contract", "The contract's address")
   .addParam("assetTypeId", "The Asset Type ID number", 0, types.int)
   .setAction(async (taskArgs) => {
 
     const contract = await ethers.getContractAt('ConfigurationFacet', taskArgs.contract);
-    const assets = await contract.getAsset(taskArgs.assetTypeId);
+    const asset = await contract.getAsset(taskArgs.assetTypeId);
+    console.log(asset);
+  });
+
+  task("getAssets", "Prints assets json data")
+  .addParam("contract", "The contract's address")
+  .setAction(async (taskArgs) => {
+
+    const contract = await ethers.getContractAt('ConfigurationFacet', taskArgs.contract);
+    const assets = await contract.getAssets();
     console.log(assets);
   });
 
+  
 
 task("getAssetAction", "Prints AssetAction json data")
   .addParam("contract", "The contract's address")
@@ -81,7 +91,7 @@ task("getAssetAction", "Prints AssetAction json data")
     const contract = await ethers.getContractAt('ConfigurationFacet', taskArgs.contract);
     
     let assets = getAssetData();
-    //console.log(assets);
+
     console.log("Deploying Assets...");
     let tx = await contract.setAppStoreAssets(assets);
     await tx.wait();

@@ -71,9 +71,6 @@ library LibAppStorageExtensions {
         structure = getStructure(self, _provinceId, _assetTypeId);
         if(structure.assetTypeId == AssetType.None) {
             structure.assetTypeId = _assetTypeId;
-            Asset storage asset = getAsset(self, _assetTypeId);
-            structure.name = asset.name;
-            structure.description = asset.description;
 
             Province storage province = getProvince(self, _provinceId); 
             province.structureList.push(_assetTypeId);

@@ -28,6 +28,13 @@ export declare const AssetTypeEnum: {
     Fortress: number;
     Population: number;
 };
+export declare const AssetGroupEnum: {
+    None: number;
+    Structure: number;
+    Population: number;
+    Commodity: number;
+    Artifact: number;
+};
 export declare const zeroCost: {
     manPower: BigNumber;
     manPowerAttrition: BigNumber;
@@ -39,18 +46,22 @@ export declare const zeroCost: {
     wood: BigNumber;
     rock: BigNumber;
     iron: BigNumber;
+    gold: BigNumber;
+    amount: BigNumber;
 };
 export declare const cost: {
     manPower: BigNumber;
     attrition: BigNumber;
     penalty: BigNumber;
+    manPowerAttrition: BigNumber;
     time: BigNumber;
     goldForTime: BigNumber;
-    manPowerAttrition: BigNumber;
     food: BigNumber;
     wood: BigNumber;
     rock: BigNumber;
     iron: BigNumber;
+    gold: BigNumber;
+    amount: BigNumber;
 };
 export declare const reward: {
     manPower: BigNumber;
@@ -63,103 +74,14 @@ export declare const reward: {
     wood: BigNumber;
     rock: BigNumber;
     iron: BigNumber;
+    gold: BigNumber;
+    amount: BigNumber;
 };
-export declare const assets: ({
-    typeId: number;
-    name: string;
-    description: string;
-    requiredUserLevel: BigNumber;
-    requiredAssets: never[];
-    image100: string;
-    actions: ({
-        actionId: number;
-        cost: {
-            wood: BigNumber;
-            manPower: BigNumber;
-            attrition: BigNumber;
-            penalty: BigNumber;
-            time: BigNumber;
-            goldForTime: BigNumber;
-            manPowerAttrition: BigNumber;
-            food: BigNumber;
-            rock: BigNumber;
-            iron: BigNumber;
-        };
-        reward: {
-            food: BigNumber;
-            manPower: BigNumber;
-            manPowerAttrition: BigNumber;
-            attrition: BigNumber;
-            penalty: BigNumber;
-            time: BigNumber;
-            goldForTime: BigNumber;
-            wood: BigNumber;
-            rock: BigNumber;
-            iron: BigNumber;
-        };
-        image100: string;
-        name: string;
-        description: string;
-        eventActionId?: undefined;
-    } | {
-        eventActionId: number;
-        cost: {
-            manPower: BigNumber;
-            time: BigNumber;
-            goldForTime: BigNumber;
-            food: BigNumber;
-            attrition: BigNumber;
-            penalty: BigNumber;
-            manPowerAttrition: BigNumber;
-            wood: BigNumber;
-            rock: BigNumber;
-            iron: BigNumber;
-        };
-        reward: {
-            manPower: BigNumber;
-            manPowerAttrition: BigNumber;
-            attrition: BigNumber;
-            penalty: BigNumber;
-            time: BigNumber;
-            goldForTime: BigNumber;
-            food: BigNumber;
-            wood: BigNumber;
-            rock: BigNumber;
-            iron: BigNumber;
-        };
-        image100: string;
-        name: string;
-        description: string;
-        actionId?: undefined;
-    })[];
-} | {
-    typeId: number;
-    name: string;
-    description: string;
-    requiredUserLevel: BigNumber;
-    requiredAssets: never[];
-    image100?: undefined;
-    actions?: undefined;
-})[];
+export declare const assets: any;
 export declare function getAssetActionData(): any;
 export declare function getAssetData(): any;
 export declare function getAsset(typeId: any): any;
-export declare function getAssetAction(asset: any, actionId: any): any;
+export declare function getAssetAction(asset: any, eventActionId: any): any;
 export declare function getContracts(chainId: any, signer: any): any;
-export declare const baseCostSettings: {
-    "1337": {
-        provinceLimit: BigNumber;
-        baseProvinceCost: BigNumber;
-        baseCommodityReward: BigNumber;
-        baseGoldCost: BigNumber;
-        baseUnit: BigNumber;
-        timeBaseCost: BigNumber;
-        goldForTimeBaseCost: BigNumber;
-        foodBaseCost: BigNumber;
-        woodBaseCost: BigNumber;
-        rockBaseCost: BigNumber;
-        ironBaseCost: BigNumber;
-        vassalTribute: BigNumber;
-    };
-};
+export declare function getAppSettings(chainId: number): any;
 //# sourceMappingURL=assets.d.ts.map

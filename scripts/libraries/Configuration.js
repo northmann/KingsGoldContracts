@@ -1,6 +1,6 @@
 const { ethers } = require("hardhat");
 const { BigNumber, utils } = require("ethers");
-const { getAssetData, getAssetActionData } = require("../data/Assets.js");
+const { getAssetData, getAssetActionData } = require("../../dist/Assets.js");
 
 
 const eth0 = BigNumber.from(0);

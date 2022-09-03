@@ -47,6 +47,13 @@ enum AssetType {
     Last
 }
 
+enum AssetGroup {
+    None,
+    Structure,
+    Population,
+    Commodity,
+    Artifact
+}
 struct Hero {
     uint256 tokenId;
     string name;
@@ -66,6 +73,8 @@ struct ResourceFactor {
     uint256 wood;
     uint256 rock;
     uint256 iron;
+    uint256 gold;
+    uint256 amount;
 }
 
 // An asset can be a structure, population, items, troops, armies, etc.
@@ -78,19 +87,19 @@ struct AssetAction {
 
 struct Asset {
     AssetType typeId;
-    string name;
-    string description;
-    // AssetData produce;
+    AssetGroup groupId;
 
     uint256 requiredUserLevel;
     uint256[] requiredAssets; // Assets required to build this asset
+
+    //AssetAction[] actions;
 }
 
 // A structure is an instance of an asset.
 struct Structure {
     AssetType assetTypeId;
-    string name;
-    string description;
+    // string name;
+    // string description;
     uint256 available;
     uint256 total;
 }

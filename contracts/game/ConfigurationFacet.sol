@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
+import "hardhat/console.sol";
 
 //import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
@@ -25,12 +26,12 @@ contract ConfigurationFacet is Game, GameAccess {
     function getAssets() public view returns (Asset[] memory) {
 
         uint256 size = uint256(AssetType.Last);
-        Asset[] memory assets = new Asset[](size);
-
-        for(uint256 i = 0; i <= size; i++) {
-            assets[i] = s.assets[AssetType(i)];
+        Asset[] memory _n = new Asset[](size);
+        for(uint256 i = 0; i < size; i++ ) 
+        {
+            _n[i] = s.assets[AssetType(i)];
         }
-        return assets;
+        return _n;
     }
 
     function getAssetAction(AssetType _assetTypeId, EventAction _eventActionId) public view returns(AssetAction memory assetAction) 
@@ -63,6 +64,7 @@ contract ConfigurationFacet is Game, GameAccess {
     }
 
     function setAppStoreAssets(Asset[] calldata assets) public requiredRole(LibRoles.CONFIG_ROLE) {
+
         for(uint i = 0; i < assets.length; i++) {
             Asset memory asset = assets[i];
             setAppStoreAsset(asset);
@@ -70,6 +72,9 @@ contract ConfigurationFacet is Game, GameAccess {
     }
 
     function setAppStoreAsset(Asset memory asset) public requiredRole(LibRoles.CONFIG_ROLE) {
+        //console.log("setAppStoreAssets:", asset);
+        //console.log("setAppStoreAssets Type: ", asset.typeId, " - GroupID:", asset.groupId);
+
         s.assets[asset.typeId] = asset;
     }
 

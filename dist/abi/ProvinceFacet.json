@@ -277,6 +277,16 @@
                                 "internalType": "uint256",
                                 "name": "iron",
                                 "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "gold",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "amount",
+                                "type": "uint256"
                             }
                         ],
                         "internalType": "struct ResourceFactor",
@@ -333,6 +343,16 @@
                             {
                                 "internalType": "uint256",
                                 "name": "iron",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "gold",
+                                "type": "uint256"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "amount",
                                 "type": "uint256"
                             }
                         ],
@@ -419,16 +439,6 @@
                         "internalType": "enum AssetType",
                         "name": "assetTypeId",
                         "type": "uint8"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "name",
-                        "type": "string"
-                    },
-                    {
-                        "internalType": "string",
-                        "name": "description",
-                        "type": "string"
                     },
                     {
                         "internalType": "uint256",
