@@ -1,73 +1,7 @@
-import { BigNumber, ethers, Contract } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
+import { EventState, EventActionEnum, AssetTypeEnum, AssetGroupEnum, eth0_1, eth0_5, eth0, eth1, eth10, eth100, eth2, eth4, eth5, eth50, eth8, eth9  } from './constants';
 import { parseUnits } from 'ethers/lib/utils';
-import contractAddresses from './contractAddresses.json';
-import { appSettings } from './appSettings';
 
-
-import DiamondABI from './abi/Diamond.json';
-import KingsGoldABI from './abi/KingsGold.json';
-import WoodABI from './abi/Wood.json';
-import RockABI from './abi/Rock.json';
-import IronABI from './abi/Iron.json';
-import FoodABI from './abi/Food.json';
-import UserFacetABI from './abi/UserFacet.json';
-import TreasuryFacetABI from './abi/TreasuryFacet.json';
-import ProvinceFacet from './abi/ProvinceFacet.json';
-
-
-const eth0_1 = parseUnits("0.1", "ether");
-const eth0_5 = parseUnits("0.5", "ether");
-const eth0 = BigNumber.from(0);
-const eth1 = parseUnits("1.0", "ether");
-const eth2 = parseUnits("2.0", "ether");
-const eth4 = parseUnits("4.0", "ether");
-const eth5 = parseUnits("5.0", "ether");
-const eth8 = parseUnits("4.0", "ether");
-const eth9 = parseUnits("1.0", "ether");
-const eth10 = parseUnits("10.0", "ether");
-const eth50 = parseUnits("50.0", "ether"); // 100 mill eth
-const eth100 = parseUnits("100.0", "ether"); // 100 mill eth
-
-
-export const EventState = {
-    Active: 0,
-    PaidFor: 1,
-    Completed: 2,
-    Cancelled: 3
-}
-
-export const EventActionEnum = {
-    Build: 0,
-    Dismantle: 1,
-    Produce: 2,
-    Burn: 3
-}
-
-export const AssetTypeEnum = {
-    None: 0,
-    Farm: 1,
-    Sawmill: 2,
-    Blacksmith: 3,
-    Quarry: 4,
-    Barrack: 5,
-    Stable: 6,
-    Market: 7,
-    Temple: 8,
-    University: 9,
-    Wall: 10,
-    Watchtower: 11,
-    Castle: 12,
-    Fortress: 13,
-    Population: 14
-}
-
-export const AssetGroupEnum = {
-    None: 0,
-    Structure: 1,
-    Population: 2,
-    Commodity: 3,
-    Artifact: 4
-}
 
 export const zeroCost = {
     manPower: BigNumber.from(0),
@@ -91,6 +25,7 @@ export const cost = {
     penalty: eth0_5,
     // time: BigNumber.from(60 * 60 * 1), // 1 hours standard
     // goldForTime is calculated in the contract
+    food: eth1, // It cost 1 food per one manPower per hour
 }
 
 export const reward = {
@@ -131,27 +66,28 @@ const burnCost = {
 }
 
 
-export const assets: any = [
-    {
+export const assets: any = {
+    [AssetTypeEnum.None]: {
         typeId: AssetTypeEnum.None,
         groupId: AssetGroupEnum.None,
         requiredUserLevel: eth0,
         requiredAssets: [],
     },
-    {
+    [AssetTypeEnum.Farm]: {
         typeId: AssetTypeEnum.Farm,
         groupId: AssetGroupEnum.Structure,
         title: "Farm",
         description: "Produces food",
+        image100: "Farm100.png",
         requiredUserLevel: eth0,
         requiredAssets: [],
-        image100: "Farm100.png",
-        actions: [
-            {
+        actions: {
+            [EventActionEnum.Build]:{
                 eventActionId: EventActionEnum.Build,
                 cost: {
                     ...cost,
                     wood: eth50,
+                    food: eth0,
                 },
                 reward: {
                     ...reward,
@@ -161,11 +97,11 @@ export const assets: any = [
                 title: "Build",
                 description: "Build a farm",
             },
-            {
+            [EventActionEnum.Dismantle]:{
                 ...dismantleCost,
                 description: "Breakdown farms to gain some wood",
             },
-            {
+            [EventActionEnum.Produce]:{
                 eventActionId: EventActionEnum.Produce,
                 cost: {
                     ...cost,
@@ -180,15 +116,15 @@ export const assets: any = [
                 },
                 image100: "farming100.webp",
                 title: "Farming",
-                description: "Produces food 4",
+                description: "Produces food",
             },
-            {
+            [EventActionEnum.Burn]:{
                 ...burnCost,
                 description: "Set the farms on fire to destory them. No resources are gained.",
             }
-        ],
+        }
     },
-    {
+    [AssetTypeEnum.Sawmill]: {
         typeId: AssetTypeEnum.Sawmill,
         groupId: AssetGroupEnum.Structure,
         title: "Sawmill",
@@ -196,16 +132,16 @@ export const assets: any = [
         requiredUserLevel: eth0,
         requiredAssets: [],
     },
-    {
+    [AssetTypeEnum.Blacksmith]:{
         typeId: AssetTypeEnum.Blacksmith,
         groupId: AssetGroupEnum.Structure,
         title: "Blacksmith",
         description: "Produces iron",
+        image100: "Blacksmith100.webp",
         requiredUserLevel: eth0,
         requiredAssets: [],
-        image100: "Blacksmith100.webp",
-        actions: [
-            {
+        actions: {
+            [EventActionEnum.Build]:{
                 eventActionId: EventActionEnum.Build,
                 cost: {
                     ...cost,
@@ -219,7 +155,7 @@ export const assets: any = [
                 title: "Build",
                 description: "Build a blacksmith",
             },
-            {
+            [EventActionEnum.Dismantle]:{
                 ...dismantleCost,
                 reward: {
                     ...reward,
@@ -228,7 +164,7 @@ export const assets: any = [
                 },
                 description: "Breakdown blacksmith to gain some wood and iron",
             },
-            {
+            [EventActionEnum.Produce]:{
                 eventActionId: EventActionEnum.Produce,
                 cost: {
                     ...cost,
@@ -244,13 +180,13 @@ export const assets: any = [
                 description: "Produces iron",
                 executeTitle: "Mold",
             },
-            {
+            [EventActionEnum.Burn]:{
                 ...burnCost,
                 description: "Set the blacksmith on fire to destory it. No resources are gained in the process.",
             }
-        ],
+        },
     },
-    {
+    [AssetTypeEnum.Quarry]: {
         typeId: AssetTypeEnum.Quarry,
         groupId: AssetGroupEnum.Structure,
         title: "Quarry",
@@ -258,24 +194,46 @@ export const assets: any = [
         requiredUserLevel: eth0,
         requiredAssets: [],
     },
-    {
+    [AssetTypeEnum.Barrack]: {
         typeId: AssetTypeEnum.Barrack,
         groupId: AssetGroupEnum.Structure,
         title: "Barrack",
         description: "Produces soldiers",
         requiredUserLevel: BigNumber.from(100),
         requiredAssets: [AssetTypeEnum.Farm, AssetTypeEnum.Blacksmith], 
+        actions: {
+            [EventActionEnum.Build]:{
+                eventActionId: EventActionEnum.Build,
+                cost: {
+                    ...cost,
+                    manPower: BigNumber.from(2),
+                    time: BigNumber.from(60 * 60 * 8), // 8 hours
+                    wood: eth100,
+                    iron: eth1,
+                    food: eth1.mul(8*2), // 8 hours * 2 manPower
+                },
+                reward: {
+                    ...reward,
+                    amount: BigNumber.from(1), // 1 barrack
+                },
+                image100: "HouseConstruction100.webp",
+                title: "Build",
+                description: "Build a barrack",
+            },
+        },
     },
-];
+}
 
 
 export function getAssetActionData(): any {
 
     let assetActions = new Array<any>();
-    assets.forEach((asset:any) => {
+    Object.keys(assets).forEach((assetKey:any) => {
+        const asset = assets[assetKey];
         if (!asset.actions) return;
 
-        let actions = asset?.actions?.map((action:any) => {
+        let actions = Object.keys(asset.actions).map((key:any) => {
+            let action = asset.actions[key];
             let r = {
                 assetTypeId: asset.typeId,
                 eventActionId: action.eventActionId,
@@ -289,56 +247,41 @@ export function getAssetActionData(): any {
         if (actions && actions.length > 0)
             assetActions = [...assetActions, ...actions];
     });
-
-    //let assetActions = [].concat(...arr);
-
+    console.log("assetActions", assetActions);
 
     return assetActions;
 }
 
 export function getAssetData(): any {
-
-    let result = assets.map((asset:any) => {
-        let r = { ...asset };
+    let assetData = Object.keys(assets).map((key:any) => 
+    {
+        let r = { ...assets[key] };
         delete r.actions;
         delete r.title;
         delete r.description;
         delete r.image100;
         return r;
-    });
+    } );
 
-     return result;
+     return assetData;
 }
 
-export function getAsset(typeId: any): any {
-    return assets?.find((a: any) => a.typeId === typeId);
+export function getAsset(typeId: AssetTypeEnum): any {
+    return assets?.[typeId];
+}
+
+export function getAssetsByGroup(groupId: AssetGroupEnum): any {
+    let assetData = Object.keys(assets).filter((key:any) => assets[key].groupId === groupId).map((key:any) => assets[key]);
+
+    return assetData;
 }
 
 
 
 export function getAssetAction(asset: any, eventActionId: any): any {
     if (!asset || !eventActionId) return;
-    return asset?.actions?.find((a: any) => a.eventActionId === eventActionId);
+
+    return asset?.actions?.[eventActionId];
 }
 
 
-export function getContracts(chainId: any, signer: any) : any {
-    let result: any = {};
-
-    result.diamond = new Contract(contractAddresses["Diamond"], DiamondABI, signer);
-    result.kingsGold = new Contract(contractAddresses["KingsGold"], KingsGoldABI, signer);
-    result.wood = new Contract(contractAddresses["Wood"], WoodABI, signer);
-    result.rock = new Contract(contractAddresses["Rock"], RockABI, signer);
-    result.iron = new Contract(contractAddresses["Iron"], IronABI, signer);
-    result.food = new Contract(contractAddresses["Food"], FoodABI, signer);
-    result.userFacet = new Contract(contractAddresses["Diamond"], UserFacetABI, signer);
-    result.treasuryFacet = new Contract(contractAddresses["Diamond"], TreasuryFacetABI, signer);
-    result.provinceFacet = new Contract(contractAddresses["Diamond"], ProvinceFacet, signer);
-
-    return result;
-}
-
-
-export function getAppSettings(chainId: number) : any {
-    return { ...appSettings.generic, ...appSettings[chainId]};
-}

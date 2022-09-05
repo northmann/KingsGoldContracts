@@ -1,18 +1,6 @@
 import { BigNumber  } from 'ethers';
-import { parseUnits } from 'ethers/lib/utils';
 
-const eth0_1 = parseUnits("0.1", "ether");
-const eth0_5 = parseUnits("0.5", "ether");
-const eth0 = BigNumber.from(0);
-const eth1 = parseUnits("1.0", "ether");
-const eth2 = parseUnits("2.0", "ether");
-const eth4 = parseUnits("4.0", "ether");
-const eth5 = parseUnits("5.0", "ether");
-const eth8 = parseUnits("4.0", "ether");
-const eth9 = parseUnits("1.0", "ether");
-const eth10 = parseUnits("10.0", "ether");
-const eth50 = parseUnits("50.0", "ether"); // 100 mill eth
-const eth100 = parseUnits("100.0", "ether"); // 100 mill eth
+import { eth1, eth0_5, eth9, eth10, eth100 } from './constants';
 
 
 export const appSettings: any = {
@@ -34,4 +22,8 @@ export const appSettings: any = {
     },
     1337: { // Localhost
     }
+}
+
+export function getAppSettings(chainId: number) : any {
+    return { ...appSettings.generic, ...appSettings[chainId]};
 }
