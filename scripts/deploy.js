@@ -26,13 +26,11 @@ async function deployDiamond () {
   
   await deployFacets(owner, diamond);
 
-  initializeData = await initArgs(singles);
+  initializeData = initArgs(owner);
   
   console.log("Init:", initializeData);
-  //let functionCall = diamondInit.interface.encodeFunctionData('init', [initializeData])
- 
-  await upgradeDiamond(owner, diamond, initializeData);
 
+  await upgradeDiamond(owner, diamond, initializeData);
 
   //await testRoles(owner, diamond);
   await deployData(owner, diamond.address);

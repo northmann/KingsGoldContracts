@@ -1,4 +1,6 @@
 //const { ethers } = require("hardhat");
+const { parseEther } = require("ethers/lib/utils.js");
+const { getAppSettings } = require("../dist/appSettings.js");
 const { getAssetActionData, getAssetData } = require("../dist/Assets.js");
 
 task("user", "Prints an user json data")
@@ -33,11 +35,24 @@ task("getProvinceStructures", "Prints getProvinceStructures json data")
     console.log(data);
   });
 
-  // --------------------------------------------------------------
-  // ConfigurationFacet
-  // --------------------------------------------------------------
+// --------------------------------------------------------------
+// ConfigurationFacet
+// --------------------------------------------------------------
 
-  task("getAsset", "Prints assets json data")
+
+// View ----------------------------------------------------
+
+task("getBaseSettings", "Prints the baseSettings")
+  .addParam("contract", "The contract's address")
+  .setAction(async (taskArgs) => {
+
+    const contract = await ethers.getContractAt('ConfigurationFacet', taskArgs.contract);
+    const settings = await contract.getBaseSettings();
+    console.log(settings);
+  });
+
+
+task("getAsset", "Prints assets json data")
   .addParam("contract", "The contract's address")
   .addParam("assetTypeId", "The Asset Type ID number", 0, types.int)
   .setAction(async (taskArgs) => {
@@ -47,7 +62,7 @@ task("getProvinceStructures", "Prints getProvinceStructures json data")
     console.log(asset);
   });
 
-  task("getAssets", "Prints assets json data")
+task("getAssets", "Prints assets json data")
   .addParam("contract", "The contract's address")
   .setAction(async (taskArgs) => {
 
@@ -56,7 +71,7 @@ task("getProvinceStructures", "Prints getProvinceStructures json data")
     console.log(assets);
   });
 
-  
+
 
 task("getAssetAction", "Prints AssetAction json data")
   .addParam("contract", "The contract's address")
@@ -70,26 +85,41 @@ task("getAssetAction", "Prints AssetAction json data")
   });
 
 
-  task("setAppStoreAssetActions", "Deploys the AssetActions")
+task("setAppStoreAssetActions", "Deploys the AssetActions")
   .addParam("contract", "The contract's address")
   .setAction(async (taskArgs) => {
     const contract = await ethers.getContractAt('ConfigurationFacet', taskArgs.contract);
-    
+
     const arr = getAssetActionData();
-    //console.log(arr);
 
     console.log("Deploying AssetActions...");
     let tx = await contract.setAppStoreAssetActions(arr);
     await tx.wait();
-    console.log("Deployed", arr.length,"AssetActions");
+    console.log("Deployed", arr.length, "AssetActions");
+  });
+
+// Public ----------------------------------------------------
+
+task("setBaseSettings", "Deploys the initialisation data")
+  .addParam("contract", "The contract's address")
+  .addParam("chainId", "The chain id number", 1337, types.int)
+  .setAction(async (taskArgs) => {
+    const contract = await ethers.getContractAt('ConfigurationFacet', taskArgs.contract);
+
+    let initArgs = getAppSettings(taskArgs.chainId);
+
+    console.log("Deploying BaseSettings...");
+    let tx = await contract.setBaseSettings(initArgs);
+    await tx.wait();
+    console.log("Deployed");
   });
 
 
-  task("setAppStoreAssets", "Deploys the Assets")
+task("setAppStoreAssets", "Deploys the Assets")
   .addParam("contract", "The contract's address")
   .setAction(async (taskArgs) => {
     const contract = await ethers.getContractAt('ConfigurationFacet', taskArgs.contract);
-    
+
     let assets = getAssetData();
 
     console.log("Deploying Assets...");
@@ -97,3 +127,59 @@ task("getAssetAction", "Prints AssetAction json data")
     await tx.wait();
     console.log("Deployed", assets.length, "Assets");
   });
+
+  task("mintGold", "fundUserWithGold")
+  .addParam("contract", "The contract's address")
+  .addParam("user", "The user's address")
+  .addParam("amount", "The gold amount in ethers", 100, types.int)
+  .setAction(async (taskArgs) => {
+    let amount = parseEther(taskArgs.amount.toString(), 18);
+
+    let configurationFacet = await ethers.getContractAt('ConfigurationFacet', taskArgs.contract);
+    console.log("Minting gold...");
+    tx = await configurationFacet.mintGold(taskArgs.user, amount);
+    await tx.wait();
+    console.log("Minted");
+  });
+
+
+  task("mintCommodities", "fundUserWithGold")
+  .addParam("contract", "The contract's address")
+  .addParam("user", "The user's address")
+  .addParam("food", "The food amount in ethers", 100, types.int)
+  .addParam("wood", "The wood amount in ethers", 100, types.int)
+  .addParam("rock", "The stone amount in ethers", 100, types.int)
+  .addParam("iron", "The iron amount in ethers", 100, types.int)
+  .setAction(async (taskArgs) => {
+    let configurationFacet = await ethers.getContractAt('ConfigurationFacet', taskArgs.contract);
+    console.log("Minting commodities...");
+    tx = await configurationFacet.mintCommodities(taskArgs.user, 
+      parseEther(taskArgs.food.toString(), 18),
+      parseEther(taskArgs.wood.toString(), 18),
+      parseEther(taskArgs.rock.toString(), 18),
+      parseEther(taskArgs.iron.toString(), 18)
+      );
+    await tx.wait();
+    console.log("Minted");
+  });
+
+  task("approveCommodities", "Approve spending user's commodities")
+  .addParam("contract", "The contract's address")
+  .addParam("user", "The user's address")
+  .addParam("food", "The food amount in ethers", 10000000, types.int)
+  .addParam("wood", "The wood amount in ethers", 10000000, types.int)
+  .addParam("rock", "The stone amount in ethers", 10000000, types.int)
+  .addParam("iron", "The iron amount in ethers", 10000000, types.int)
+  .setAction(async (taskArgs) => {
+    let configurationFacet = await ethers.getContractAt('ConfigurationFacet', taskArgs.contract);
+    console.log("Approve commodities...");
+    tx = await configurationFacet.approveCommodities(taskArgs.user, 
+      parseEther(taskArgs.food.toString(), 18),
+      parseEther(taskArgs.wood.toString(), 18),
+      parseEther(taskArgs.rock.toString(), 18),
+      parseEther(taskArgs.iron.toString(), 18)
+      );
+    await tx.wait();
+    console.log("Approve");
+  });
+

@@ -24,6 +24,45 @@ contract ProvinceFacet is Game, ReentrancyGuard, GameAccess {
     // Internal Functions
     // --------------------------------------------------------------
 
+    function mintProvince(string memory _name, address _target)  internal returns (uint256) {
+        // TODO: Check name, no illegal chars
+        User storage user = s.users[_target];
+
+        require(user.provinces.length <= s.baseSettings.provinceLimit, "Cannot exeed the limit of provinces");
+
+        console.log("Gold Balance: ", s.baseSettings.gold.balanceOf(msg.sender));
+
+        // Check if the user has enough money to pay for the province
+        uint256 price = s.baseSettings.provinceCost + s.baseSettings.provinceDeposit;
+        require(price <= s.baseSettings.gold.balanceOf(_target), "Not enough tokens in reserve");
+
+        // Transfer gold from user to the treasury (Game)
+        if (!s.baseSettings.gold.transferFrom(_target, address(this), price)) revert("KingsGold transfer failed from sender to treasury.");
+
+        // Create the province
+        uint256 tokenId = s.baseSettings.provinceNFT.mint(_target);
+
+        console.log("TokenId: ", tokenId);
+
+        // Add the province to the user account
+        s.createProvince(tokenId, _name, _target);
+        Province storage province = s.createProvince(tokenId, _name, _target);
+        province.deposit = s.baseSettings.provinceDeposit; // Set the deposit here as the payment has been made.
+
+        // Mint resources to the user as a reward for creating a province.
+        s.baseSettings.food.mint(_target, s.baseSettings.provinceFoodInit);
+        s.baseSettings.wood.mint(_target, s.baseSettings.provinceWoodInit);
+        s.baseSettings.rock.mint(_target, s.baseSettings.provinceRockInit);
+        s.baseSettings.iron.mint(_target, s.baseSettings.provinceIronInit);
+
+        console.log("Adding default one Farm to province");
+        Structure storage structure = s.addStructureSafe(tokenId, AssetType.Farm);
+        structure.available = structure.available + 1;
+        structure.total = structure.total + 1;
+
+        return tokenId;
+    }
+
     // --------------------------------------------------------------
     // Event Hooks
     // --------------------------------------------------------------
@@ -33,7 +72,7 @@ contract ProvinceFacet is Game, ReentrancyGuard, GameAccess {
     // --------------------------------------------------------------
 
     function getProvinceNFT() public view returns (IProvinceNFT provinceNFT) {
-        provinceNFT = s.provinceNFT;
+        provinceNFT = s.baseSettings.provinceNFT;
     }
 
     // function getUserProvinceCount() public view returns (uint256 count) {
@@ -98,80 +137,14 @@ contract ProvinceFacet is Game, ReentrancyGuard, GameAccess {
     // --------------------------------------------------------------
 
     // Everyone should be able to mint new Provinces from a payment in KingsGold
-    function createProvince(string memory _name) external nonReentrant returns (uint256) {
-        // TODO: Check name, no illegal chars
+    function createProvince(string memory _name) external nonReentrant returns (uint256 tokenId) {
 
-        console.log("Creating province: ", _name);
-        // Make sure that the user account exist and if not then created it automatically.
-        User storage user = s.getUser();
-
-        console.log("User.kingdom: ", user.kingdom);
-        console.log("user.provinces.length: ", user.provinces.length);
-
-        require(user.provinces.length <= s.provinceLimit, "Cannot exeed the limit of provinces");
-
-        console.log("Gold Balance: ", s.gold.balanceOf(msg.sender));
-
-        // Check if the user has enough money to pay for the province
-        require(s.baseProvinceCost <= s.gold.balanceOf(msg.sender), "Not enough tokens in reserve");
-
-        // Transfer gold from user to the treasury (Game)
-        if (!s.gold.transferFrom(msg.sender, address(this), s.baseProvinceCost)) revert("KingsGold transfer failed from sender to treasury.");
-
-        // Create the province
-        uint256 tokenId = s.provinceNFT.mint(msg.sender);
-
-        console.log("TokenId: ", tokenId);
-
-        // Add the province to the user account
-        s.createProvince(tokenId, _name, msg.sender);
-
-        console.log("User Province length: ", s.users[msg.sender].provinces.length);
-
-        console.log("Minting");
-        // Mint resources to the user as a reward for creating a province.
-        s.food.mint(msg.sender, s.baseCommodityReward);
-        s.wood.mint(msg.sender, s.baseCommodityReward);
-        s.rock.mint(msg.sender, s.baseCommodityReward);
-        s.iron.mint(msg.sender, s.baseCommodityReward);
-
-        console.log("Minting done");
-
-        console.log("Adding population to province");
-        
-
-
-        console.log("Adding default one Farm to province");
-        Structure storage structure = s.addStructureSafe(tokenId, AssetType.Farm);
-        structure.available = structure.available + 1;
-        structure.total = structure.total + 1;
-
-        return tokenId;
+        tokenId = mintProvince(_name, LibMeta.msgSender());
     }
-
-    function mintProvince(string memory _name, address _target)  external nonReentrant requiredRole(LibRoles.CONFIG_ROLE) returns (uint256) {
-        //User storage user = s.getUser(target);
-
-        //require(user.provinces.length <= s.provinceLimit, "Cannot exeed the limit of provinces");
-
-        // Create the province
-        uint256 tokenId = s.provinceNFT.mint(_target);
-
-        console.log("TokenId: ", tokenId);
-
-        // Add the province to the user account
-        s.createProvince(tokenId, _name, _target);
-
-
-        console.log("Adding default one Farm to province");
-        Structure storage structure = s.addStructureSafe(tokenId, AssetType.Farm);
-        structure.available = structure.available + 1;
-        structure.total = structure.total + 1;
-
-        return tokenId;
-
+    
+    function createProvinceAtTarget(string memory _name, address _target) external nonReentrant requiredRole(LibRoles.CONFIG_ROLE) returns (uint256 tokenId) {
+        tokenId = mintProvince(_name, _target);
     }
-
 
     struct Args {
         EventAction eventActionId;

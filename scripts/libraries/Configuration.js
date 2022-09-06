@@ -1,6 +1,7 @@
 const { ethers } = require("hardhat");
 const { BigNumber, utils } = require("ethers");
 const { getAssetData, getAssetActionData } = require("../../dist/Assets.js");
+const { getAppSettings } = require("../../dist/appSettings.js");
 
 
 const eth0 = BigNumber.from(0);
@@ -11,6 +12,16 @@ const bigNumber100Mill = ethers.utils.parseUnits("100000000.0", "ether"); // 100
 
 let contract;
 
+async function initBaseSettings(owner, diamondAddress) {
+  let contract = await ethers.getContractAt('ConfigurationFacet', diamondAddress, owner);
+
+  let settings = getAppSettings(1337);
+
+  let tx = await contract.setBaseSettings(settings);
+  await tx.wait();
+
+  console.log("BaseSettings initialized");
+}
 
 
 async function initAppStoreAssets(owner, diamondAddress) {
@@ -37,6 +48,7 @@ async function initAppStoreAssetAction(owner, diamondAddress) {
 }
 
 async function deployData(owner, diamondAddress) {
+  await initBaseSettings(owner, diamondAddress);
   await initAppStoreAssets(owner, diamondAddress);
   await initAppStoreAssetAction(owner, diamondAddress);
 

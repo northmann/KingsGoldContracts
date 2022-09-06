@@ -1,1 +1,1 @@
-{"version":3,"file":"appSettings.d.ts","sourceRoot":"","sources":["../src/appSettings.ts"],"names":[],"mappings":"AAKA,eAAO,MAAM,WAAW,EAAE,GAmBzB,CAAA;AAED,wBAAgB,cAAc,CAAC,OAAO,EAAE,MAAM,GAAI,GAAG,CAEpD"}
+{"version":3,"file":"appSettings.d.ts","sourceRoot":"","sources":["../src/appSettings.ts"],"names":[],"mappings":"AAMA,eAAO,MAAM,WAAW,EAAE,GAkCzB,CAAA;AAED,wBAAgB,cAAc,CAAC,OAAO,EAAE,MAAM,GAAI,GAAG,CAEpD"}

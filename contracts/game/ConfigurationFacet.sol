@@ -19,6 +19,13 @@ contract ConfigurationFacet is Game, GameAccess {
     // --------------------------------------------------------------
     // View Functions
     // --------------------------------------------------------------
+
+    function getBaseSettings() public view returns (BaseSettings memory settings) {
+
+        settings = s.baseSettings;
+    }
+
+
     function getAsset(AssetType _assetTypeId) public view returns (Asset memory asset) {
         asset = s.assets[_assetTypeId];
     }
@@ -43,6 +50,11 @@ contract ConfigurationFacet is Game, GameAccess {
     // --------------------------------------------------------------
     // External Functions
     // --------------------------------------------------------------
+
+
+    function setBaseSettings(BaseSettings memory _args) public requiredRole(LibRoles.CONFIG_ROLE) {
+        s.baseSettings = _args;
+    }
 
     function addStructure(uint256 _provinceID, AssetType _assetTypeId, uint256 _count) public requiredRole(LibRoles.CONFIG_ROLE) {
         Structure storage structure = s.addStructureSafe(_provinceID, _assetTypeId);
@@ -79,25 +91,25 @@ contract ConfigurationFacet is Game, GameAccess {
     }
 
     function mintGold(address to, uint256 amount) public requiredRole(LibRoles.MINTER_ROLE) {
-        s.gold.mint(to, amount);
+        s.baseSettings.gold.mint(to, amount);
     }
 
     function approveGold(address _from, uint256 _amount) public requiredRole(LibRoles.MINTER_ROLE) {
-        s.gold.approveFrom(_from, _amount);
+        s.baseSettings.gold.approveFrom(_from, _amount);
     }
 
     function mintCommodities(address _to, uint256 _food, uint256 _wood, uint256 _rock, uint256 _iron) public requiredRole(LibRoles.MINTER_ROLE) {
-        s.food.mint(_to, _food);
-        s.wood.mint(_to, _wood);
-        s.rock.mint(_to, _rock);
-        s.iron.mint(_to, _iron);
+        s.baseSettings.food.mint(_to, _food);
+        s.baseSettings.wood.mint(_to, _wood);
+        s.baseSettings.rock.mint(_to, _rock);
+        s.baseSettings.iron.mint(_to, _iron);
     }
 
-    function approveCommodities(address _from, uint256 _amount) public requiredRole(LibRoles.MINTER_ROLE) {
-        s.food.approveFrom(_from, _amount);
-        s.wood.approveFrom(_from, _amount);
-        s.rock.approveFrom(_from, _amount);
-        s.iron.approveFrom(_from, _amount);
+    function approveCommodities(address _from, uint256 _food, uint256 _wood, uint256 _rock, uint256 _iron) public requiredRole(LibRoles.MINTER_ROLE) {
+        s.baseSettings.food.approveFrom(_from, _food);
+        s.baseSettings.wood.approveFrom(_from, _wood);
+        s.baseSettings.rock.approveFrom(_from, _rock);
+        s.baseSettings.iron.approveFrom(_from, _iron);
     }
     
 }

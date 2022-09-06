@@ -10,6 +10,7 @@ export declare const eth8: BigNumber;
 export declare const eth9: BigNumber;
 export declare const eth10: BigNumber;
 export declare const eth50: BigNumber;
+export declare const eth90: BigNumber;
 export declare const eth100: BigNumber;
 export declare enum EventState {
     Active = 0,

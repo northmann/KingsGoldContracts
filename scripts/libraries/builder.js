@@ -3,6 +3,8 @@ const { ethers } = require("hardhat");
 const { getSelectors, FacetCutAction } = require('./diamond.js')
 const { createBeacon, createUpgradeable, deployContract, getContractInstance, getId, writeSetting, createConfigFile } = require("./Auxiliary.js");
 const { BigNumber } = require("ethers");
+const { getAppSettings } = require('../../dist/appSettings.js');
+const { parseEther } = require("ethers/lib/utils.js");
 
 let cut = [];
 let diamondCutFacet;
@@ -15,6 +17,7 @@ const eth0 = BigNumber.from(0);
 const eth1 = ethers.utils.parseUnits("1.0", "ether");
 const bigNumber50eth = ethers.utils.parseUnits("50.0", "ether"); // 100 mill eth
 const bigNumber100eth = ethers.utils.parseUnits("100.0", "ether"); // 100 mill eth
+const bigNumber200eth = ethers.utils.parseUnits("200.0", "ether"); // 100 mill eth
 const bigNumber100Mill = ethers.utils.parseUnits("100000000.0", "ether"); // 100 mill eth
 const ethZero = ethers.utils.parseEther('0');
 
@@ -63,12 +66,12 @@ async function fundUserWithGold(user) {
     if (balance.eq(eth0)) {
         let treasuryFacet = await ethers.getContractAt('TreasuryFacet', diamond.address, user);
 
-        let tx = await treasuryFacet.buy({value: bigNumber100eth });
+        let tx = await treasuryFacet.buy({value: bigNumber200eth });
         await tx.wait();
 
         // Approve the diamond contract to spend the gold
         let userGoldInstance = await ethers.getContractAt('KingsGold', gold.address, user);
-        let approveTx = await userGoldInstance.approve(diamond.address, bigNumber100eth);
+        let approveTx = await userGoldInstance.approve(diamond.address, bigNumber200eth);
         await approveTx.wait();
 
     }
@@ -84,6 +87,7 @@ async function deployDiamonBasics(owner) {
 
     // deploy DiamondInit
     diamondInit = await deployContract('DiamondInit');
+    //writeSetting("DiamondInit", diamondInit.address); 
 
     return { diamond, diamondCutFacet, diamondInit };
 }
@@ -192,44 +196,29 @@ async function initPlayer(owner, diamond, targetAddress) {
     tx = await configurationFacet.approveGold(targetAddress, bigNumber100eth);
     await tx.wait();
     
-    tx = await configurationFacet.mintCommodities(targetAddress, 0, bigNumber100eth, 0,0);
-    await tx.wait();
+    // tx = await configurationFacet.mintCommodities(targetAddress, parseEther("10"), bigNumber100eth, 0,0);
+    // await tx.wait();
 
-    tx = await configurationFacet.approveCommodities(targetAddress, bigNumber100eth);
-    await tx.wait();
 
-    console.log("Gold and resource minted for Test account9");
 
    
     let provinceFacet = await ethers.getContractAt('ProvinceFacet', diamond.address, owner);
-    tx = await provinceFacet.mintProvince("Dragonville", targetAddress);
+    tx = await provinceFacet.createProvinceAtTarget("Dragonville", targetAddress);
     await tx.wait();
 
     console.log("Province minted for Test account9");
+
+    tx = await configurationFacet.approveCommodities(targetAddress, bigNumber100Mill, bigNumber100Mill, bigNumber100Mill, bigNumber100Mill);
+    await tx.wait();
+    console.log("Approve Commodities for Test account9");
+
 }
 
 
-async function initArgs(singles) {
-    let r = {};
-    r.provinceNFT = singles.provinceNFT.address;
-    r.gold = singles.gold.address;
-    r.food = singles.food.address;
-    r.wood = singles.wood.address;
-    r.rock = singles.rock.address;
-    r.iron = singles.iron.address;
-
-    r.provinceLimit = ethZero;
-    r.baseProvinceCost = ethZero;
-    r.baseCommodityReward = ethZero;
-    r.baseGoldCost = ethZero;
-    r.baseUnit = ethZero;
-    r.timeBaseCost = ethZero;
-    r.goldForTimeBaseCost = ethZero;
-    r.foodBaseCost = ethZero;
-    r.woodBaseCost = ethZero;
-    r.rockBaseCost = ethZero;
-    r.ironBaseCost = ethZero;
-    r.vassalTribute = ethZero; 
+function initArgs(owner) {
+    let r = {
+        owner: owner.address
+    };
 
     return r;
 }

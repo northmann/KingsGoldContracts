@@ -77,9 +77,9 @@ describe('GameTest', async function () {
     // assert.equal(province.name, "Test");
 
     let goldBalanceAfter = await global.gold.balanceOf(global.user.address);
-    //let expectedBalance = bigNumber100eth.sub(initializeData.baseProvinceCost.mul(BigNumber.from(9)));
+    //let expectedBalance = bigNumber100eth.sub(initializeData.provinceCost.mul(BigNumber.from(9)));
     
-    let expectedBalance = goldBalanceBefore.sub(global.initializeData.baseProvinceCost);
+    let expectedBalance = goldBalanceBefore.sub(global.initializeData.provinceCost);
     assert.equal(goldBalanceAfter.toString(), expectedBalance.toString());
   })
 

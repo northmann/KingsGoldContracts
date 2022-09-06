@@ -31,7 +31,22 @@
       },
       {
         "internalType": "uint256",
-        "name": "_amount",
+        "name": "_food",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_wood",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_rock",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_iron",
         "type": "uint256"
       }
     ],
@@ -299,6 +314,121 @@
         "internalType": "struct Asset[]",
         "name": "",
         "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getBaseSettings",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "baseGoldCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "baseUnit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "provinceLimit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "provinceCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "provinceDeposit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "provinceSpend",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "baseCommodityReward",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "timeBaseCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "goldForTimeBaseCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "provinceFoodInit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "provinceWoodInit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "provinceRockInit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "provinceIronInit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "vassalTribute",
+            "type": "uint256"
+          },
+          {
+            "internalType": "contract IProvinceNFT",
+            "name": "provinceNFT",
+            "type": "address"
+          },
+          {
+            "internalType": "contract IKingsGold",
+            "name": "gold",
+            "type": "address"
+          },
+          {
+            "internalType": "contract ICommodity",
+            "name": "food",
+            "type": "address"
+          },
+          {
+            "internalType": "contract ICommodity",
+            "name": "wood",
+            "type": "address"
+          },
+          {
+            "internalType": "contract ICommodity",
+            "name": "rock",
+            "type": "address"
+          },
+          {
+            "internalType": "contract ICommodity",
+            "name": "iron",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct BaseSettings",
+        "name": "settings",
+        "type": "tuple"
       }
     ],
     "stateMutability": "view",
@@ -739,6 +869,121 @@
       }
     ],
     "name": "setAppStoreAssets",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "baseGoldCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "baseUnit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "provinceLimit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "provinceCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "provinceDeposit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "provinceSpend",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "baseCommodityReward",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "timeBaseCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "goldForTimeBaseCost",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "provinceFoodInit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "provinceWoodInit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "provinceRockInit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "provinceIronInit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "vassalTribute",
+            "type": "uint256"
+          },
+          {
+            "internalType": "contract IProvinceNFT",
+            "name": "provinceNFT",
+            "type": "address"
+          },
+          {
+            "internalType": "contract IKingsGold",
+            "name": "gold",
+            "type": "address"
+          },
+          {
+            "internalType": "contract ICommodity",
+            "name": "food",
+            "type": "address"
+          },
+          {
+            "internalType": "contract ICommodity",
+            "name": "wood",
+            "type": "address"
+          },
+          {
+            "internalType": "contract ICommodity",
+            "name": "rock",
+            "type": "address"
+          },
+          {
+            "internalType": "contract ICommodity",
+            "name": "iron",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct BaseSettings",
+        "name": "_args",
+        "type": "tuple"
+      }
+    ],
+    "name": "setBaseSettings",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

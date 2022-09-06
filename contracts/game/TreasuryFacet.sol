@@ -28,10 +28,10 @@ contract TreasuryFacet is Game, ITreasury, ReentrancyGuard {
     function buy() payable public override nonReentrant  {
         uint256 amountTobuy = msg.value;
         require(amountTobuy > 0, "You need to send some ether");
-        uint256 dexBalance = s.gold.balanceOf(address(this));
+        uint256 dexBalance = s.baseSettings.gold.balanceOf(address(this));
         require(amountTobuy <= dexBalance, "Not enough tokens in the reserve");
         console.log("Buying ", amountTobuy, " tokens");
-        s.gold.transfer(msg.sender, amountTobuy);
+        s.baseSettings.gold.transfer(msg.sender, amountTobuy);
         emit Bought(amountTobuy);
         console.log("Buy function completed");
 
@@ -39,9 +39,9 @@ contract TreasuryFacet is Game, ITreasury, ReentrancyGuard {
 
     function sell(uint256 amount) public override nonReentrant { 
         require(amount > 0, "You need to sell at least some tokens");
-        uint256 allowance = s.gold.allowance(msg.sender, address(this));
+        uint256 allowance = s.baseSettings.gold.allowance(msg.sender, address(this));
         require(allowance >= amount, "Not enough token allowance");
-        s.gold.transferFrom(msg.sender, address(this), amount);
+        s.baseSettings.gold.transferFrom(msg.sender, address(this), amount);
         
         payable(msg.sender).transfer(amount); // Withdrawal pattern is needed
 

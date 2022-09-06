@@ -149,6 +149,7 @@ struct Province {
     uint256 populationAvailable;
     address armyContract;
     //uint256[] activeStructureEventList;
+    uint256 deposit; // The amount of gold deposited in the province. This gold is claimable by the owner when the province is destroyed.
 
     AssetType[] structureList;
 }
@@ -178,6 +179,37 @@ struct Ally {
     uint256 status;
 }
 
+struct BaseSettings {
+
+        uint256 baseGoldCost;
+        uint256 baseUnit;
+        
+        uint256 provinceLimit;
+        uint256 provinceCost;
+        uint256 provinceDeposit;
+        uint256 provinceSpend;
+
+        uint256 baseCommodityReward;
+        uint256 timeBaseCost;
+        uint256 goldForTimeBaseCost;
+        
+        uint256 provinceFoodInit;
+        uint256 provinceWoodInit;
+        uint256 provinceRockInit;
+        uint256 provinceIronInit;
+
+        uint256 vassalTribute; // The percentage of asset income vassal pays to the owner of the province.
+
+        IProvinceNFT provinceNFT;
+        IKingsGold gold;
+        ICommodity food;
+        ICommodity wood;
+        ICommodity rock;
+        ICommodity iron;
+    }
+
+
+
 struct AppStorage {
     mapping(address => User) users;
     mapping(address => UserCheckpoint) userCheckpoint;
@@ -197,25 +229,10 @@ struct AppStorage {
     mapping(address => mapping(address => bool)) allianceApprovals; // Alliances can approve other users to join their alliance.
     mapping(address => Ally[]) alliances;
     mapping(bytes32 => AssetAction) assetActions;
-    uint256 baseGoldCost; // The base cost of gold, this is ajustable.
-    uint256 provinceLimit;
-    uint256 baseProvinceCost;
-    uint256 baseCommodityReward;
-    uint256 baseUnit;
-    uint256 timeBaseCost;
-    uint256 goldForTimeBaseCost;
-    uint256 foodBaseCost;
-    uint256 woodBaseCost;
-    uint256 rockBaseCost;
-    uint256 ironBaseCost;
-    uint256 vassalTribute; // The percentage of asset income vassal pays to the owner of the province.
+
     Province defaultProvince;
-    IProvinceNFT provinceNFT;
-    IKingsGold gold;
-    ICommodity food;
-    ICommodity wood;
-    ICommodity rock;
-    ICommodity iron;
+
+    BaseSettings baseSettings;
 }
 
 library LibAppStorage {

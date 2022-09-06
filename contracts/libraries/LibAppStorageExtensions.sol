@@ -49,10 +49,10 @@ library LibAppStorageExtensions {
     function calculateCost(AppStorage storage self, uint256 _multiplier, uint256 _rounds, ResourceFactor memory _cost) internal view returns (ResourceFactor memory result) {
         result.manPower = _multiplier * _cost.manPower; // The _cost in manPower
         result.attrition = _cost.attrition; // The _cost in attrition
-        result.manPowerAttrition = ((result.manPower * result.attrition) / self.baseUnit); // The _cost in manPowerAttrition
+        result.manPowerAttrition = ((result.manPower * result.attrition) / self.baseSettings.baseUnit); // The _cost in manPowerAttrition
         result.penalty = _cost.penalty; // The _cost in penalty
         result.time = _cost.time * _rounds; // Change in manPower could alter this.
-        result.goldForTime = _rounds * _multiplier * _cost.goldForTime * self.baseGoldCost;
+        result.goldForTime = _rounds * _multiplier * _cost.goldForTime * self.baseSettings.baseGoldCost;
         result.food = _rounds * _multiplier * _cost.food;
         result.wood = _rounds * _multiplier * _cost.wood;
         result.rock = _rounds * _multiplier * _cost.rock;
@@ -80,7 +80,7 @@ library LibAppStorageExtensions {
     }
 
  
-    function createProvince(AppStorage storage self, uint256 _id, string memory _name, address _target) internal {
+    function createProvince(AppStorage storage self, uint256 _id, string memory _name, address _target) internal  returns(Province storage) {
         require(self.provinces[_id].id == 0, "Province already exists");
 
         Province memory province = self.defaultProvince;
@@ -96,6 +96,7 @@ library LibAppStorageExtensions {
 
         self.provinceCheckpoint[_id].province = block.timestamp;
 
+        return self.provinces[_id];
     }
 
 
@@ -119,19 +120,19 @@ library LibAppStorageExtensions {
     function spendCommodities(AppStorage storage self, ResourceFactor memory _cost) internal  {
         if(_cost.food > 0) {
             // spend the resources that the event requires
-            self.food.spendToTreasury(msg.sender, _cost.food);
+            self.baseSettings.food.spendToTreasury(msg.sender, _cost.food);
         }
         if(_cost.wood > 0) {
             // spend the resources that the event requires
-            self.wood.spendToTreasury(msg.sender, _cost.wood);
+            self.baseSettings.wood.spendToTreasury(msg.sender, _cost.wood);
         }
         if(_cost.rock > 0) {
             // spend the resources that the event requires
-            self.rock.spendToTreasury(msg.sender, _cost.rock);
+            self.baseSettings.rock.spendToTreasury(msg.sender, _cost.rock);
         }
         if(_cost.iron > 0) {
             // spend the resources that the event requires
-            self.iron.spendToTreasury(msg.sender, _cost.iron);
+            self.baseSettings.iron.spendToTreasury(msg.sender, _cost.iron);
         }
     }
 
