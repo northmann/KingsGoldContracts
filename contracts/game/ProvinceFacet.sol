@@ -7,14 +7,26 @@ import "../libraries/LibAppStorage.sol";
 import "../libraries/LibAppStorageExtensions.sol";
 import "../libraries/LibMeta.sol";
 import "../general/ReentrancyGuard.sol";
-import { LibRoles } from "../libraries/LibRoles.sol";
+import {LibRoles} from "../libraries/LibRoles.sol";
 import "./GameAccess.sol";
-
 
 contract ProvinceFacet is Game, ReentrancyGuard, GameAccess {
     using LibAppStorageExtensions for AppStorage;
 
     constructor() ReentrancyGuard() {}
+
+    struct Args {
+        EventAction eventActionId;
+        AssetType assetTypeId;
+        uint256 provinceId;
+        uint256 multiplier;
+        uint256 rounds;
+        uint256 hero;
+    }
+
+    function pack(uint256 high, uint256 low) public pure returns (uint256 packed) {
+        return (uint256(high) << 128) | uint256(low);
+    }
 
     // --------------------------------------------------------------
     // Modifier Functions
@@ -24,7 +36,7 @@ contract ProvinceFacet is Game, ReentrancyGuard, GameAccess {
     // Internal Functions
     // --------------------------------------------------------------
 
-    function mintProvince(string memory _name, address _target)  internal returns (uint256) {
+    function mintProvince(string memory _name, address _target) internal returns (uint256) {
         // TODO: Check name, no illegal chars
         User storage user = s.users[_target];
 
@@ -63,6 +75,66 @@ contract ProvinceFacet is Game, ReentrancyGuard, GameAccess {
         return tokenId;
     }
 
+    function createEvent(address userAddress, Args calldata args) internal {
+        // check that the hero exist and is controlled by user.
+        console.log("createStructureEvent start");
+
+        Province storage province = s.provinces[args.provinceId]; // Struct from mapping
+
+        console.log("createStructureEvent create Event");
+
+        uint256 eventId = pack(args.provinceId, s.provinceStructureEventList[args.provinceId].length);
+
+        StructureEvent memory e;
+
+        e.id = eventId;
+        e.eventActionId = args.eventActionId;
+        e.assetTypeId = args.assetTypeId;
+        e.provinceId = args.provinceId;
+        e.multiplier = args.multiplier;
+        e.rounds = args.rounds;
+        e.hero = args.hero;
+        e.userAddress = userAddress;
+        e.creationTime = block.timestamp;
+        e.state = EventState.Active;
+
+        AssetAction memory assetAction = s.getAssetAction(args.assetTypeId, args.eventActionId);
+
+        console.log("createStructure calculate cost");
+
+        e.calculatedCost = s.calculateCost(args.multiplier, args.rounds, assetAction.cost);
+        e.calculatedReward = s.calculateCost(args.multiplier, args.rounds, assetAction.reward);
+
+        console.log("createStructure check manpower");
+        require(e.calculatedCost.manPower <= province.populationAvailable, "not enough population");
+
+        province.populationAvailable = province.populationAvailable - e.calculatedCost.manPower;
+
+        console.log("createStructure spend commodities Event");
+        // Spend the resouces on the behalf of the user
+        s.spendCommodities(e.calculatedCost);
+
+        console.log("createStructure add event");
+
+        User storage user = s.users[userAddress];
+        uint256 index = user.structureEventCount + 1; // Get the index of the event. Zero index is empty!
+        user.structureEventCount = index; // Increase the count of events.
+
+        s.structureEvents[eventId] = e; // Add the event to the user's event mapping.
+
+        s.provinceActiveStructureEventList[args.provinceId].push(eventId);
+        s.provinceCheckpoint[args.provinceId].activeStructureEvents = block.timestamp;
+
+        s.provinceStructureEventList[args.provinceId].push(eventId);
+        s.provinceCheckpoint[args.provinceId].structureEvents = block.timestamp;
+
+        s.userActiveStructureEventList[msg.sender].push(eventId);
+        s.userCheckpoint[msg.sender].activeStructureEvents = block.timestamp;
+
+        s.userStructureEventList[msg.sender].push(eventId);
+        s.userCheckpoint[msg.sender].structureEvents = block.timestamp;
+    }
+
     // --------------------------------------------------------------
     // Event Hooks
     // --------------------------------------------------------------
@@ -99,13 +171,12 @@ contract ProvinceFacet is Game, ReentrancyGuard, GameAccess {
     }
 
     function getProvinceStructures(uint256 _provinceId) public view returns (Structure[] memory) {
-
         Province memory province = s.provinces[_provinceId];
         require(province.id == _provinceId, "Province id mismatch");
 
         Structure[] memory structures = new Structure[](province.structureList.length);
 
-        for(uint256 i = 0; i < province.structureList.length; i++) {
+        for (uint256 i = 0; i < province.structureList.length; i++) {
             structures[i] = s.structures[_provinceId][province.structureList[i]];
         }
 
@@ -113,7 +184,6 @@ contract ProvinceFacet is Game, ReentrancyGuard, GameAccess {
     }
 
     function getProvinceActiveStructureEvents(uint256 _provinceId) public view returns (StructureEvent[] memory) {
-
         Province memory province = s.provinces[_provinceId];
         require(province.id == _provinceId, "Province id mismatch");
 
@@ -121,7 +191,7 @@ contract ProvinceFacet is Game, ReentrancyGuard, GameAccess {
 
         StructureEvent[] memory structureEvents = new StructureEvent[](length);
 
-        for(uint256 i = 0; i < length; i++) {
+        for (uint256 i = 0; i < length; i++) {
             structureEvents[i] = s.structureEvents[s.provinceActiveStructureEventList[_provinceId][i]];
         }
 
@@ -138,98 +208,23 @@ contract ProvinceFacet is Game, ReentrancyGuard, GameAccess {
 
     // Everyone should be able to mint new Provinces from a payment in KingsGold
     function createProvince(string memory _name) external nonReentrant returns (uint256 tokenId) {
-
         tokenId = mintProvince(_name, LibMeta.msgSender());
     }
-    
-    function createProvinceAtTarget(string memory _name, address _target) external nonReentrant requiredRole(LibRoles.CONFIG_ROLE) returns (uint256 tokenId) {
+
+    function createProvinceAtTarget(string memory _name, address _target)
+        external
+        nonReentrant
+        requiredRole(LibRoles.CONFIG_ROLE)
+        returns (uint256 tokenId)
+    {
         tokenId = mintProvince(_name, _target);
     }
 
-    struct Args {
-        EventAction eventActionId;
-        AssetType assetTypeId;
-        uint256 provinceId;
-        uint256 multiplier;
-        uint256 rounds;
-        uint256 hero;
-    }
-
-    function pack(uint256 high, uint256 low) internal pure returns (uint256 packed) {
-        return uint256(high) << 128 | uint256(low);
-    }
-
     function createStructureEvent(Args calldata args) external nonReentrant {
-        
-        // check that the hero exist and is controlled by user.
-        console.log("createStructureEvent start");
-
-        Province storage province = s.provinces[args.provinceId]; // Struct from mapping
-        require(province.owner == msg.sender || province.vassal == msg.sender, "Province does not belong to you");
-        //Asset storage asset = s.assets[args.assetTypeId]; // Struct from mapping
-        //require(asset.typeId == args.assetTypeId, "Asset typeId does not match");
-
-        console.log("createStructureEvent create Event");
-
-        
-        uint256 eventId = pack(args.provinceId, s.provinceStructureEventList[args.provinceId].length);
-
-        StructureEvent memory e;
-
-        e.id = eventId;
-        e.eventActionId = args.eventActionId;
-        e.assetTypeId = args.assetTypeId;
-        e.provinceId = args.provinceId;
-        e.multiplier = args.multiplier;
-        e.rounds = args.rounds;
-        e.hero = args.hero;        
-        e.userAddress = msg.sender;
-        e.creationTime = block.timestamp;
-        e.state = EventState.Active;
-
-        AssetAction memory assetAction = s.getAssetAction(args.assetTypeId, args.eventActionId);
-
-        console.log("createStructure calculate cost");
-
-        e.calculatedCost = s.calculateCost(args.multiplier, args.rounds, assetAction.cost);
-        e.calculatedReward = s.calculateCost(args.multiplier, args.rounds, assetAction.reward);
-
-        console.log("createStructure check manpower");
-        require(e.calculatedCost.manPower <= province.populationAvailable, "not enough population");
-        
-        province.populationAvailable = province.populationAvailable - e.calculatedCost.manPower;
-
-        console.log("createStructure spend commodities Event");
-        // Spend the resouces on the behalf of the user
-        s.spendCommodities(e.calculatedCost);
-
-        console.log("createStructure add event");
-        
-        User storage user = s.users[msg.sender];
-        uint256 index = user.structureEventCount+1; // Get the index of the event. Zero index is empty!
-        user.structureEventCount = index; // Increase the count of events.
-
-        s.structureEvents[eventId] = e; // Add the event to the user's event mapping.
-        
-        s.provinceActiveStructureEventList[args.provinceId].push(eventId);
-        s.provinceCheckpoint[args.provinceId].activeStructureEvents = block.timestamp;
-
-        s.provinceStructureEventList[args.provinceId].push(eventId);
-        s.provinceCheckpoint[args.provinceId].structureEvents = block.timestamp;
-
-        s.userActiveStructureEventList[msg.sender].push(eventId);
-        s.userCheckpoint[msg.sender].activeStructureEvents = block.timestamp;
-
-        s.userStructureEventList[msg.sender].push(eventId);
-        s.userCheckpoint[msg.sender].structureEvents = block.timestamp;
+        createEvent(msg.sender, args);
     }
-
 
     // --------------------------------------------------------------
     // Internal Functions
     // --------------------------------------------------------------
-
-
-
-
 }

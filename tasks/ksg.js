@@ -1,9 +1,11 @@
 //const { ethers } = require("hardhat");
+const { BigNumber, library } = require("ethers");
 const { parseEther } = require("ethers/lib/utils.js");
-const { getAppSettings } = require("../dist/appSettings.js");
+const { getAppSettings, getContracts } = require("../dist/index.js");
+//const { getContracts } = require("../dist/contracts.js");
 const { getAssetActionData, getAssetData } = require("../dist/Assets.js");
 
-task("user", "Prints an user json data")
+task("getUser", "Prints an user json data")
   .addParam("contract", "The contract's address")
   .addParam("account", "The account's address")
   .setAction(async (taskArgs) => {
@@ -35,6 +37,15 @@ task("getProvinceStructures", "Prints getProvinceStructures json data")
     console.log(data);
   });
 
+  task("getProvinceActiveStructureEvents", "Prints getProvinceStructures json data")
+  .addParam("contract", "The contract's address")
+  .addOptionalParam("id", "The Province ID number", 0, types.int)
+  .setAction(async (taskArgs) => {
+
+    const contract = await ethers.getContractAt('ProvinceFacet', taskArgs.contract);
+    const data = await contract.getProvinceActiveStructureEvents(taskArgs.id);
+    console.log(data);
+  });
 // --------------------------------------------------------------
 // ConfigurationFacet
 // --------------------------------------------------------------
@@ -142,6 +153,20 @@ task("setAppStoreAssets", "Deploys the Assets")
     console.log("Minted");
   });
 
+  task("approveGold", "Approve sending of user's gold")
+  .addParam("contract", "The contract's address")
+  .addParam("user", "The user's address")
+  .addParam("amount", "The gold amount in ethers", 10000000, types.int)
+  .setAction(async (taskArgs) => {
+    let amount = parseEther(taskArgs.amount.toString(), 18);
+
+    let configurationFacet = await ethers.getContractAt('ConfigurationFacet', taskArgs.contract);
+    console.log("Approving gold...");
+    tx = await configurationFacet.approveGold(taskArgs.user, amount);
+    await tx.wait();
+    console.log("Approved");
+  });
+
 
   task("mintCommodities", "fundUserWithGold")
   .addParam("contract", "The contract's address")
@@ -183,3 +208,32 @@ task("setAppStoreAssets", "Deploys the Assets")
     console.log("Approve");
   });
 
+
+
+  task("createStructureEvent", "")
+  .addParam("contract", "The contract's address")
+  .addParam("user", "The user's address")
+  .addParam("eventActionId", "", 2, types.int)
+  .addParam("assetTypeId", "", 1, types.int)
+  .addParam("provinceId", "", 0, types.int)
+  .addParam("multiple", "", 1, types.int)
+  .addParam("rounds", "", 1, types.int)
+  .addParam("hero", "", 0, types.int)
+  .setAction(async (taskArgs) => {
+    const args = [
+       taskArgs.eventActionId,
+       taskArgs.assetTypeId,
+       BigNumber.from(taskArgs.provinceId),
+       BigNumber.from(taskArgs.multiple),
+       BigNumber.from(taskArgs.rounds),
+       BigNumber.from(taskArgs.hero),
+    ];
+    const accounts = await ethers.getSigners();
+    const contracts = getContracts(1337, accounts[0]);
+    console.log("args", args);
+    //const contract = await ethers.getContractAt('ProvinceFacet', taskArgs.contract);
+    console.log("Creating structure event...");
+    const tx = await contracts.provinceFacet.createStructureEvent(args);
+    await tx.wait();
+    console.log("Done");
+  });

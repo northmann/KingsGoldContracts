@@ -105,7 +105,8 @@ async function deployFacets(owner, diamond) {
         'MultiCallFacet',
         'ProvinceFacet',
         'TreasuryFacet',
-        'UserFacet'
+        'UserFacet',
+        'EventFacet'
 
     ]
     

@@ -487,5 +487,29 @@
         ],
         "stateMutability": "view",
         "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "high",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "low",
+                "type": "uint256"
+            }
+        ],
+        "name": "pack",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "packed",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "pure",
+        "type": "function"
     }
 ]

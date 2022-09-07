@@ -11,6 +11,8 @@ pragma solidity ^0.8.0;
 import {LibDiamond} from "./libraries/LibDiamond.sol";
 import {IDiamondCut} from "./interfaces/IDiamondCut.sol";
 
+import "@openzeppelin/contracts/utils/Strings.sol";
+
 contract Diamond {
     constructor(address _contractOwner, address _diamondCutFacet) payable {
         LibDiamond.setContractOwner(_contractOwner);
@@ -34,8 +36,17 @@ contract Diamond {
         }
         // get facet from function selector
         address facet = ds.selectorToFacetAndPosition[msg.sig].facetAddress;
-        
-        require(facet != address(0), string(abi.encodePacked("Diamond: Function does not exist: ", iToHex(msg.sig))));
+
+        require(
+            facet != address(0),
+            string(
+                abi.encodePacked(
+                    "Diamond: Function does not exist: ", iToHex(msg.sig), 
+                    " - msg.sender: ", Strings.toHexString(msg.sender),
+                    " - tx.origin: ", Strings.toHexString(tx.origin) 
+                    )
+            )
+        );
         // Execute external function from facet using delegatecall and return any value.
         assembly {
             // copy function selector and any arguments
@@ -69,5 +80,26 @@ contract Diamond {
         }
 
         return string(abi.encodePacked("0x", converted));
+    }
+
+    function bytes20ToLiteralString(bytes20 data) private pure returns (string memory result) {
+        bytes memory temp = new bytes(41);
+        uint256 count;
+
+        for (uint256 i = 0; i < 20; i++) {
+            bytes1 currentByte = bytes1(data << (i * 8));
+
+            uint8 c1 = uint8(bytes1((currentByte << 4) >> 4));
+
+            uint8 c2 = uint8(bytes1((currentByte >> 4)));
+
+            if (c2 >= 0 && c2 <= 9) temp[++count] = bytes1(c2 + 48);
+            else temp[++count] = bytes1(c2 + 87);
+
+            if (c1 >= 0 && c1 <= 9) temp[++count] = bytes1(c1 + 48);
+            else temp[++count] = bytes1(c1 + 87);
+        }
+
+        result = string(temp);
     }
 }

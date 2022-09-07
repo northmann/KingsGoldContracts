@@ -1,0 +1,11 @@
+Run
+npx hardhat node
+
+
+Deploy
+npx hardhat run --network localhost scripts/deploy.js
+
+Print ABI signatures
+cmd /c 'abi2signature < Iron.json'
+
+

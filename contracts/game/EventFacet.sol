@@ -7,9 +7,13 @@ import "../libraries/LibAppStorage.sol";
 import "../libraries/LibAppStorageExtensions.sol";
 import "../libraries/LibEventExtensions.sol";
 import "../libraries/LibMeta.sol";
+import "../general/ReentrancyGuard.sol";
+import "./GameAccess.sol";
+import {LibRoles} from "../libraries/LibRoles.sol";
 
 
-contract EventFacet is Game {
+
+contract EventFacet is Game, ReentrancyGuard, GameAccess {
     using LibAppStorageExtensions for AppStorage;
     using LibEventExtensions for StructureEvent;
 
@@ -37,7 +41,7 @@ contract EventFacet is Game {
 
     function completeStructureEvent(uint256 _eventId)
         public
-        virtual
+        nonReentrant
     {
         StructureEvent storage structureEvent = s.getStructureEvent(_eventId);
         require(structureEvent.state != EventState.Completed && structureEvent.state != EventState.Cancelled, "Illegal state");

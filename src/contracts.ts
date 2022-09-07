@@ -10,7 +10,8 @@ import IronABI from './abi/Iron.json';
 import FoodABI from './abi/Food.json';
 import UserFacetABI from './abi/UserFacet.json';
 import TreasuryFacetABI from './abi/TreasuryFacet.json';
-import ProvinceFacet from './abi/ProvinceFacet.json';
+import ProvinceFacetABI from './abi/ProvinceFacet.json';
+import EventFacetABI from './abi/EventFacet.json';
 
 
 export function getContracts(chainId: any, signer: any) : any {
@@ -24,7 +25,9 @@ export function getContracts(chainId: any, signer: any) : any {
     result.food = new Contract(contractAddresses["Food"], FoodABI, signer);
     result.userFacet = new Contract(contractAddresses["Diamond"], UserFacetABI, signer);
     result.treasuryFacet = new Contract(contractAddresses["Diamond"], TreasuryFacetABI, signer);
-    result.provinceFacet = new Contract(contractAddresses["Diamond"], ProvinceFacet, signer);
+    result.provinceFacet = new Contract(contractAddresses["Diamond"], ProvinceFacetABI, signer);
+    result.eventFacet = new Contract(contractAddresses["Diamond"], EventFacetABI, signer);
+
 
     return result;
 }
