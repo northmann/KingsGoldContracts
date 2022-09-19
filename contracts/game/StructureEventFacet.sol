@@ -50,13 +50,13 @@ contract StructureEventFacet is Game, ReentrancyGuard, GameAccess {
     }
 
 
-    function payAndCompleteStructureEvent(uint256 eventId) external nonReentrant {
+    function payAndCompleteStructureEvent(uint256 eventId) payable external nonReentrant {
         _payForTimeStructureEvent(eventId);
         _completeStructureEvent(eventId);
     }
 
     /// When a user has paid for time, this method gets called.
-    function payForTimeStructureEvent(uint256 _eventId) external nonReentrant
+    function payForTimeStructureEvent(uint256 _eventId) payable external nonReentrant
     {
         _payForTimeStructureEvent(_eventId);
     }

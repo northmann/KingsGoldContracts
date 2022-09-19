@@ -91,7 +91,7 @@
     ],
     "name": "payAndCompleteStructureEvent",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -104,7 +104,7 @@
     ],
     "name": "payForTimeStructureEvent",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   }
 ]

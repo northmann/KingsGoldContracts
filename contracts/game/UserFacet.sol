@@ -6,8 +6,7 @@ import "hardhat/console.sol";
 import "../libraries/LibAppStorage.sol";
 import "../libraries/AppStorageExtensions.sol";
 
-contract UserFacet is Game
-{
+contract UserFacet is Game {
     using AppStorageExtensions for AppStorage;
 
     constructor() {
@@ -18,8 +17,9 @@ contract UserFacet is Game
     // View Functions
     // --------------------------------------------------------------
 
-    
-
+    function getUser(address _target) external view returns (User memory) {
+        return s.getUser(_target);
+    }
 
     // --------------------------------------------------------------
     // External Functions
