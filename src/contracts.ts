@@ -11,7 +11,7 @@ import FoodABI from './abi/Food.json';
 import UserFacetABI from './abi/UserFacet.json';
 import TreasuryFacetABI from './abi/TreasuryFacet.json';
 import ProvinceFacetABI from './abi/ProvinceFacet.json';
-import EventFacetABI from './abi/EventFacet.json';
+import StructureEventFacetABI from './abi/StructureEventFacet.json';
 
 
 export function getContracts(chainId: any, signer: any) : any {
@@ -26,8 +26,7 @@ export function getContracts(chainId: any, signer: any) : any {
     result.userFacet = new Contract(contractAddresses["Diamond"], UserFacetABI, signer);
     result.treasuryFacet = new Contract(contractAddresses["Diamond"], TreasuryFacetABI, signer);
     result.provinceFacet = new Contract(contractAddresses["Diamond"], ProvinceFacetABI, signer);
-    result.eventFacet = new Contract(contractAddresses["Diamond"], EventFacetABI, signer);
-
+    result.structureEventFacet = new Contract(contractAddresses["Diamond"], StructureEventFacetABI, signer);
 
     return result;
 }

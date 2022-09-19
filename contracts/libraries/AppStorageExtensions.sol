@@ -40,34 +40,21 @@ library AppStorageExtensions {
         console.log("s.getUser() - msg.sender: %s - number of provinces: %s", LibMeta.msgSender(), user.provinces.length);
     }
 
+    function getUser(AppStorage storage self, address _target) internal view returns (User storage user) {
+        user = self.users[_target];
+    }
+
+
+    function getUserCheckpoint(AppStorage storage self, address _user) internal view returns (UserCheckpoint memory checkpoint) {
+        checkpoint = self.userCheckpoint[_user];
+    }
+
+
     function getAssetAction(AppStorage storage self, AssetType _assetTypeId, EventAction _action) internal view returns (AssetAction memory assetAction) {
         bytes32 assetActionID = keccak256(abi.encodePacked(_assetTypeId, _action));
         assetAction = self.assetActions[assetActionID];
     }
 
-
-    function calculateCost(AppStorage storage self, uint256 _multiplier, uint256 _rounds, ResourceFactor memory _cost) internal view returns (ResourceFactor memory result) {
-        // Rule: Everything cost manPower, manPower always cost food and time.
-        uint256 oneHour = 60 * 60;
-
-        uint256 baseTime = _cost.time > 0 ? _cost.time : oneHour; // 1 hour if no time is set
-        result.time = baseTime * _rounds; // Change in manPower could alter this.
-        result.manPower = _multiplier * _cost.manPower; // The _cost in manPower
-
-        uint256 baseGoldCostForTime = _cost.goldForTime > 0 ? _cost.goldForTime : (_cost.manPower * baseTime * self.baseSettings.goldForTimeBaseCost) / oneHour;
-        result.goldForTime = baseGoldCostForTime * _rounds * _multiplier;
-
-        uint256 baseFoodCost = _cost.food > 0 ? _cost.food : (_cost.manPower * baseTime * self.baseSettings.baseUnit)  / oneHour;
-        result.food = baseFoodCost * _rounds * _multiplier;
-
-        result.attrition = _cost.attrition; // The _cost in attrition
-        result.manPowerAttrition = ((result.manPower * result.attrition) / self.baseSettings.baseUnit); // The _cost in manPowerAttrition
-        result.penalty = _cost.penalty; // The _cost in penalty
-
-        result.wood = _rounds * _multiplier * ((_cost.wood * self.baseSettings.baseUnit) / 1e18);
-        result.rock = _rounds * _multiplier * ((_cost.rock * self.baseSettings.baseUnit) / 1e18);
-        result.iron = _rounds * _multiplier * ((_cost.iron * self.baseSettings.baseUnit) / 1e18);
-    }
 
 
     // --------------------------------------------------------------

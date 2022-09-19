@@ -4,9 +4,11 @@ pragma solidity >0.8.2;
 import "hardhat/console.sol";
 
 import "../libraries/LibAppStorage.sol";
+import "../libraries/AppStorageExtensions.sol";
 
 contract UserFacet is Game
 {
+    using AppStorageExtensions for AppStorage;
 
     constructor() {
     }
@@ -17,14 +19,6 @@ contract UserFacet is Game
     // --------------------------------------------------------------
 
     
-    function getUser(address _target) public view returns (User memory user) {
-        user = s.users[_target];
-    }
-
-
-    function getUserCheckpoint(address _user) public view returns (UserCheckpoint memory checkpoint) {
-        checkpoint = s.userCheckpoint[_user];
-    }
 
 
     // --------------------------------------------------------------

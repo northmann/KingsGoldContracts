@@ -150,6 +150,7 @@ struct Province {
     address armyContract;
     //uint256[] activeStructureEventList;
     uint256 deposit; // The amount of gold deposited in the province. This gold is claimable by the owner when the province is destroyed.
+    uint256 vassalFee;
 
     AssetType[] structureList;
 }
@@ -169,9 +170,12 @@ struct User {
     address kingdom;
     address alliance;
     uint256 allianceIndex;
+    uint256 allianceFee; // Should never exceed 100%. The fee the user pays to the alliance.
+    uint256 vassalFee; // Should never exceed 100%. The fee that a vassal pays to the owner.
     bool isVassal;
     //address[] allies;
     uint256 structureEventCount;
+
 }
 
 struct Ally {
