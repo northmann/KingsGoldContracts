@@ -17,15 +17,28 @@ exports.zeroCost = {
     gold: constants_1.eth0,
     amount: constants_1.eth0, // used for building and burning
 };
-exports.cost = Object.assign(Object.assign({}, exports.zeroCost), { manPower: ethers_1.BigNumber.from(1), attrition: constants_1.eth0_1, penalty: constants_1.eth0_5, 
+exports.cost = {
+    ...exports.zeroCost,
+    manPower: ethers_1.BigNumber.from(1),
+    attrition: constants_1.eth0_1,
+    penalty: constants_1.eth0_5,
     // time: BigNumber.from(60 * 60 * 1), // 1 hours standard
     // goldForTime is calculated in the contract
-    food: constants_1.eth1 });
-exports.reward = Object.assign({}, exports.zeroCost);
+    food: constants_1.eth1, // It cost 1 food per one manPower per hour
+};
+exports.reward = {
+    ...exports.zeroCost,
+};
 const dismantleCost = {
     eventActionId: constants_1.EventActionEnum.Dismantle,
-    cost: Object.assign(Object.assign({}, exports.cost), { manPower: ethers_1.BigNumber.from(2) }),
-    reward: Object.assign(Object.assign({}, exports.reward), { wood: constants_1.eth10 }),
+    cost: {
+        ...exports.cost,
+        manPower: ethers_1.BigNumber.from(2),
+    },
+    reward: {
+        ...exports.reward,
+        wood: constants_1.eth10,
+    },
     image100: "HouseConstruction100.webp",
     title: "Dismante",
     description: "Breakdown structure to gain some wood",
@@ -33,8 +46,15 @@ const dismantleCost = {
 };
 const burnCost = {
     eventActionId: constants_1.EventActionEnum.Burn,
-    cost: Object.assign(Object.assign({}, exports.cost), { manPower: ethers_1.BigNumber.from(1), time: ethers_1.BigNumber.from(60), food: constants_1.eth0 }),
-    reward: Object.assign({}, exports.zeroCost),
+    cost: {
+        ...exports.cost,
+        manPower: ethers_1.BigNumber.from(1),
+        time: ethers_1.BigNumber.from(60),
+        food: constants_1.eth0, // It cost no food to burn down a farm
+    },
+    reward: {
+        ...exports.zeroCost, // No reward
+    },
     image100: "HouseConstruction100.webp",
     title: "Burn",
     description: "Set the structure on fire to destory it. No resources are gained in the process.",
@@ -58,24 +78,44 @@ exports.assets = {
         actions: {
             [constants_1.EventActionEnum.Build]: {
                 eventActionId: constants_1.EventActionEnum.Build,
-                cost: Object.assign(Object.assign({}, exports.cost), { wood: constants_1.eth50, food: constants_1.eth0 }),
-                reward: Object.assign(Object.assign({}, exports.reward), { amount: ethers_1.BigNumber.from(1) }),
+                cost: {
+                    ...exports.cost,
+                    wood: constants_1.eth50,
+                    food: constants_1.eth0,
+                },
+                reward: {
+                    ...exports.reward,
+                    amount: ethers_1.BigNumber.from(1), // 1 farm
+                },
                 image100: "HouseConstruction100.webp",
                 title: "Build",
                 description: "Build a farm",
             },
-            [constants_1.EventActionEnum.Dismantle]: Object.assign(Object.assign({}, dismantleCost), { description: "Breakdown farms to gain some wood" }),
+            [constants_1.EventActionEnum.Dismantle]: {
+                ...dismantleCost,
+                description: "Breakdown farms to gain some wood",
+            },
             [constants_1.EventActionEnum.Produce]: {
                 eventActionId: constants_1.EventActionEnum.Produce,
-                cost: Object.assign(Object.assign({}, exports.cost), { manPower: ethers_1.BigNumber.from(1), time: ethers_1.BigNumber.from(60 * 60 * 4), 
+                cost: {
+                    ...exports.cost,
+                    manPower: ethers_1.BigNumber.from(1),
+                    time: ethers_1.BigNumber.from(60 * 60 * 4),
                     // goldForTime - Auto calculated from (1 manPower * 4 hours) = 4 gold 
-                    food: constants_1.eth0 }),
-                reward: Object.assign(Object.assign({}, exports.reward), { food: constants_1.eth50 }),
+                    food: constants_1.eth0, // It cost no food to produce food
+                },
+                reward: {
+                    ...exports.reward,
+                    food: constants_1.eth50,
+                },
                 image100: "farming100.webp",
                 title: "Farming",
                 description: "Produces food",
             },
-            [constants_1.EventActionEnum.Burn]: Object.assign(Object.assign({}, burnCost), { description: "Set the farms on fire to destory them. No resources are gained." })
+            [constants_1.EventActionEnum.Burn]: {
+                ...burnCost,
+                description: "Set the farms on fire to destory them. No resources are gained.",
+            }
         }
     },
     [constants_1.AssetTypeEnum.Sawmill]: {
@@ -97,23 +137,47 @@ exports.assets = {
         actions: {
             [constants_1.EventActionEnum.Build]: {
                 eventActionId: constants_1.EventActionEnum.Build,
-                cost: Object.assign(Object.assign({}, exports.cost), { wood: constants_1.eth50 }),
-                reward: Object.assign(Object.assign({}, exports.reward), { amount: ethers_1.BigNumber.from(1) }),
+                cost: {
+                    ...exports.cost,
+                    wood: constants_1.eth50,
+                },
+                reward: {
+                    ...exports.reward,
+                    amount: ethers_1.BigNumber.from(1), // 1 farm
+                },
                 image100: "HouseConstruction100.webp",
                 title: "Build",
                 description: "Build a blacksmith",
             },
-            [constants_1.EventActionEnum.Dismantle]: Object.assign(Object.assign({}, dismantleCost), { reward: Object.assign(Object.assign({}, exports.reward), { wood: constants_1.eth5, iron: constants_1.eth5 }), description: "Breakdown blacksmith to gain some wood and iron" }),
+            [constants_1.EventActionEnum.Dismantle]: {
+                ...dismantleCost,
+                reward: {
+                    ...exports.reward,
+                    wood: constants_1.eth5,
+                    iron: constants_1.eth5,
+                },
+                description: "Breakdown blacksmith to gain some wood and iron",
+            },
             [constants_1.EventActionEnum.Produce]: {
                 eventActionId: constants_1.EventActionEnum.Produce,
-                cost: Object.assign(Object.assign({}, exports.cost), { manPower: ethers_1.BigNumber.from(1), time: ethers_1.BigNumber.from(60 * 60 * 4) }),
-                reward: Object.assign(Object.assign({}, exports.reward), { iron: constants_1.eth50 }),
+                cost: {
+                    ...exports.cost,
+                    manPower: ethers_1.BigNumber.from(1),
+                    time: ethers_1.BigNumber.from(60 * 60 * 4), // 4 hours
+                },
+                reward: {
+                    ...exports.reward,
+                    iron: constants_1.eth50,
+                },
                 image100: "Blacksmith100.webp",
                 title: "Molding",
                 description: "Produces iron",
                 executeTitle: "Mold",
             },
-            [constants_1.EventActionEnum.Burn]: Object.assign(Object.assign({}, burnCost), { description: "Set the blacksmith on fire to destory it. No resources are gained in the process." })
+            [constants_1.EventActionEnum.Burn]: {
+                ...burnCost,
+                description: "Set the blacksmith on fire to destory it. No resources are gained in the process.",
+            }
         },
     },
     [constants_1.AssetTypeEnum.Quarry]: {
@@ -134,8 +198,18 @@ exports.assets = {
         actions: {
             [constants_1.EventActionEnum.Build]: {
                 eventActionId: constants_1.EventActionEnum.Build,
-                cost: Object.assign(Object.assign({}, exports.cost), { manPower: ethers_1.BigNumber.from(2), time: ethers_1.BigNumber.from(60 * 60 * 8), wood: constants_1.eth100, iron: constants_1.eth1, food: constants_1.eth1.mul(8 * 2) }),
-                reward: Object.assign(Object.assign({}, exports.reward), { amount: ethers_1.BigNumber.from(1) }),
+                cost: {
+                    ...exports.cost,
+                    manPower: ethers_1.BigNumber.from(2),
+                    time: ethers_1.BigNumber.from(60 * 60 * 8),
+                    wood: constants_1.eth100,
+                    iron: constants_1.eth1,
+                    food: constants_1.eth1.mul(8 * 2), // 8 hours * 2 manPower
+                },
+                reward: {
+                    ...exports.reward,
+                    amount: ethers_1.BigNumber.from(1), // 1 barrack
+                },
                 image100: "HouseConstruction100.webp",
                 title: "Build",
                 description: "Build a barrack",
@@ -168,7 +242,7 @@ function getAssetActionData() {
 exports.getAssetActionData = getAssetActionData;
 function getAssetData() {
     let assetData = Object.keys(exports.assets).map((key) => {
-        let r = Object.assign({}, exports.assets[key]);
+        let r = { ...exports.assets[key] };
         delete r.actions;
         delete r.title;
         delete r.description;

@@ -3,18 +3,21 @@
 const { ethers } = require("hardhat");
 
 const { getSelectors, FacetCutAction } = require('./libraries/diamond.js')
-const { deploySingels, deployDiamonBasics, deployFacets, upgradeDiamond, initArgs, createContractConfigFile, initPlayer } = require("./libraries/builder.js");
+const { transferOwnership, deploySingels, deployDiamonBasics, deployFacets, upgradeDiamond, initArgs, createContractConfigFile, initPlayer } = require("./libraries/builder.js");
 const { deployData } = require("./libraries/configuration.js");
+const { makeTransferProxyAdminOwnership } = require("@openzeppelin/hardhat-upgrades/dist/admin.js");
 
 
 
 async function deployDiamond () {
+  const ledgerUser = '0x766Ed8ff05EE5203A0ceB11cA78EA744DC889970'; // Ledger owner 100
+
   const accounts = await ethers.getSigners()
   const owner = accounts[0]
   const user = accounts[1]
   const user2 = accounts[2]
 
-  const { diamond, diamondCutFacet, diamondInit } = await deployDiamonBasics(owner);
+  const { diamond, diamondCutFacet, diamondInit } = await deployDiamonBasics(owner.address);
 
   let singles = await deploySingels(owner, diamond);
 
@@ -26,7 +29,7 @@ async function deployDiamond () {
   
   await deployFacets(owner, diamond);
 
-  initializeData = initArgs(owner);
+  initializeData = initArgs(ledgerUser); 
   
   console.log("Init:", initializeData);
 
@@ -35,9 +38,9 @@ async function deployDiamond () {
   //await testRoles(owner, diamond);
   await deployData(owner, diamond.address);
 
-  await initPlayer(owner, diamond, "0xF046bCa0D18dA64f65Ff2268a84f2F5B87683C47");
+  await initPlayer(owner, diamond, "0xF046bCa0D18dA64f65Ff2268a84f2F5B87683C47"); // Test account 9
 
-
+  await transferOwnership(owner, ledgerUser, diamond);
   
 
   console.log("Deploy done");

@@ -5,7 +5,7 @@ import "hardhat/console.sol";
 //import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 import "../libraries/LibAppStorage.sol";
-import "../libraries/LibAppStorageExtensions.sol";
+import "../libraries/AppStorageExtensions.sol";
 import { LibRoles } from "../libraries/LibRoles.sol";
 import "./GameAccess.sol";
 import "./AccessControlFacet.sol";
@@ -14,7 +14,7 @@ import "./AccessControlFacet.sol";
 
 contract ConfigurationFacet is Game, GameAccess {
 
-    using LibAppStorageExtensions for AppStorage;
+    using AppStorageExtensions for AppStorage;
 
     // --------------------------------------------------------------
     // View Functions

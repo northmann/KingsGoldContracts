@@ -1,6 +1,6 @@
 const { ethers } = require("hardhat");
 
-const { getSelectors, FacetCutAction } = require('./diamond.js')
+const { getFunctionSignatures, getSelectors, FacetCutAction } = require('./diamond.js')
 const { createBeacon, createUpgradeable, deployContract, getContractInstance, getId, writeSetting, createConfigFile } = require("./Auxiliary.js");
 const { BigNumber } = require("ethers");
 const { getAppSettings } = require('../../dist/appSettings.js');
@@ -78,11 +78,11 @@ async function fundUserWithGold(user) {
 }
 
 
-async function deployDiamonBasics(owner) {
+async function deployDiamonBasics(ownerAddress) {
     // deploy DiamondCutFacet
     diamondCutFacet = await deployContract('DiamondCutFacet');
     // deploy Diamond
-    diamond = await deployContract('Diamond', owner.address, diamondCutFacet.address);
+    diamond = await deployContract('Diamond', ownerAddress, diamondCutFacet.address);
     writeSetting("Diamond", diamond.address);
 
     // deploy DiamondInit
@@ -99,6 +99,7 @@ async function deployFacets(owner, diamond) {
     console.log('')
     console.log('Deploying facets')
     const FacetNames = [
+        'OwnershipFacet',
         'AccessControlFacet',
         'ConfigurationFacet',
         'DiamondLoupeFacet',
@@ -117,30 +118,11 @@ async function deployFacets(owner, diamond) {
 
         cut.push({
             facetAddress: facet.address,
-            action: FacetCutAction.Add,
-            functionSelectors: getSelectors(facet)
+            facetName: FacetName,
+            functionSignatures: getFunctionSignatures(facet)
         })
     }
 
-    checkSelectors();
-}
-
-async function checkSelectors() {
-    for (const facet of cut) {
-        for (const functionSelector of facet.functionSelectors) {
-
-            for(const innerFacet of cut) {
-                for (const innerFunctionSelector of innerFacet.functionSelectors) {
-                    if(innerFacet.facetAddress == facet.facetAddress) break;
-
-                    if (innerFunctionSelector === functionSelector) {
-
-                        throw Error(`Duplicate function selector: ${functionSelector} in facet: ${facet.facetAddress} and in facet: ${innerFacet.facetAddress}`);
-                    }
-                }
-            }
-        }
-    }
 }
 
 
@@ -216,15 +198,23 @@ async function initPlayer(owner, diamond, targetAddress) {
 }
 
 
-function initArgs(owner) {
+async function transferOwnership(owner, targetAddress, diamond) {
+    let ownershipFacet = await ethers.getContractAt('OwnershipFacet', diamond.address, owner);
+    let tx = await ownershipFacet.transferOwnership(targetAddress);
+    await tx.wait();
+    console.log("Ownership transferred to: ", targetAddress);
+}
+
+function initArgs(ownerAdress) {
     let r = {
-        owner: owner.address
+        owner: ownerAdress
     };
 
     return r;
 }
 
 module.exports = {
+    transferOwnership,
     initArgs,
     deployDiamonBasics,
     deployFacets,

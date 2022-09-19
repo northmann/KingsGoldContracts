@@ -7,7 +7,52 @@
                 "type": "uint256"
             }
         ],
-        "name": "cancelStructureEvent",
+        "name": "completeStructureEvent",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "enum EventAction",
+                        "name": "eventActionId",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "enum AssetType",
+                        "name": "assetTypeId",
+                        "type": "uint8"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "provinceId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "multiplier",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "rounds",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "hero",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct EventFacet.Args",
+                "name": "args",
+                "type": "tuple"
+            }
+        ],
+        "name": "createStructureEvent",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -16,11 +61,35 @@
         "inputs": [
             {
                 "internalType": "uint256",
-                "name": "_eventId",
+                "name": "high",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "low",
                 "type": "uint256"
             }
         ],
-        "name": "completeStructureEvent",
+        "name": "pack",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "packed",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "pure",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "eventId",
+                "type": "uint256"
+            }
+        ],
+        "name": "payAndCompleteStructureEvent",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"

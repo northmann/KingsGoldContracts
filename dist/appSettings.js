@@ -36,7 +36,7 @@ exports.appSettings = {
     }
 };
 function getAppSettings(chainId) {
-    return Object.assign(Object.assign({}, exports.appSettings.generic), exports.appSettings[chainId]);
+    return { ...exports.appSettings.generic, ...exports.appSettings[chainId] };
 }
 exports.getAppSettings = getAppSettings;
 //# sourceMappingURL=appSettings.js.map

@@ -9,3 +9,10 @@ Print ABI signatures
 cmd /c 'abi2signature < Iron.json'
 
 
+
+
+  // "resolutions": {
+  //   "@ledgerhq/hw-app-eth": "5.47.1",
+  //   "@ledgerhq/hw-transport": "5.46.0",
+  //   "@ledgerhq/hw-transport-u2f": "5.36.0-deprecated"
+  // }

@@ -5,11 +5,11 @@ import "hardhat/console.sol";
 
 import "./LibAppStorage.sol";
 import "./LibMeta.sol";
-import "./LibEventExtensions.sol";
+import "./StructureEventExtensions.sol";
 
-library LibAppStorageExtensions {
-    using LibEventExtensions for StructureEvent;
-    using LibAppStorageExtensions for AppStorage;
+library AppStorageExtensions {
+    using StructureEventExtensions for StructureEvent;
+    using AppStorageExtensions for AppStorage;
 
 
     // --------------------------------------------------------------
@@ -47,16 +47,26 @@ library LibAppStorageExtensions {
 
 
     function calculateCost(AppStorage storage self, uint256 _multiplier, uint256 _rounds, ResourceFactor memory _cost) internal view returns (ResourceFactor memory result) {
+        // Rule: Everything cost manPower, manPower always cost food and time.
+        uint256 oneHour = 60 * 60;
+
+        uint256 baseTime = _cost.time > 0 ? _cost.time : oneHour; // 1 hour if no time is set
+        result.time = baseTime * _rounds; // Change in manPower could alter this.
         result.manPower = _multiplier * _cost.manPower; // The _cost in manPower
+
+        uint256 baseGoldCostForTime = _cost.goldForTime > 0 ? _cost.goldForTime : (_cost.manPower * baseTime * self.baseSettings.goldForTimeBaseCost) / oneHour;
+        result.goldForTime = baseGoldCostForTime * _rounds * _multiplier;
+
+        uint256 baseFoodCost = _cost.food > 0 ? _cost.food : (_cost.manPower * baseTime * self.baseSettings.baseUnit)  / oneHour;
+        result.food = baseFoodCost * _rounds * _multiplier;
+
         result.attrition = _cost.attrition; // The _cost in attrition
         result.manPowerAttrition = ((result.manPower * result.attrition) / self.baseSettings.baseUnit); // The _cost in manPowerAttrition
         result.penalty = _cost.penalty; // The _cost in penalty
-        result.time = _cost.time * _rounds; // Change in manPower could alter this.
-        result.goldForTime = _rounds * _multiplier * _cost.goldForTime * self.baseSettings.baseGoldCost;
-        result.food = _rounds * _multiplier * _cost.food;
-        result.wood = _rounds * _multiplier * _cost.wood;
-        result.rock = _rounds * _multiplier * _cost.rock;
-        result.iron = _rounds * _multiplier * _cost.iron;
+
+        result.wood = _rounds * _multiplier * ((_cost.wood * self.baseSettings.baseUnit) / 1e18);
+        result.rock = _rounds * _multiplier * ((_cost.rock * self.baseSettings.baseUnit) / 1e18);
+        result.iron = _rounds * _multiplier * ((_cost.iron * self.baseSettings.baseUnit) / 1e18);
     }
 
 
@@ -98,22 +108,6 @@ library LibAppStorageExtensions {
 
         return self.provinces[_id];
     }
-
-
-
-    // function penalizeAmount(uint256 _amount)
-    //     internal
-    //     view
-    //     virtual
-    //     returns (uint256)
-    // {
-    //     uint256 reducedAmount = reducedAmountOnTimePassed(_amount);
-    //     uint256 amountLeft = (_amount - reducedAmount);
-    //     amountLeft = ((amountLeft * penalty) / 1e18);
-
-    //     return amountLeft;
-    // }
-
 
 
     /// @dev Spend the users commodities as payment.

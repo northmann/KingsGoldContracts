@@ -102,11 +102,13 @@ contract MultiCallFacet  {
 
     // @author Northmann
     // @dev Executes a series of function calls that can change state. 
-    // @dev Designed to only work with the Diamond pattern on the same on contract.
+    // @dev Designed to only work with the Diamond pattern on the same contract.
     // @param _calls The calls to be executed.
     function callFunctions(bytes[] calldata calls) external payable  {
+        
+        // Why? Rethink this.
         // Prevents a malicious contract from calling on behalf of the origin caller.
-        require(msg.sender == tx.origin, "callFunctions can only be called directly and not by a proxy");
+        //require(msg.sender == tx.origin, "callFunctions can only be called directly and not by a proxy"); 
 
         //console.log("MultiCallFacet.callFunctions - msg.sender: %s", msg.sender);
 

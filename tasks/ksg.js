@@ -5,17 +5,6 @@ const { getAppSettings, getContracts } = require("../dist/index.js");
 //const { getContracts } = require("../dist/contracts.js");
 const { getAssetActionData, getAssetData } = require("../dist/Assets.js");
 
-task("getUser", "Prints an user json data")
-  .addParam("contract", "The contract's address")
-  .addParam("account", "The account's address")
-  .setAction(async (taskArgs) => {
-    const contract = await ethers.getContractAt('UserFacet', taskArgs.contract);
-    const user = await contract.getUser(taskArgs.account);
-    console.log(user);
-  });
-
-
-
 
 task("getProvince", "Prints getProvince json data")
   .addParam("contract", "The contract's address")
@@ -237,3 +226,7 @@ task("setAppStoreAssets", "Deploys the Assets")
     await tx.wait();
     console.log("Done");
   });
+
+// --------------------------------------------------------------
+// ConfigurationFacet
+// --------------------------------------------------------------

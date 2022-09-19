@@ -1,12 +1,16 @@
 
 /* global ethers task */
-require('@nomiclabs/hardhat-waffle');
 require("@nomiclabs/hardhat-ethers");
+require('@nomiclabs/hardhat-waffle');
 require('@openzeppelin/hardhat-upgrades');
 require('hardhat-abi-exporter');
 
 
 //require("./tasks/generateDiamondABI");
+require("./dist/tasks/diamondCutFacet");
+require("./dist/tasks/ownershipFacet");
+require("./dist/tasks/userFacet");
+
 require("./tasks/ksg");
 
 // This is a sample Hardhat task. To learn how to create your own go to

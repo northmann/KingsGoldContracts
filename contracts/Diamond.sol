@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
+import "hardhat/console.sol";
 
 /******************************************************************************\
 * Author: Nick Mudge <nick@perfectabstractions.com> (https://twitter.com/mudgen)
@@ -19,9 +20,18 @@ contract Diamond {
 
         // Add the diamondCut external function from the diamondCutFacet
         IDiamondCut.FacetCut[] memory cut = new IDiamondCut.FacetCut[](1);
-        bytes4[] memory functionSelectors = new bytes4[](1);
-        functionSelectors[0] = IDiamondCut.diamondCut.selector;
-        cut[0] = IDiamondCut.FacetCut({facetAddress: _diamondCutFacet, action: IDiamondCut.FacetCutAction.Add, functionSelectors: functionSelectors});
+        string[] memory functionSignatures = new string[](1);
+        
+        functionSignatures[0] = "diamondCut((address,string,string[])[],address,bytes)";
+        bytes4 selector = bytes4(keccak256(bytes(functionSignatures[0])));
+
+        // console.log("FunctionSignature: diamondCut : %s", iToHex(selector));
+        // console.log("IDiamondCut.diamondCut.selector: %s", iToHex(IDiamondCut.diamondCut.selector));
+
+        require(selector == IDiamondCut.diamondCut.selector, "DiamondCutFacet: Incorrect function selector");
+        
+        cut[0] = IDiamondCut.FacetCut({facetAddress: _diamondCutFacet, facetName: "DiamondCutFacet" , functionSignatures: functionSignatures});
+
         LibDiamond.diamondCut(cut, address(0), "");
     }
 
@@ -35,10 +45,10 @@ contract Diamond {
             ds.slot := position
         }
         // get facet from function selector
-        address facet = ds.selectorToFacetAndPosition[msg.sig].facetAddress;
-
+        LibDiamond.FacetAddressAndPosition memory facetAddressAndPosition = ds.selectorToFacetAndPosition[msg.sig];
+        address facetAddress = facetAddressAndPosition.facetAddress;
         require(
-            facet != address(0),
+            facetAddress != address(0),
             string(
                 abi.encodePacked(
                     "Diamond: Function does not exist: ", iToHex(msg.sig), 
@@ -47,12 +57,16 @@ contract Diamond {
                     )
             )
         );
+
+        // Hardhat do not log the name of the function called when using delegateCall
+        console.log("Function call: %s - on Facet: %s", facetAddressAndPosition.functionName, facetAddressAndPosition.facetName);
+
         // Execute external function from facet using delegatecall and return any value.
         assembly {
             // copy function selector and any arguments
             calldatacopy(0, 0, calldatasize())
             // execute function call using the facet
-            let result := delegatecall(gas(), facet, 0, calldatasize(), 0, 0)
+            let result := delegatecall(gas(), facetAddress, 0, calldatasize(), 0, 0)
             // get any return value
             returndatacopy(0, 0, returndatasize())
             // return any return value or error back to the caller

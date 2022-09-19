@@ -4,29 +4,17 @@ pragma solidity >0.8.4;
 import "hardhat/console.sol";
 
 import "../libraries/LibAppStorage.sol";
-import "../libraries/LibAppStorageExtensions.sol";
+import "../libraries/AppStorageExtensions.sol";
 import "../libraries/LibMeta.sol";
 import "../general/ReentrancyGuard.sol";
 import {LibRoles} from "../libraries/LibRoles.sol";
 import "./GameAccess.sol";
 
 contract ProvinceFacet is Game, ReentrancyGuard, GameAccess {
-    using LibAppStorageExtensions for AppStorage;
+    using AppStorageExtensions for AppStorage;
 
     constructor() ReentrancyGuard() {}
 
-    struct Args {
-        EventAction eventActionId;
-        AssetType assetTypeId;
-        uint256 provinceId;
-        uint256 multiplier;
-        uint256 rounds;
-        uint256 hero;
-    }
-
-    function pack(uint256 high, uint256 low) public pure returns (uint256 packed) {
-        return (uint256(high) << 128) | uint256(low);
-    }
 
     // --------------------------------------------------------------
     // Modifier Functions
@@ -75,65 +63,7 @@ contract ProvinceFacet is Game, ReentrancyGuard, GameAccess {
         return tokenId;
     }
 
-    function createEvent(address userAddress, Args calldata args) internal {
-        // check that the hero exist and is controlled by user.
-        console.log("createStructureEvent start");
 
-        Province storage province = s.provinces[args.provinceId]; // Struct from mapping
-
-        console.log("createStructureEvent create Event");
-
-        uint256 eventId = pack(args.provinceId, s.provinceStructureEventList[args.provinceId].length);
-
-        StructureEvent memory e;
-
-        e.id = eventId;
-        e.eventActionId = args.eventActionId;
-        e.assetTypeId = args.assetTypeId;
-        e.provinceId = args.provinceId;
-        e.multiplier = args.multiplier;
-        e.rounds = args.rounds;
-        e.hero = args.hero;
-        e.userAddress = userAddress;
-        e.creationTime = block.timestamp;
-        e.state = EventState.Active;
-
-        AssetAction memory assetAction = s.getAssetAction(args.assetTypeId, args.eventActionId);
-
-        console.log("createStructure calculate cost");
-
-        e.calculatedCost = s.calculateCost(args.multiplier, args.rounds, assetAction.cost);
-        e.calculatedReward = s.calculateCost(args.multiplier, args.rounds, assetAction.reward);
-
-        console.log("createStructure check manpower");
-        require(e.calculatedCost.manPower <= province.populationAvailable, "not enough population");
-
-        province.populationAvailable = province.populationAvailable - e.calculatedCost.manPower;
-
-        console.log("createStructure spend commodities Event");
-        // Spend the resouces on the behalf of the user
-        s.spendCommodities(e.calculatedCost);
-
-        console.log("createStructure add event");
-
-        User storage user = s.users[userAddress];
-        uint256 index = user.structureEventCount + 1; // Get the index of the event. Zero index is empty!
-        user.structureEventCount = index; // Increase the count of events.
-
-        s.structureEvents[eventId] = e; // Add the event to the user's event mapping.
-
-        s.provinceActiveStructureEventList[args.provinceId].push(eventId);
-        s.provinceCheckpoint[args.provinceId].activeStructureEvents = block.timestamp;
-
-        s.provinceStructureEventList[args.provinceId].push(eventId);
-        s.provinceCheckpoint[args.provinceId].structureEvents = block.timestamp;
-
-        s.userActiveStructureEventList[msg.sender].push(eventId);
-        s.userCheckpoint[msg.sender].activeStructureEvents = block.timestamp;
-
-        s.userStructureEventList[msg.sender].push(eventId);
-        s.userCheckpoint[msg.sender].structureEvents = block.timestamp;
-    }
 
     // --------------------------------------------------------------
     // Event Hooks
@@ -220,9 +150,7 @@ contract ProvinceFacet is Game, ReentrancyGuard, GameAccess {
         tokenId = mintProvince(_name, _target);
     }
 
-    function createStructureEvent(Args calldata args) external nonReentrant {
-        createEvent(msg.sender, args);
-    }
+
 
     // --------------------------------------------------------------
     // Internal Functions

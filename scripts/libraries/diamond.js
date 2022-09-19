@@ -2,6 +2,17 @@
 
 const FacetCutAction = { Add: 0, Replace: 1, Remove: 2 }
 
+function getFunctionSignatures (contract) {
+  const signatures = Object.keys(contract.interface.functions)
+  const names = signatures.reduce((acc, val) => {
+    if (val !== 'init(bytes)') {
+      acc.push(val)
+    }
+    return acc
+  }, [])
+  return names;
+}
+
 
 // get function selectors from ABI
 function getSelectors (contract) {
@@ -81,3 +92,4 @@ exports.FacetCutAction = FacetCutAction
 exports.remove = remove
 exports.removeSelectors = removeSelectors
 exports.findAddressPositionInFacets = findAddressPositionInFacets
+exports.getFunctionSignatures = getFunctionSignatures

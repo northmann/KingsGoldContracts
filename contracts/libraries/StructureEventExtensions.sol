@@ -6,8 +6,8 @@ import "hardhat/console.sol";
 import "./LibAppStorage.sol";
 import "./LibMeta.sol";
 
-library LibEventExtensions {
-    using LibEventExtensions for StructureEvent;
+library StructureEventExtensions {
+    using StructureEventExtensions for StructureEvent;
     
 
     // --------------------------------------------------------------
@@ -24,11 +24,11 @@ library LibEventExtensions {
         returns (uint256)
     {
         if ((block.timestamp - self.creationTime) >= (_cost.time * self.rounds))
-            return 0;
+            return _amount;
 
         uint256 factor = ((block.timestamp - self.creationTime) * 1e18) /(_cost.time * self.rounds);
 
-        uint256 reducedAmount = (_amount - ((_amount * factor) / 1e18));
+        uint256 reducedAmount = (_amount * factor) / 1e18;
 
         return reducedAmount;
     }
@@ -42,12 +42,11 @@ library LibEventExtensions {
         assert(_cost.attrition <= 1e18); // Cannot be more than 100%
         //Calc mamPower Attrition
 
-        uint256 reducedAmount =  self.reducedAmountOnTimePassed(_cost.manPowerAttrition, _cost);
-        _cost.manPowerAttrition = _cost.manPowerAttrition - reducedAmount; // Attrition increases over time.
-        uint256 manPowerLeft = _cost.manPower - _cost.manPowerAttrition;
-
-        _province.populationAvailable = _province.populationAvailable + manPowerLeft;
-        _province.populationTotal = _province.populationTotal + manPowerLeft;
+        // _cost.manPowerAttrition is the calculated cost in manPower attrition
+        uint256 attritionAmount = self.reducedAmountOnTimePassed(_cost.manPowerAttrition, _cost); // Attrition increases over time.
+        
+        _province.populationAvailable = _province.populationAvailable + _cost.manPower - attritionAmount; // Add manPower back to the province and reduce by attrition
+        _province.populationTotal = _province.populationTotal - attritionAmount; // Total population decreases over time because of attrition.
 
         // Update the province check point
         s.provinceCheckpoint[_province.id].province = block.timestamp;

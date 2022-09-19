@@ -12,8 +12,10 @@ interface IDiamondCut {
 
     struct FacetCut {
         address facetAddress;
-        FacetCutAction action;
-        bytes4[] functionSelectors;
+        string facetName;
+        //FacetCutAction action;
+        //bytes4[] functionSelectors;
+        string[] functionSignatures;
     }
 
     /// @notice Add/replace/remove any number of functions and optionally execute
