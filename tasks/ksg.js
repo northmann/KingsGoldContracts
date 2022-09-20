@@ -43,21 +43,21 @@ task("getProvinceStructures", "Prints getProvinceStructures json data")
 // View ----------------------------------------------------
 
 task("getBaseSettings", "Prints the baseSettings")
-  .addParam("contract", "The contract's address")
+  .addParam("diamond", "The contract's address")
   .setAction(async (taskArgs) => {
 
-    const contract = await ethers.getContractAt('ConfigurationFacet', taskArgs.contract);
+    const contract = await ethers.getContractAt('ConfigurationFacet', taskArgs.diamond);
     const settings = await contract.getBaseSettings();
     console.log(settings);
   });
 
 
 task("getAsset", "Prints assets json data")
-  .addParam("contract", "The contract's address")
+  .addParam("diamond", "The contract's address")
   .addParam("assetTypeId", "The Asset Type ID number", 0, types.int)
   .setAction(async (taskArgs) => {
 
-    const contract = await ethers.getContractAt('ConfigurationFacet', taskArgs.contract);
+    const contract = await ethers.getContractAt('ConfigurationFacet', taskArgs.diamond);
     const asset = await contract.getAsset(taskArgs.assetTypeId);
     console.log(asset);
   });

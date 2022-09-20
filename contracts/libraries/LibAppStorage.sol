@@ -111,20 +111,16 @@ struct StructureEvent {
     EventState state; // The state of the event.
     AssetType assetTypeId; // A mapping id to an asset
     uint256 provinceId; // The province this event is in.
+    uint256 provinceActiveEventIndex; // The index of the event in the province's active event list.
     uint256 multiplier; // Multiply the effect of the event. More Farms create more produce etc.
     uint256 rounds; // Repeat the event a number of rounds.
     uint256 hero; // TokenId of the hero NFT.
-    // Auto initialized fields
-    // The user who created the event. (msg.Sender).
-    // If the user is a vassal of the province,
-    // then produce events are split between the vassal and owner of the province.
-    address userAddress;
+
     uint256 creationTime; // The time the event was created.
     uint256 endTime; // The time the event ended, completed or cancelled.
     ResourceFactor calculatedCost;
     ResourceFactor calculatedReward;
-
-    // address receiver;
+   
 }
 
 struct ProvinceCheckpoint {
@@ -174,7 +170,7 @@ struct User {
     uint256 vassalFee; // Should never exceed 100%. The fee that a vassal pays to the owner.
     bool isVassal;
     //address[] allies;
-    uint256 structureEventCount;
+    //uint256 structureEventCount;
 
 }
 
@@ -227,14 +223,16 @@ struct AppStorage {
 
     mapping(uint256 => StructureEvent) structureEvents; // Structure events are indexed by the user who created the event.
     mapping(uint256 => uint256[]) provinceActiveStructureEventList; // All active structure events for a user.
-    mapping(uint256 => uint256[]) provinceStructureEventList; // All active structure events for a user.
-    mapping(address => uint256[]) userActiveStructureEventList; // All active structure events for a user.
-    mapping(address => uint256[]) userStructureEventList; // All events that a user have ever done. Not on the User struct as the list can become very large.
+    mapping(uint256 => uint256[]) provinceStructureEventList; // All structure events for a user.
+    
+    // mapping(address => uint256[]) userActiveStructureEventList; // All active structure events for a user.
+    // mapping(address => uint256[]) userStructureEventList; // All events that a user have ever done.
+    
     mapping(address => mapping(address => bool)) allianceApprovals; // Alliances can approve other users to join their alliance.
     mapping(address => Ally[]) alliances;
     mapping(bytes32 => AssetAction) assetActions;
 
-    Province defaultProvince;
+    Province provinceTemplate;
 
     BaseSettings baseSettings;
 }

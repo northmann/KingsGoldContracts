@@ -80,7 +80,7 @@ library AppStorageExtensions {
     function createProvince(AppStorage storage self, uint256 _id, string memory _name, address _target) internal  returns(Province storage) {
         require(self.provinces[_id].id == 0, "Province already exists");
 
-        Province memory province = self.defaultProvince;
+        Province memory province = self.provinceTemplate;
         province.id = _id;
         province.name = _name;
         province.owner = _target;
@@ -116,6 +116,7 @@ library AppStorageExtensions {
             self.baseSettings.iron.spendToTreasury(msg.sender, _cost.iron);
         }
     }
+
 
 
 }

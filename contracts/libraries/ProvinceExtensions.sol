@@ -24,32 +24,40 @@ library ProvinceExtensions {
     // State Functions
     // --------------------------------------------------------------
 
-    function addReward(Province storage self, ResourceFactor memory _reward) internal {
+    function addReward(Province storage self, ResourceFactor memory _reward, bool taxed) internal {
         AppStorage storage s = LibAppStorage.appStorage();
+
+        // Add population reward to the province
+        if (_reward.manPower > 0) {
+            self.populationAvailable = self.populationAvailable + _reward.manPower;
+            self.populationTotal = self.populationTotal + _reward.manPower;
+        }
 
         User storage owner = s.getUser(self.owner); // Get the owner of the province
         //require(owner.alliance != address(0), "No alliance");
 
         ResourceFactor memory restPart = _reward;
 
-        if (owner.alliance != address(0)) {
+        // If owner has an alliance, add the reward to the alliance if taxed is true
+        if (owner.alliance != address(0) && taxed) {
             User storage alliance = s.getUser(owner.alliance); // Get the alliance of the owner
 
             // Add a part of the reward to the king of the alliance
-            ResourceFactor memory alliancePart = _reward.getRewardPart(alliance.allianceFee);
+            ResourceFactor memory alliancePart = _reward.fee(alliance.allianceFee);
             mintResources(owner.alliance, alliancePart);
 
-            restPart = _reward.getRestReward(alliancePart);
+            restPart = _reward.sub(alliancePart);
         }
 
         if (self.vassalExist()) {
             uint256 vassalFee = self.vassalFee > 0 ? self.vassalFee : owner.vassalFee; // Use the province vassal fee if exist otherwise use the owner vassal fee
+            vassalFee = taxed ? vassalFee : 0; // If taxed is false then the vassal fee is 0
 
-            ResourceFactor memory ownerPart = restPart.getRewardPart(vassalFee);
-            mintResources(self.owner, ownerPart);
+            ResourceFactor memory ownerFee = restPart.fee(vassalFee);
+            mintResources(self.owner, ownerFee);
 
             // Whatever is left is for the vassal
-            ResourceFactor memory vassalPart = restPart.getRestReward(ownerPart);
+            ResourceFactor memory vassalPart = restPart.sub(ownerFee);
             mintResources(self.vassal, vassalPart);
         } else {
             // There is no vassal so the rest is for the owner
