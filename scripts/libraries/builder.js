@@ -107,8 +107,9 @@ async function deployFacets(owner, diamond) {
         'ProvinceFacet',
         'TreasuryFacet',
         'UserFacet',
-        'StructureEventFacet'
-
+        'StructureEventFacet',
+        'StructureFacet',
+        'ArmyFacet'
     ]
     
     for (const FacetName of FacetNames) {

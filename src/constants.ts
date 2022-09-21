@@ -49,10 +49,11 @@ export enum AssetTypeEnum {
     Population
 }
 
-export enum AssetGroupEnum  {
+export enum AssetProductEnum  {
     None = 0,
     Structure,
     Population,
     Commodity,
     Artifact
 }
+

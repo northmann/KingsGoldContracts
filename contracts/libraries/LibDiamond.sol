@@ -6,6 +6,7 @@ import "hardhat/console.sol";
 /******************************************************************************\
 * Author: Nick Mudge <nick@perfectabstractions.com> (https://twitter.com/mudgen)
 * EIP-2535 Diamonds: https://eips.ethereum.org/EIPS/eip-2535
+* Modified by: Northmann
 /******************************************************************************/
 import { IDiamondCut } from "../interfaces/IDiamondCut.sol";
 
@@ -190,31 +191,6 @@ library LibDiamond {
         ds.selectorToFacetAndPosition[_selector].facetAddress = _facetAddress;
     }
 
-    // function removeFunction(DiamondStorage storage ds, address _facetAddress, bytes4 _selector) internal {        
-    //     require(_facetAddress != address(0), "LibDiamondCut: Can't remove function that doesn't exist");
-    //     // an immutable function is a function defined directly in a diamond
-    //     require(_facetAddress != address(this), "LibDiamondCut: Can't remove immutable function");
-    //     // replace selector with last selector, then delete last selector
-    //     uint256 selectorPosition = ds.selectorToFacetAndPosition[_selector].functionSelectorPosition;
-    //     uint256 lastSelectorPosition = ds.facetFunctionSelectors[_facetAddress].functionSelectors.length - 1;
-    //     // if not the same then replace _selector with lastSelector
-    //     if (selectorPosition != lastSelectorPosition) {
-    //         bytes4 lastSelector = ds.facetFunctionSelectors[_facetAddress].functionSelectors[lastSelectorPosition];
-    //         ds.facetFunctionSelectors[_facetAddress].functionSelectors[selectorPosition] = lastSelector;
-    //         ds.selectorToFacetAndPosition[lastSelector].functionSelectorPosition = uint96(selectorPosition);
-    //     }
-    //     // delete the last selector
-    //     ds.facetFunctionSelectors[_facetAddress].functionSelectors.pop();
-    //     delete ds.selectorToFacetAndPosition[_selector];
-
-    //     // if no more selectors for facet address then delete the facet address
-    //     if (lastSelectorPosition == 0) {
-    //         removeFacetAddress(ds, _facetAddress);
-    //     }
-    // }
-
-
-
     function initializeDiamondCut(address _init, bytes memory _calldata) internal {
         if (_init == address(0)) {
             require(_calldata.length == 0, "LibDiamondCut: _init is address(0) but_calldata is not empty");
@@ -242,4 +218,7 @@ library LibDiamond {
         }
         require(contractSize > 0, _errorMessage);
     }
+
+
+
 }

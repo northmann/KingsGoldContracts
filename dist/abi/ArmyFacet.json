@@ -1,0 +1,137 @@
+[
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_armyId",
+                "type": "uint256"
+            }
+        ],
+        "name": "getArmy",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "uint256",
+                        "name": "id",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "enum ArmyState",
+                        "name": "state",
+                        "type": "uint8"
+                    },
+                    {
+                        "components": [
+                            {
+                                "internalType": "enum ArmyUnitType",
+                                "name": "armyUnitTypeId",
+                                "type": "uint8"
+                            },
+                            {
+                                "internalType": "uint256",
+                                "name": "amount",
+                                "type": "uint256"
+                            }
+                        ],
+                        "internalType": "struct ArmyUnit[]",
+                        "name": "units",
+                        "type": "tuple[]"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "hero",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "address",
+                        "name": "owner",
+                        "type": "address"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "ownerArmyIndex",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "currentProvinceId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "targetProvinceId",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "startTime",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "endTime",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct Army",
+                "name": "army",
+                "type": "tuple"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "eventId",
+                "type": "uint256"
+            }
+        ],
+        "name": "produceArcher",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "eventId",
+                "type": "uint256"
+            }
+        ],
+        "name": "produceCatapult",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "eventId",
+                "type": "uint256"
+            }
+        ],
+        "name": "produceKnight",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "eventId",
+                "type": "uint256"
+            }
+        ],
+        "name": "produceSoldier",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+]

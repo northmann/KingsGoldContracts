@@ -90,6 +90,19 @@ contract ConfigurationFacet is Game, GameAccess {
         s.assets[asset.typeId] = asset;
     }
 
+    function setAppStoreArmyUnitType(ArmyUnitProperties memory armyUnitType) public requiredRole(LibRoles.CONFIG_ROLE) {
+        s.armyUnitTypes[armyUnitType.armyUnitTypeId] = armyUnitType;
+    }
+
+    function setAppStoreArmyUnitTypes(ArmyUnitProperties[] calldata armyUnitTypes) public requiredRole(LibRoles.CONFIG_ROLE) {
+        for(uint i = 0; i < armyUnitTypes.length; i++) {
+            ArmyUnitProperties memory armyUnitType = armyUnitTypes[i];
+
+            s.armyUnitTypes[armyUnitType.armyUnitTypeId] = armyUnitType;
+        }
+    }
+
+
     function mintGold(address to, uint256 amount) public requiredRole(LibRoles.MINTER_ROLE) {
         s.baseSettings.gold.mint(to, amount);
     }

@@ -41,7 +41,7 @@ export declare enum AssetTypeEnum {
     Fortress = 13,
     Population = 14
 }
-export declare enum AssetGroupEnum {
+export declare enum AssetProductEnum {
     None = 0,
     Structure = 1,
     Population = 2,

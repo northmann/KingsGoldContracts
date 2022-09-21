@@ -91,8 +91,8 @@
             "type": "uint8"
           },
           {
-            "internalType": "enum AssetGroup",
-            "name": "groupId",
+            "internalType": "enum AssetProduct",
+            "name": "productId",
             "type": "uint8"
           },
           {
@@ -274,6 +274,11 @@
             "internalType": "struct ResourceFactor",
             "name": "reward",
             "type": "tuple"
+          },
+          {
+            "internalType": "string",
+            "name": "method",
+            "type": "string"
           }
         ],
         "internalType": "struct AssetAction",
@@ -296,8 +301,8 @@
             "type": "uint8"
           },
           {
-            "internalType": "enum AssetGroup",
-            "name": "groupId",
+            "internalType": "enum AssetProduct",
+            "name": "productId",
             "type": "uint8"
           },
           {
@@ -490,13 +495,113 @@
       {
         "components": [
           {
+            "internalType": "enum ArmyUnitType",
+            "name": "armyUnitTypeId",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint128",
+            "name": "openAttack",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint128",
+            "name": "openDefense",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint128",
+            "name": "seigeAttack",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint128",
+            "name": "seigeDefense",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint128",
+            "name": "speed",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint128",
+            "name": "priority",
+            "type": "uint128"
+          }
+        ],
+        "internalType": "struct ArmyUnitProperties",
+        "name": "armyUnitType",
+        "type": "tuple"
+      }
+    ],
+    "name": "setAppStoreArmyUnitType",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "enum ArmyUnitType",
+            "name": "armyUnitTypeId",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint128",
+            "name": "openAttack",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint128",
+            "name": "openDefense",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint128",
+            "name": "seigeAttack",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint128",
+            "name": "seigeDefense",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint128",
+            "name": "speed",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint128",
+            "name": "priority",
+            "type": "uint128"
+          }
+        ],
+        "internalType": "struct ArmyUnitProperties[]",
+        "name": "armyUnitTypes",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "setAppStoreArmyUnitTypes",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
             "internalType": "enum AssetType",
             "name": "typeId",
             "type": "uint8"
           },
           {
-            "internalType": "enum AssetGroup",
-            "name": "groupId",
+            "internalType": "enum AssetProduct",
+            "name": "productId",
             "type": "uint8"
           },
           {
@@ -667,6 +772,11 @@
             "internalType": "struct ResourceFactor",
             "name": "reward",
             "type": "tuple"
+          },
+          {
+            "internalType": "string",
+            "name": "method",
+            "type": "string"
           }
         ],
         "internalType": "struct AssetAction",
@@ -826,6 +936,11 @@
             "internalType": "struct ResourceFactor",
             "name": "reward",
             "type": "tuple"
+          },
+          {
+            "internalType": "string",
+            "name": "method",
+            "type": "string"
           }
         ],
         "internalType": "struct AssetAction[]",
@@ -848,8 +963,8 @@
             "type": "uint8"
           },
           {
-            "internalType": "enum AssetGroup",
-            "name": "groupId",
+            "internalType": "enum AssetProduct",
+            "name": "productId",
             "type": "uint8"
           },
           {

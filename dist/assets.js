@@ -24,7 +24,8 @@ exports.cost = {
     penalty: constants_1.eth0_5,
     // time: BigNumber.from(60 * 60 * 1), // 1 hours standard
     // goldForTime is calculated in the contract
-    food: constants_1.eth1, // It cost 1 food per one manPower per hour
+    food: constants_1.eth1,
+    amount: ethers_1.BigNumber.from(1), // 1 structure
 };
 exports.reward = {
     ...exports.zeroCost,
@@ -60,16 +61,72 @@ const burnCost = {
     description: "Set the structure on fire to destory it. No resources are gained in the process.",
     executeTitle: "Burn",
 };
+const buildAction = {
+    eventActionId: constants_1.EventActionEnum.Build,
+    method: "buildStructure(uint256)",
+    cost: {
+        ...exports.cost,
+    },
+    reward: {
+        ...exports.reward,
+    },
+    image100: "HouseConstruction100.webp",
+    title: "Build",
+    description: "Build a structure",
+    executeTitle: "Build"
+};
+const produceAction = {
+    eventActionId: constants_1.EventActionEnum.Produce,
+    method: "produceStructure(uint256)",
+    cost: {
+        ...exports.cost,
+    },
+    reward: {
+        ...exports.reward,
+    },
+    image100: "HouseConstruction100.webp",
+    title: "Produce",
+    description: "Produce a resource",
+    executeTitle: "Produce"
+};
+const dismantleAction = {
+    eventActionId: constants_1.EventActionEnum.Dismantle,
+    method: "dismantleStructure(uint256)",
+    cost: {
+        ...exports.cost,
+    },
+    reward: {
+        ...exports.reward,
+    },
+    image100: "HouseConstruction100.webp",
+    title: "Dismantle",
+    description: "Dismantle a resource",
+    executeTitle: "Dismantle"
+};
+const burnAction = {
+    eventActionId: constants_1.EventActionEnum.Burn,
+    method: "burnStructure(uint256)",
+    cost: {
+        ...exports.cost,
+    },
+    reward: {
+        ...exports.reward,
+    },
+    image100: "HouseConstruction100.webp",
+    title: "Burn",
+    description: "Burn a resource",
+    executeTitle: "Burn"
+};
 exports.assets = {
     [constants_1.AssetTypeEnum.None]: {
         typeId: constants_1.AssetTypeEnum.None,
-        groupId: constants_1.AssetGroupEnum.None,
+        productId: constants_1.AssetProductEnum.None,
         requiredUserLevel: constants_1.eth0,
         requiredAssets: [],
     },
     [constants_1.AssetTypeEnum.Farm]: {
         typeId: constants_1.AssetTypeEnum.Farm,
-        groupId: constants_1.AssetGroupEnum.Structure,
+        productId: constants_1.AssetProductEnum.Structure,
         title: "Farm",
         description: "Produces food",
         image100: "Farm100.png",
@@ -77,26 +134,27 @@ exports.assets = {
         requiredAssets: [],
         actions: {
             [constants_1.EventActionEnum.Build]: {
-                eventActionId: constants_1.EventActionEnum.Build,
+                ...buildAction,
                 cost: {
                     ...exports.cost,
                     wood: constants_1.eth50,
                     food: constants_1.eth0,
+                    amount: ethers_1.BigNumber.from(0),
                 },
                 reward: {
                     ...exports.reward,
                     amount: ethers_1.BigNumber.from(1), // 1 farm
                 },
                 image100: "HouseConstruction100.webp",
-                title: "Build",
                 description: "Build a farm",
             },
             [constants_1.EventActionEnum.Dismantle]: {
+                ...dismantleAction,
                 ...dismantleCost,
                 description: "Breakdown farms to gain some wood",
             },
             [constants_1.EventActionEnum.Produce]: {
-                eventActionId: constants_1.EventActionEnum.Produce,
+                ...produceAction,
                 cost: {
                     ...exports.cost,
                     manPower: ethers_1.BigNumber.from(1),
@@ -107,12 +165,14 @@ exports.assets = {
                 reward: {
                     ...exports.reward,
                     food: constants_1.eth50,
+                    amount: ethers_1.BigNumber.from(1), // return available structure
                 },
                 image100: "farming100.webp",
                 title: "Farming",
                 description: "Produces food",
             },
             [constants_1.EventActionEnum.Burn]: {
+                ...burnAction,
                 ...burnCost,
                 description: "Set the farms on fire to destory them. No resources are gained.",
             }
@@ -120,15 +180,63 @@ exports.assets = {
     },
     [constants_1.AssetTypeEnum.Sawmill]: {
         typeId: constants_1.AssetTypeEnum.Sawmill,
-        groupId: constants_1.AssetGroupEnum.Structure,
+        productId: constants_1.AssetProductEnum.Structure,
         title: "Sawmill",
         description: "Greatly increases the production of wood",
         requiredUserLevel: constants_1.eth0,
         requiredAssets: [],
+        image100: "sawmillE100.webp",
+        actions: {
+            [constants_1.EventActionEnum.Build]: {
+                ...buildAction,
+                cost: {
+                    ...exports.cost,
+                    food: constants_1.eth50,
+                    amount: ethers_1.BigNumber.from(0),
+                },
+                reward: {
+                    ...exports.reward,
+                    amount: ethers_1.BigNumber.from(1), // 1 blacksmith
+                },
+                image100: "sawmillE100.webp",
+                description: "Build a sawmill",
+            },
+            [constants_1.EventActionEnum.Dismantle]: {
+                ...dismantleAction,
+                ...dismantleCost,
+                reward: {
+                    ...exports.reward,
+                    wood: constants_1.eth5,
+                },
+                description: "Breakdown sawmill to gain some wood",
+            },
+            [constants_1.EventActionEnum.Produce]: {
+                ...produceAction,
+                cost: {
+                    ...exports.cost,
+                    manPower: ethers_1.BigNumber.from(1),
+                    time: ethers_1.BigNumber.from(60 * 60 * 4), // 4 hours,
+                },
+                reward: {
+                    ...exports.reward,
+                    wood: constants_1.eth50,
+                    amount: ethers_1.BigNumber.from(1), // return available structure
+                },
+                image100: "sawmillE100.webp",
+                title: "Produce",
+                description: "Produces fine wood",
+                executeTitle: "Produce",
+            },
+            [constants_1.EventActionEnum.Burn]: {
+                ...burnAction,
+                ...burnCost,
+                description: "Set the sawmill on fire to destory it. No resources are gained in the process.",
+            }
+        },
     },
     [constants_1.AssetTypeEnum.Blacksmith]: {
         typeId: constants_1.AssetTypeEnum.Blacksmith,
-        groupId: constants_1.AssetGroupEnum.Structure,
+        productId: constants_1.AssetProductEnum.Structure,
         title: "Blacksmith",
         description: "Produces iron",
         image100: "Blacksmith100.webp",
@@ -136,20 +244,21 @@ exports.assets = {
         requiredAssets: [],
         actions: {
             [constants_1.EventActionEnum.Build]: {
-                eventActionId: constants_1.EventActionEnum.Build,
+                ...buildAction,
                 cost: {
                     ...exports.cost,
                     wood: constants_1.eth50,
+                    amount: ethers_1.BigNumber.from(0),
                 },
                 reward: {
                     ...exports.reward,
-                    amount: ethers_1.BigNumber.from(1), // 1 farm
+                    amount: ethers_1.BigNumber.from(1), // 1 blacksmith
                 },
                 image100: "HouseConstruction100.webp",
-                title: "Build",
                 description: "Build a blacksmith",
             },
             [constants_1.EventActionEnum.Dismantle]: {
+                ...dismantleAction,
                 ...dismantleCost,
                 reward: {
                     ...exports.reward,
@@ -159,15 +268,16 @@ exports.assets = {
                 description: "Breakdown blacksmith to gain some wood and iron",
             },
             [constants_1.EventActionEnum.Produce]: {
-                eventActionId: constants_1.EventActionEnum.Produce,
+                ...produceAction,
                 cost: {
                     ...exports.cost,
                     manPower: ethers_1.BigNumber.from(1),
-                    time: ethers_1.BigNumber.from(60 * 60 * 4), // 4 hours
+                    time: ethers_1.BigNumber.from(60 * 60 * 4), // 4 hours,
                 },
                 reward: {
                     ...exports.reward,
                     iron: constants_1.eth50,
+                    amount: ethers_1.BigNumber.from(1), // return available structure
                 },
                 image100: "Blacksmith100.webp",
                 title: "Molding",
@@ -175,6 +285,7 @@ exports.assets = {
                 executeTitle: "Mold",
             },
             [constants_1.EventActionEnum.Burn]: {
+                ...burnAction,
                 ...burnCost,
                 description: "Set the blacksmith on fire to destory it. No resources are gained in the process.",
             }
@@ -182,7 +293,7 @@ exports.assets = {
     },
     [constants_1.AssetTypeEnum.Quarry]: {
         typeId: constants_1.AssetTypeEnum.Quarry,
-        groupId: constants_1.AssetGroupEnum.Structure,
+        productId: constants_1.AssetProductEnum.Structure,
         title: "Quarry",
         description: "Greatly increases the production of rock",
         requiredUserLevel: constants_1.eth0,
@@ -190,29 +301,62 @@ exports.assets = {
     },
     [constants_1.AssetTypeEnum.Barrack]: {
         typeId: constants_1.AssetTypeEnum.Barrack,
-        groupId: constants_1.AssetGroupEnum.Structure,
+        productId: constants_1.AssetProductEnum.Structure,
         title: "Barrack",
         description: "Produces soldiers",
         requiredUserLevel: ethers_1.BigNumber.from(100),
         requiredAssets: [constants_1.AssetTypeEnum.Farm, constants_1.AssetTypeEnum.Blacksmith],
+        image100: "HouseConstruction100.webp",
         actions: {
             [constants_1.EventActionEnum.Build]: {
-                eventActionId: constants_1.EventActionEnum.Build,
+                ...buildAction,
                 cost: {
                     ...exports.cost,
                     manPower: ethers_1.BigNumber.from(2),
                     time: ethers_1.BigNumber.from(60 * 60 * 8),
                     wood: constants_1.eth100,
                     iron: constants_1.eth1,
-                    food: constants_1.eth1.mul(8 * 2), // 8 hours * 2 manPower
+                    food: constants_1.eth1.mul(8 * 2),
+                    amount: ethers_1.BigNumber.from(0),
                 },
                 reward: {
                     ...exports.reward,
                     amount: ethers_1.BigNumber.from(1), // 1 barrack
                 },
                 image100: "HouseConstruction100.webp",
-                title: "Build",
                 description: "Build a barrack",
+            },
+            [constants_1.EventActionEnum.Dismantle]: {
+                ...dismantleAction,
+                ...dismantleCost,
+                reward: {
+                    ...exports.reward,
+                    wood: constants_1.eth5,
+                    iron: constants_1.eth5,
+                },
+                description: "Breakdown barrack to gain some wood and iron",
+            },
+            [constants_1.EventActionEnum.Produce]: {
+                ...produceAction,
+                method: "produceSoldier(uint256)",
+                cost: {
+                    ...exports.cost,
+                    manPower: ethers_1.BigNumber.from(1),
+                    time: ethers_1.BigNumber.from(60 * 60 * 4), // 4 hours
+                },
+                reward: {
+                    ...exports.reward,
+                    amount: ethers_1.BigNumber.from(1), // 1 soldier
+                },
+                image100: "HouseConstruction100.webp",
+                title: "Recruit",
+                description: "Recruit soldiers",
+                executeTitle: "Recruit",
+            },
+            [constants_1.EventActionEnum.Burn]: {
+                ...burnAction,
+                ...burnCost,
+                description: "Set the barrack on fire to destory it. No resources are gained in the process.",
             },
         },
     },
@@ -229,15 +373,17 @@ function getAssetActionData() {
                 assetTypeId: asset.typeId,
                 eventActionId: action.eventActionId,
                 cost: action.cost,
-                reward: action.reward
+                reward: action.reward,
+                method: action.method,
             };
             return r;
         });
         if (actions && actions.length > 0)
             assetActions = [...assetActions, ...actions];
     });
-    console.log("assetActions", assetActions);
-    return assetActions;
+    let result = assetActions;
+    console.log("assetActions", result);
+    return result;
 }
 exports.getAssetActionData = getAssetActionData;
 function getAssetData() {
@@ -256,8 +402,8 @@ function getAsset(typeId) {
     return exports.assets === null || exports.assets === void 0 ? void 0 : exports.assets[typeId];
 }
 exports.getAsset = getAsset;
-function getAssetsByGroup(groupId) {
-    let assetData = Object.keys(exports.assets).filter((key) => exports.assets[key].groupId === groupId).map((key) => exports.assets[key]);
+function getAssetsByGroup(productId) {
+    let assetData = Object.keys(exports.assets).filter((key) => exports.assets[key].productId === productId).map((key) => exports.assets[key]);
     return assetData;
 }
 exports.getAssetsByGroup = getAssetsByGroup;

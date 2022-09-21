@@ -176,14 +176,14 @@ library StructureEventExtensions {
     
     function decreaseAvailableStructure(StructureEvent storage self, AppStorage storage s) internal {
         Structure storage structure = s.getStructure(self.provinceId, self.assetTypeId);
-        require(structure.available >= self.multiplier, "Not enough structures available");
-        structure.available = structure.available - self.multiplier;
+        require(structure.available >= self.calculatedCost.amount, "Not enough structures available");
+        structure.available -= self.calculatedCost.amount;
     }
 
     function increaseAvailableStructure(StructureEvent storage self, AppStorage storage s) internal {
         Structure storage structure = s.getStructure(self.provinceId, self.assetTypeId);
-        require(structure.total >= structure.available + self.multiplier, "Cannot increase available structures more than total structures");
-        structure.available = structure.available + self.multiplier;
+        require(structure.total >= structure.available + self.calculatedReward.amount, "Cannot increase available structures more than total structures");
+        structure.available += self.calculatedReward.amount;
     }
 
     

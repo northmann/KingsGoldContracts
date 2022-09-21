@@ -25,6 +25,18 @@ contract TreasuryFacet is Game, ITreasury, ReentrancyGuard {
     constructor() {
     }
 
+    // Metamask keeps asking for this method on the Diamond.
+    // The function signature is the same as ERC20.
+    function decimals() public pure returns (uint8) {
+        return 18;
+    }
+
+    // Metamask keeps asking for this method on the Diamond.
+    // The function signature is the same as ERC20.
+    function symbol() public pure returns (string memory) {
+        return "KSG";
+    }
+
     function buy() payable public override nonReentrant  {
         uint256 amountTobuy = msg.value;
         require(amountTobuy > 0, "You need to send some ether");

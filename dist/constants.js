@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AssetGroupEnum = exports.AssetTypeEnum = exports.EventActionEnum = exports.EventState = exports.eth100 = exports.eth90 = exports.eth50 = exports.eth10 = exports.eth9 = exports.eth8 = exports.eth5 = exports.eth4 = exports.eth2 = exports.eth1 = exports.eth0 = exports.eth0_5 = exports.eth0_1 = void 0;
+exports.AssetProductEnum = exports.AssetTypeEnum = exports.EventActionEnum = exports.EventState = exports.eth100 = exports.eth90 = exports.eth50 = exports.eth10 = exports.eth9 = exports.eth8 = exports.eth5 = exports.eth4 = exports.eth2 = exports.eth1 = exports.eth0 = exports.eth0_5 = exports.eth0_1 = void 0;
 const ethers_1 = require("ethers");
 const utils_1 = require("ethers/lib/utils");
 exports.eth0_1 = (0, utils_1.parseUnits)("0.1", "ether");
@@ -48,12 +48,12 @@ var AssetTypeEnum;
     AssetTypeEnum[AssetTypeEnum["Fortress"] = 13] = "Fortress";
     AssetTypeEnum[AssetTypeEnum["Population"] = 14] = "Population";
 })(AssetTypeEnum = exports.AssetTypeEnum || (exports.AssetTypeEnum = {}));
-var AssetGroupEnum;
-(function (AssetGroupEnum) {
-    AssetGroupEnum[AssetGroupEnum["None"] = 0] = "None";
-    AssetGroupEnum[AssetGroupEnum["Structure"] = 1] = "Structure";
-    AssetGroupEnum[AssetGroupEnum["Population"] = 2] = "Population";
-    AssetGroupEnum[AssetGroupEnum["Commodity"] = 3] = "Commodity";
-    AssetGroupEnum[AssetGroupEnum["Artifact"] = 4] = "Artifact";
-})(AssetGroupEnum = exports.AssetGroupEnum || (exports.AssetGroupEnum = {}));
+var AssetProductEnum;
+(function (AssetProductEnum) {
+    AssetProductEnum[AssetProductEnum["None"] = 0] = "None";
+    AssetProductEnum[AssetProductEnum["Structure"] = 1] = "Structure";
+    AssetProductEnum[AssetProductEnum["Population"] = 2] = "Population";
+    AssetProductEnum[AssetProductEnum["Commodity"] = 3] = "Commodity";
+    AssetProductEnum[AssetProductEnum["Artifact"] = 4] = "Artifact";
+})(AssetProductEnum = exports.AssetProductEnum || (exports.AssetProductEnum = {}));
 //# sourceMappingURL=constants.js.map

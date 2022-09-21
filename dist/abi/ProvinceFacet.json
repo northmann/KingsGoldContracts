@@ -120,9 +120,9 @@
                         "type": "uint256"
                     },
                     {
-                        "internalType": "address",
-                        "name": "armyContract",
-                        "type": "address"
+                        "internalType": "uint256",
+                        "name": "garrisonId",
+                        "type": "uint256"
                     },
                     {
                         "internalType": "uint256",
@@ -132,6 +132,11 @@
                     {
                         "internalType": "uint256",
                         "name": "vassalFee",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "level",
                         "type": "uint256"
                     },
                     {
@@ -187,6 +192,11 @@
                     },
                     {
                         "internalType": "uint256",
+                        "name": "provinceActiveEventIndex",
+                        "type": "uint256"
+                    },
+                    {
+                        "internalType": "uint256",
                         "name": "multiplier",
                         "type": "uint256"
                     },
@@ -199,11 +209,6 @@
                         "internalType": "uint256",
                         "name": "hero",
                         "type": "uint256"
-                    },
-                    {
-                        "internalType": "address",
-                        "name": "userAddress",
-                        "type": "address"
                     },
                     {
                         "internalType": "uint256",

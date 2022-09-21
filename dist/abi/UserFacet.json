@@ -59,11 +59,6 @@
                         "type": "uint256"
                     },
                     {
-                        "internalType": "uint256[]",
-                        "name": "provinces",
-                        "type": "uint256[]"
-                    },
-                    {
                         "internalType": "address",
                         "name": "kingdom",
                         "type": "address"
@@ -89,14 +84,14 @@
                         "type": "uint256"
                     },
                     {
-                        "internalType": "bool",
-                        "name": "isVassal",
-                        "type": "bool"
+                        "internalType": "uint256[]",
+                        "name": "provinces",
+                        "type": "uint256[]"
                     },
                     {
-                        "internalType": "uint256",
-                        "name": "structureEventCount",
-                        "type": "uint256"
+                        "internalType": "uint256[]",
+                        "name": "armies",
+                        "type": "uint256[]"
                     }
                 ],
                 "internalType": "struct User",

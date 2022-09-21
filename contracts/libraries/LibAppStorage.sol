@@ -44,16 +44,29 @@ enum AssetType {
     City,
     Capital,
     Stronghold,
+    Structure,
+    Population,
+
+    Militia,
+    Infantry,
+    Cavalry,
+    Archer,
+    Siege,
     Last
 }
 
-enum AssetGroup {
+enum AssetProduct {
     None,
     Structure,
     Population,
     Commodity,
-    Artifact
+    Artifact,
+    Army,
+    Last
 }
+
+
+
 struct Hero {
     uint256 tokenId;
     string name;
@@ -83,11 +96,12 @@ struct AssetAction {
     EventAction eventActionId;
     ResourceFactor cost; // The cost of resources for this asset
     ResourceFactor reward; // The reward of resources for this asset
+    string method;
 }
 
 struct Asset {
     AssetType typeId;
-    AssetGroup groupId;
+    AssetProduct productId;
 
     uint256 requiredUserLevel;
     uint256[] requiredAssets; // Assets required to build this asset
@@ -130,6 +144,93 @@ struct ProvinceCheckpoint {
     uint256 activeStructureEvents;
 }
 
+struct UserCheckpoint {
+    uint256 user;
+    uint256 provinces;
+    uint256 structures;
+    uint256 structureEvents;
+    uint256 activeStructureEvents;
+}
+
+struct User {
+    uint256 level; // The level of the user, opens up for more posibilities as the level increases.
+
+    address kingdom;
+    address alliance;
+    uint256 allianceIndex;
+    uint256 allianceFee; // Should never exceed 100%. The fee the user pays to the alliance.
+    uint256 vassalFee; // Should never exceed 100%. The fee that a vassal pays to the owner.
+    
+    uint256[] provinces;
+    uint256[] armies;
+
+    //address[] allies;
+
+}
+
+struct Ally {
+    address user;
+    uint256 status;
+}
+
+enum ArmyUnitType {
+    None,
+    Militia,
+    Soldier,
+    Knight,
+    Archer,
+    Catapult,
+    Last
+}
+
+enum ArmyState {
+    Idle,
+    Moving,
+    Attacking,
+    Defending,
+    Retreating,
+    Last
+}
+
+
+struct ArmyUnitProperties {
+    ArmyUnitType armyUnitTypeId;
+
+    uint128 openAttack;
+    uint128 openDefense;
+    uint128 seigeAttack;
+    uint128 seigeDefense;
+    uint128 speed;
+    uint128 priority;
+    
+}
+
+struct ArmyUnit {
+    ArmyUnitType armyUnitTypeId;
+    uint256 amount;
+}
+
+struct Army {
+    uint256 id;
+    ArmyState state;
+
+
+    ArmyUnit[] units; // The index is the ArmyUnitType id.
+    
+    uint256 hero; // TokenId of the hero NFT.
+
+    address owner; // The owner of the army.
+    uint256 ownerArmyIndex; // The index of the army in the owner's army list.
+    
+    uint256 currentProvinceId; // The province the army is currently in or moving from.
+    uint256 targetProvinceId; // The province the army is moving to. 
+
+    uint256 startTime;
+    uint256 endTime;
+
+}
+
+
 struct Province {
     uint256 id;
     string name;
@@ -143,41 +244,19 @@ struct Province {
     uint32 hills; // Gold and iron ore
     uint256 populationTotal;
     uint256 populationAvailable;
-    address armyContract;
+    uint256 garrisonId;
     //uint256[] activeStructureEventList;
     uint256 deposit; // The amount of gold deposited in the province. This gold is claimable by the owner when the province is destroyed.
     uint256 vassalFee;
+    uint256 level; // The level of the province. This is the level of the highest structure in the province.
 
     AssetType[] structureList;
 }
 
-struct UserCheckpoint {
-    uint256 user;
-    uint256 provinces;
-    uint256 structures;
-    uint256 structureEvents;
-    uint256 activeStructureEvents;
-}
 
-struct User {
-    uint256 level; // The level of the user, opens up for more posibilities.
-    //EnumerableSet.AddressSet provinces;
-    uint256[] provinces;
-    address kingdom;
-    address alliance;
-    uint256 allianceIndex;
-    uint256 allianceFee; // Should never exceed 100%. The fee the user pays to the alliance.
-    uint256 vassalFee; // Should never exceed 100%. The fee that a vassal pays to the owner.
-    bool isVassal;
-    //address[] allies;
-    //uint256 structureEventCount;
 
-}
 
-struct Ally {
-    address user;
-    uint256 status;
-}
+
 
 struct BaseSettings {
 
@@ -219,18 +298,21 @@ struct AppStorage {
     uint256[] provinceList; // All provinces in the system.
     mapping(AssetType => Asset) assets; // Assets are indexed by the AssetType enum.
     mapping(uint256 => mapping(AssetType => Structure)) structures; // ProvinceID => StructureID (AssetTypeId) => Structure
-    //mapping(address => uint256[]) structureEventList; // All finished structure events for a user. Also used for generating ID's for new events.
-
+    
     mapping(uint256 => StructureEvent) structureEvents; // Structure events are indexed by the user who created the event.
     mapping(uint256 => uint256[]) provinceActiveStructureEventList; // All active structure events for a user.
     mapping(uint256 => uint256[]) provinceStructureEventList; // All structure events for a user.
-    
-    // mapping(address => uint256[]) userActiveStructureEventList; // All active structure events for a user.
-    // mapping(address => uint256[]) userStructureEventList; // All events that a user have ever done.
-    
+   
     mapping(address => mapping(address => bool)) allianceApprovals; // Alliances can approve other users to join their alliance.
     mapping(address => Ally[]) alliances;
     mapping(bytes32 => AssetAction) assetActions;
+
+    mapping(ArmyUnitType => ArmyUnitProperties) armyUnitTypes;
+
+    mapping(uint256 => Army) armies;
+    mapping(uint256 => Hero) heroes;
+
+    uint256 structureEventCount;
 
     Province provinceTemplate;
 

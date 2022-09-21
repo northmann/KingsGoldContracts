@@ -30,7 +30,7 @@ library ResourceFactorExtensions {
         result.rock = _rounds * _multiplier * ((_cost.rock * _baseSettings.baseUnit) / 1e18);
         result.iron = _rounds * _multiplier * ((_cost.iron * _baseSettings.baseUnit) / 1e18);
 
-        result.amount = _rounds * _multiplier;
+        result.amount = _cost.amount * _rounds * _multiplier;
     }
 
     function rewardFee(uint256 _amount, uint256 _fee, uint256 _baseUnit) internal pure returns (uint256) {

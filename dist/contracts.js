@@ -16,6 +16,7 @@ const UserFacet_json_1 = __importDefault(require("./abi/UserFacet.json"));
 const TreasuryFacet_json_1 = __importDefault(require("./abi/TreasuryFacet.json"));
 const ProvinceFacet_json_1 = __importDefault(require("./abi/ProvinceFacet.json"));
 const StructureEventFacet_json_1 = __importDefault(require("./abi/StructureEventFacet.json"));
+const ArmyFacet_json_1 = __importDefault(require("./abi/ArmyFacet.json"));
 function getContracts(chainId, signer) {
     let result = {};
     result.diamond = new ethers_1.Contract(contractAddresses_json_1.default["Diamond"], Diamond_json_1.default, signer);
@@ -28,6 +29,7 @@ function getContracts(chainId, signer) {
     result.treasuryFacet = new ethers_1.Contract(contractAddresses_json_1.default["Diamond"], TreasuryFacet_json_1.default, signer);
     result.provinceFacet = new ethers_1.Contract(contractAddresses_json_1.default["Diamond"], ProvinceFacet_json_1.default, signer);
     result.structureEventFacet = new ethers_1.Contract(contractAddresses_json_1.default["Diamond"], StructureEventFacet_json_1.default, signer);
+    result.armyFacet = new ethers_1.Contract(contractAddresses_json_1.default["Diamond"], ArmyFacet_json_1.default, signer);
     return result;
 }
 exports.getContracts = getContracts;

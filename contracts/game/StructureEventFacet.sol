@@ -8,6 +8,7 @@ import "../libraries/AppStorageExtensions.sol";
 import "../libraries/StructureEventExtensions.sol";
 import "../libraries/ResourceFactorExtensions.sol";
 import "../libraries/LibMeta.sol";
+import "../libraries/InternalCall.sol";
 import "../general/ReentrancyGuard.sol";
 import "./GameAccess.sol";
 import {LibRoles} from "../libraries/LibRoles.sol";
@@ -26,9 +27,9 @@ contract StructureEventFacet is Game, ReentrancyGuard, GameAccess {
         uint256 hero;
     }
 
-    function pack(uint256 high, uint256 low) public pure returns (uint256 packed) {
-        return (uint256(high) << 128) | uint256(low);
-    }
+    // function pack(uint256 high, uint256 low) public pure returns (uint256 packed) {
+    //     return (uint256(high) << 128) | uint256(low);
+    // }
 
     // --------------------------------------------------------------
     // View Functions
@@ -65,8 +66,9 @@ contract StructureEventFacet is Game, ReentrancyGuard, GameAccess {
     function _createStructureEvent(Args calldata args) internal {
         // check that the hero exist and is controlled by user.
         Province storage province = s.provinces[args.provinceId]; // Struct from mapping
-
-        uint256 eventId = pack(args.provinceId, s.provinceStructureEventList[args.provinceId].length);
+        
+        s.structureEventCount++;
+        uint256 eventId = s.structureEventCount;
 
         StructureEvent memory e;
 
@@ -97,9 +99,9 @@ contract StructureEventFacet is Game, ReentrancyGuard, GameAccess {
         s.structureEvents[eventId] = e;
 
         // Remove available structures
-        s.structureEvents[eventId].decreaseAvailableStructure(s);
-
-
+        if(args.eventActionId != EventAction.Build) {
+            s.structureEvents[eventId].decreaseAvailableStructure(s);
+        }
     }
 
     function _payForTimeStructureEvent(uint256 _eventId) internal {
@@ -107,7 +109,6 @@ contract StructureEventFacet is Game, ReentrancyGuard, GameAccess {
         require(structureEvent.state == EventState.Active, "Illegal state");
 
         uint256 price = structureEvent.calculatedCost.goldForTime;
-        console.log("payForTimeStructureEvent price: %s", price);
 
         if (!s.baseSettings.gold.transferFrom(LibMeta.msgSender(), address(this), price))
             revert("KingsGold transfer failed from sender to treasury.");
@@ -120,24 +121,18 @@ contract StructureEventFacet is Game, ReentrancyGuard, GameAccess {
         StructureEvent storage e = s.getStructureEvent(_eventId);
         require(e.state != EventState.Completed && e.state != EventState.Cancelled, "Illegal state");
 
-        if (e.eventActionId == EventAction.Build) {
-            // Add structure to province
-            e.build(s);
-        } else if (e.eventActionId == EventAction.Produce) {
-            e.produce(s);
-            //_completeUpgradeStructureEvent(_eventId);
-        } else if (e.eventActionId == EventAction.Dismantle) {
-            e.dismantle(s);
-        } else if (e.eventActionId == EventAction.Burn) {
-            e.burn(s);
-        }
+        AssetAction memory assetAction = s.getAssetAction(e.assetTypeId, e.eventActionId);
+
+        bytes memory callData =  abi.encodeWithSignature(assetAction.method, _eventId);
+        InternalCall.delegateCall(callData);
 
         // Update the population
         Province storage province = s.getProvince(e.provinceId);
         e.updatePopulation(province);
 
-        e.increaseAvailableStructure(s);
-
+        if(e.eventActionId != EventAction.Build) {
+            e.increaseAvailableStructure(s);
+        }
 
         e.state = e.hasTimeExpired() ? EventState.Completed : EventState.Cancelled;
         e.endTime = block.timestamp;

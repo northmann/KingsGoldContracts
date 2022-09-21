@@ -2,6 +2,7 @@ const { ethers } = require("hardhat");
 const { BigNumber, utils } = require("ethers");
 const { getAssetData, getAssetActionData } = require("../../dist/Assets.js");
 const { getAppSettings } = require("../../dist/appSettings.js");
+const { getArmyUnitTypeRawData } = require("../../dist/army.js");
 
 
 const eth0 = BigNumber.from(0);
@@ -47,10 +48,23 @@ async function initAppStoreAssetAction(owner, diamondAddress) {
   console.log("AssetActions initialized");
 }
 
+async function initAppStoreArmyUnitTypes(owner, diamondAddress) {
+  let contract = await ethers.getContractAt('ConfigurationFacet', diamondAddress, owner);
+
+  let arr = getArmyUnitTypeRawData();
+
+  let tx = await contract.setAppStoreArmyUnitTypes(arr);
+  await tx.wait();
+
+  console.log("ArmyUnitTypes initialized");
+}
+  
+
 async function deployData(owner, diamondAddress) {
   await initBaseSettings(owner, diamondAddress);
   await initAppStoreAssets(owner, diamondAddress);
   await initAppStoreAssetAction(owner, diamondAddress);
+  await initAppStoreArmyUnitTypes(owner, diamondAddress);
 
   console.log("Data initialized");
   let userContract = await ethers.getContractAt('UserFacet', diamondAddress, owner);

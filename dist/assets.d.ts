@@ -1,5 +1,5 @@
 import { BigNumber } from 'ethers';
-import { AssetTypeEnum, AssetGroupEnum } from './constants';
+import { AssetTypeEnum, AssetProductEnum } from './constants';
 export declare const zeroCost: {
     manPower: BigNumber;
     manPowerAttrition: BigNumber;
@@ -19,6 +19,7 @@ export declare const cost: {
     attrition: BigNumber;
     penalty: BigNumber;
     food: BigNumber;
+    amount: BigNumber;
     manPowerAttrition: BigNumber;
     time: BigNumber;
     goldForTime: BigNumber;
@@ -26,7 +27,6 @@ export declare const cost: {
     rock: BigNumber;
     iron: BigNumber;
     gold: BigNumber;
-    amount: BigNumber;
 };
 export declare const reward: {
     manPower: BigNumber;
@@ -46,6 +46,6 @@ export declare const assets: any;
 export declare function getAssetActionData(): any;
 export declare function getAssetData(): any;
 export declare function getAsset(typeId: AssetTypeEnum): any;
-export declare function getAssetsByGroup(groupId: AssetGroupEnum): any;
+export declare function getAssetsByGroup(productId: AssetProductEnum): any;
 export declare function getAssetAction(asset: any, eventActionId: any): any;
 //# sourceMappingURL=assets.d.ts.map

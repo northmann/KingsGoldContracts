@@ -27,11 +27,11 @@ task("getProvinceStructures", "Prints getProvinceStructures json data")
   });
 
   task("getProvinceActiveStructureEvents", "Prints getProvinceStructures json data")
-  .addParam("contract", "The contract's address")
+  .addParam("diamond", "The diamond's address")
   .addOptionalParam("id", "The Province ID number", 0, types.int)
   .setAction(async (taskArgs) => {
 
-    const contract = await ethers.getContractAt('ProvinceFacet', taskArgs.contract);
+    const contract = await ethers.getContractAt('ProvinceFacet', taskArgs.diamond);
     const data = await contract.getProvinceActiveStructureEvents(taskArgs.id);
     console.log(data);
   });
@@ -86,9 +86,9 @@ task("getAssetAction", "Prints AssetAction json data")
 
 
 task("setAppStoreAssetActions", "Deploys the AssetActions")
-  .addParam("contract", "The contract's address")
+  .addParam("diamond", "The diamond's address")
   .setAction(async (taskArgs) => {
-    const contract = await ethers.getContractAt('ConfigurationFacet', taskArgs.contract);
+    const contract = await ethers.getContractAt('ConfigurationFacet', taskArgs.diamond);
 
     const arr = getAssetActionData();
 
@@ -116,9 +116,9 @@ task("setBaseSettings", "Deploys the initialisation data")
 
 
 task("setAppStoreAssets", "Deploys the Assets")
-  .addParam("contract", "The contract's address")
+  .addParam("diamond", "The diamond's address")
   .setAction(async (taskArgs) => {
-    const contract = await ethers.getContractAt('ConfigurationFacet', taskArgs.contract);
+    const contract = await ethers.getContractAt('ConfigurationFacet', taskArgs.diamond);
 
     let assets = getAssetData();
 
