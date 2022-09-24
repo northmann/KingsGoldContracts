@@ -4,7 +4,7 @@ import { parseUnits } from 'ethers/lib/utils';
 
 export enum ArmyUnitType {
     None = 0,
-    Militia,
+    Militia = 1,
     Soldier,
     Knight,
     Archer,
@@ -28,10 +28,17 @@ export const ArmyUnitDefault = {
     openDefense: 0,
     seigeAttack: 0,
     seigeDefense: 0,
-    speed : 5,
+    speed : 0,
     priority: 0,
     image100: "default.webp",
 }
+
+export const ArmyUnit = {
+    armyUnitTypeId: ArmyUnitType.None,
+    amount: 0,
+    shares: 0,
+}
+
 
 export const armyUnitTypes: any = {
     [ArmyUnitType.None]: {

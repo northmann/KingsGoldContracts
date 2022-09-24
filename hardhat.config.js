@@ -11,6 +11,8 @@ require("./dist/tasks/diamondCutFacet");
 require("./dist/tasks/ownershipFacet");
 require("./dist/tasks/userFacet");
 require("./dist/tasks/armyFacet");
+require("./dist/tasks/treasuryFacet");
+
 
 require("./tasks/ksg");
 

@@ -13,7 +13,7 @@ import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.
 import "../interfaces/ITreasury.sol";
 import "../libraries/LibAppStorage.sol";
 import "../general/ReentrancyGuard.sol";
-
+import "../general/Game.sol";
 
 // Treasury is a facet of the game that manages the treasury of the game.
 contract TreasuryFacet is Game, ITreasury, ReentrancyGuard {

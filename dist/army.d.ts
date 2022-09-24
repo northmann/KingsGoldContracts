@@ -25,6 +25,10 @@ export declare const ArmyUnitDefault: {
     priority: number;
     image100: string;
 };
+export declare const ArmyUnit: {
+    armyUnitTypeId: ArmyUnitType;
+    amount: number;
+};
 export declare const armyUnitTypes: any;
 export declare function getArmyUnitTypeRawData(): any;
 //# sourceMappingURL=army.d.ts.map

@@ -3,7 +3,42 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_armyId",
+        "name": "_provinceId",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "enum ArmyUnitType",
+            "name": "armyUnitTypeId",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "shares",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct ArmyUnit[]",
+        "name": "_units",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "createArmy",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_sourceArmyId",
         "type": "uint256"
       }
     ],
@@ -32,6 +67,11 @@
                 "internalType": "uint256",
                 "name": "amount",
                 "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "shares",
+                "type": "uint256"
               }
             ],
             "internalType": "struct ArmyUnit[]",
@@ -55,12 +95,22 @@
           },
           {
             "internalType": "uint256",
-            "name": "currentProvinceId",
+            "name": "provinceArmyIndex",
             "type": "uint256"
           },
           {
             "internalType": "uint256",
-            "name": "targetProvinceId",
+            "name": "departureArmyIndex",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "provinceId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "departureProvinceId",
             "type": "uint256"
           },
           {
@@ -80,6 +130,176 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_sourceArmyId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getArmyUnits",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "enum ArmyUnitType",
+            "name": "armyUnitTypeId",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "shares",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct ArmyUnit[]",
+        "name": "units",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "provinceId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getProvinceArmies",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "id",
+            "type": "uint256"
+          },
+          {
+            "internalType": "enum ArmyState",
+            "name": "state",
+            "type": "uint8"
+          },
+          {
+            "components": [
+              {
+                "internalType": "enum ArmyUnitType",
+                "name": "armyUnitTypeId",
+                "type": "uint8"
+              },
+              {
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "shares",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct ArmyUnit[]",
+            "name": "units",
+            "type": "tuple[]"
+          },
+          {
+            "internalType": "uint256",
+            "name": "hero",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "ownerArmyIndex",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "provinceArmyIndex",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "departureArmyIndex",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "provinceId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "departureProvinceId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "startTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "endTime",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct Army[]",
+        "name": "armies",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_sourceArmyId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_targetArmyId",
+        "type": "uint256"
+      }
+    ],
+    "name": "mergeArmy",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_sourceArmyId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_destinationId",
+        "type": "uint256"
+      }
+    ],
+    "name": "moveArmy",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -130,6 +350,111 @@
       }
     ],
     "name": "produceSoldier",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_sourceArmyId",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "enum ArmyUnitType",
+            "name": "armyUnitTypeId",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "shares",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct ArmyUnit[]",
+        "name": "_units",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "splitArmy",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_sourceArmyId",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "enum ArmyUnitType",
+            "name": "armyUnitTypeId",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "shares",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct ArmyUnit[]",
+        "name": "units",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "updateArmy",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_provinceId",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "enum ArmyUnitType",
+            "name": "armyUnitTypeId",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "shares",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct ArmyUnit[]",
+        "name": "_units",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "updateGarrison",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

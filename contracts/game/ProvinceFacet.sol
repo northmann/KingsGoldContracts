@@ -7,6 +7,7 @@ import "../libraries/LibAppStorage.sol";
 import "../libraries/AppStorageExtensions.sol";
 import "../libraries/LibMeta.sol";
 import "../general/ReentrancyGuard.sol";
+import "../general/Game.sol";
 import {LibRoles} from "../libraries/LibRoles.sol";
 import "./GameAccess.sol";
 

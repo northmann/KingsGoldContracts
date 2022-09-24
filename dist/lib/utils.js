@@ -1,9 +1,17 @@
 "use strict";
-//import { ethers } from "ethers";
+//import { parseUnits, BigNumber } from 'ethers';
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getFunctionSignatures = exports.getSigner = void 0;
+exports.deployContract = exports.getFunctionSignatures = exports.getSigner = exports.setBalance = void 0;
 //import { Signer } from "@ethersproject/abstract-signer";
 const ethers_ledger_1 = require("@northmann/ethers-ledger");
+const utils_1 = require("ethers/lib/utils");
+async function setBalance(hre, signer, amount) {
+    await hre.network.provider.request({
+        method: "hardhat_setBalance",
+        params: [signer, amount.toHexString()],
+    });
+}
+exports.setBalance = setBalance;
 async function getSigner(hre, diamondAddress, useledger) {
     //Instantiate the Signer
     let signer;
@@ -20,10 +28,12 @@ async function getSigner(hre, diamondAddress, useledger) {
             console.log("signer address: ", await signer.getAddress());
             const owner = await signer.getAddress();
             console.log("adding balance to owner: ", owner);
-            await hre.network.provider.request({
-                method: "hardhat_setBalance",
-                params: [owner, "0x100000000000000000000000"],
-            });
+            const value = (0, utils_1.parseUnits)("0x100000000000000000000000", 1); // 100
+            setBalance(hre, owner, value);
+            // await hre.network.provider.request({
+            //   method: "hardhat_setBalance",
+            //   params: [owner, "0x100000000000000000000000"],
+            // });
             // const feeData = await hre.ethers.provider.getFeeData();
             // //const feeDataInEth = hre.ethers.utils.formatEther(feeData);
             // console.log(`feeData: `, feeData);
@@ -73,4 +83,11 @@ function getFunctionSignatures(contract) {
     return names;
 }
 exports.getFunctionSignatures = getFunctionSignatures;
+async function deployContract(hre, contractName, signer, ...args) {
+    const Contract = await hre.ethers.getContractFactory(contractName, signer);
+    const instance = await Contract.deploy(...args);
+    console.log(`${contractName} contract deployed to ${instance.address}`);
+    return instance;
+}
+exports.deployContract = deployContract;
 //# sourceMappingURL=utils.js.map

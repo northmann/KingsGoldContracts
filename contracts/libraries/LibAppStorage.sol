@@ -162,7 +162,7 @@ struct User {
     uint256 vassalFee; // Should never exceed 100%. The fee that a vassal pays to the owner.
     
     uint256[] provinces;
-    uint256[] armies;
+    //uint256[] armyList;
 
     //address[] allies;
 
@@ -208,6 +208,7 @@ struct ArmyUnitProperties {
 struct ArmyUnit {
     ArmyUnitType armyUnitTypeId;
     uint256 amount;
+    uint256 shares;
 }
 
 struct Army {
@@ -221,13 +222,17 @@ struct Army {
 
     address owner; // The owner of the army.
     uint256 ownerArmyIndex; // The index of the army in the owner's army list.
+
+    uint256 provinceArmyIndex; // The index of the province list the army is in.
+    uint256 departureArmyIndex; // The index of the departure list the army is in.
     
-    uint256 currentProvinceId; // The province the army is currently in or moving from.
-    uint256 targetProvinceId; // The province the army is moving to. 
+    uint256 provinceId; // The province the army is currently in or moving to.
+    uint256 departureProvinceId; // The province the army is moving from. 
 
     uint256 startTime;
     uint256 endTime;
 
+    //string name; // The name of the army. Auto generated if not set. Use hero?
 }
 
 
@@ -251,6 +256,7 @@ struct Province {
     uint256 level; // The level of the province. This is the level of the highest structure in the province.
 
     AssetType[] structureList;
+    //uint256[] armyList; // The armies in the province. Move to mapping as this can get very large. 
 }
 
 
@@ -309,10 +315,17 @@ struct AppStorage {
 
     mapping(ArmyUnitType => ArmyUnitProperties) armyUnitTypes;
 
+    mapping(uint256 => uint256[]) provinceArmies; // The armies in a province. This includes the garrison, arriving, and idle armies.
+    mapping(uint256 => uint256[]) departureArmies; // The departure armies in a province. Index is province.id
+    mapping(address => uint256[]) userArmies; // The departure armies in a province. Index is owner address
+    mapping(address => mapping(uint256 => Army)) armyShares; // Claims on army units after merge. Index is user address & army.id
+
+
     mapping(uint256 => Army) armies;
     mapping(uint256 => Hero) heroes;
 
     uint256 structureEventCount;
+    uint256 armyCount;
 
     Province provinceTemplate;
 
@@ -325,8 +338,4 @@ library LibAppStorage {
             ds.slot := 0
         }
     }
-}
-
-contract Game {
-    AppStorage internal s;
 }

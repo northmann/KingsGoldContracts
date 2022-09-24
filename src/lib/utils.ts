@@ -1,10 +1,21 @@
-//import { ethers } from "ethers";
+//import { parseUnits, BigNumber } from 'ethers';
 
 //import { Signer } from "@ethersproject/abstract-signer";
 import { LedgerSigner } from "@northmann/ethers-ledger";
+import { BigNumber } from "ethers";
+import { parseUnits } from "ethers/lib/utils";
 
 
-export async function getSigner(hre: any, diamondAddress: string, useledger: boolean) {
+export async function setBalance(hre: any, signer: any, amount: BigNumber) {
+  
+  await hre.network.provider.request({
+    method: "hardhat_setBalance",
+    params: [signer, amount.toHexString()],
+  });
+}
+
+
+export async function getSigner(hre: any, diamondAddress: string | undefined, useledger: any) {
     //Instantiate the Signer
     let signer: any;
   
@@ -24,10 +35,12 @@ export async function getSigner(hre: any, diamondAddress: string, useledger: boo
           const owner = await signer.getAddress();
   
           console.log("adding balance to owner: ", owner);
-          await hre.network.provider.request({
-            method: "hardhat_setBalance",
-            params: [owner, "0x100000000000000000000000"],
-          });
+          const value = parseUnits("0x100000000000000000000000", 1); // 100
+          setBalance(hre, owner, value);
+          // await hre.network.provider.request({
+          //   method: "hardhat_setBalance",
+          //   params: [owner, "0x100000000000000000000000"],
+          // });
   
   
           // const feeData = await hre.ethers.provider.getFeeData();
@@ -93,3 +106,12 @@ export async function getSigner(hre: any, diamondAddress: string, useledger: boo
     }, [])
     return names;
   }
+
+  
+export async function deployContract(hre: any, contractName: any, signer: any, ...args: any) {
+  const Contract = await hre.ethers.getContractFactory(contractName, signer);
+  const instance = await Contract.deploy(...args);
+  console.log(`${contractName} contract deployed to ${instance.address}`);
+
+  return instance;
+}

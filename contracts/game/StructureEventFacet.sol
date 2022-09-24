@@ -10,6 +10,7 @@ import "../libraries/ResourceFactorExtensions.sol";
 import "../libraries/LibMeta.sol";
 import "../libraries/InternalCall.sol";
 import "../general/ReentrancyGuard.sol";
+import "../general/Game.sol";
 import "./GameAccess.sol";
 import {LibRoles} from "../libraries/LibRoles.sol";
 

@@ -5,6 +5,8 @@ import "hardhat/console.sol";
 
 import "../libraries/LibAppStorage.sol";
 import "../libraries/AppStorageExtensions.sol";
+import "../general/Game.sol";
+
 
 contract UserFacet is Game {
     using AppStorageExtensions for AppStorage;

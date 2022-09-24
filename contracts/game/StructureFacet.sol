@@ -6,6 +6,8 @@ import "hardhat/console.sol";
 import "../libraries/LibAppStorage.sol";
 import "../libraries/StructureEventExtensions.sol";
 import "../general/InternalCallGuard.sol";
+import "../general/Game.sol";
+
 
 contract StructureFacet is Game, InternalCallGuard {
     using StructureEventExtensions for StructureEvent;

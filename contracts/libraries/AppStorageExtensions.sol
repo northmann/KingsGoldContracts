@@ -37,7 +37,7 @@ library AppStorageExtensions {
 
     function getUser(AppStorage storage self) internal view returns (User storage user) {
         user = self.users[LibMeta.msgSender()];
-        console.log("s.getUser() - msg.sender: %s - number of provinces: %s", LibMeta.msgSender(), user.provinces.length);
+        //console.log("s.getUser() - msg.sender: %s - number of provinces: %s", LibMeta.msgSender(), user.provinces.length);
     }
 
     function getUser(AppStorage storage self, address _target) internal view returns (User storage user) {

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getArmyUnitTypeRawData = exports.armyUnitTypes = exports.ArmyUnitDefault = exports.ArmyState = exports.ArmyUnitType = void 0;
+exports.getArmyUnitTypeRawData = exports.armyUnitTypes = exports.ArmyUnit = exports.ArmyUnitDefault = exports.ArmyState = exports.ArmyUnitType = void 0;
 var ArmyUnitType;
 (function (ArmyUnitType) {
     ArmyUnitType[ArmyUnitType["None"] = 0] = "None";
@@ -26,9 +26,13 @@ exports.ArmyUnitDefault = {
     openDefense: 0,
     seigeAttack: 0,
     seigeDefense: 0,
-    speed: 5,
+    speed: 0,
     priority: 0,
     image100: "default.webp",
+};
+exports.ArmyUnit = {
+    armyUnitTypeId: ArmyUnitType.None,
+    amount: 0,
 };
 exports.armyUnitTypes = {
     [ArmyUnitType.None]: {

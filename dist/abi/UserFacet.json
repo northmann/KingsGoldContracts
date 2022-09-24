@@ -90,7 +90,7 @@
                     },
                     {
                         "internalType": "uint256[]",
-                        "name": "armies",
+                        "name": "armyList",
                         "type": "uint256[]"
                     }
                 ],
