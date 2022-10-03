@@ -1,0 +1,635 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.4;
+
+
+import "@openzeppelin/contracts/utils/Strings.sol";
+// Battle effects
+// Base: Unit power
+// Apply bonuses
+// - Fortification (Bonus added to defence)
+// - Hero (not implemented)
+// - Morale (not implemented)
+// Hit calculation ----
+// Base: Hits
+// Random: GaussianDistribution
+// Army size difference. (Base on attack and defence power)
+
+// Later ------
+
+
+import "./ArmyExtensions.sol";
+
+
+contract DiceRolls {
+    using ArmyExtensions for Army;
+
+
+    // Army attackingArmy;
+    // Army defendingArmy;
+
+
+    struct AppStorage {
+            mapping(ArmyUnitType => ArmyUnitProperties) armyUnitTypes;
+            mapping(uint256 => Army) armies;
+    }
+
+    AppStorage s;
+
+    constructor() {
+        Army storage attackingArmy = s.armies[0];
+        Army storage defendingArmy = s.armies[1];
+
+
+        attackingArmy.units[ArmyUnitType.Militia] = ArmyUnit(ArmyUnitType.Militia, 10, 0); // add new unit
+        attackingArmy.units[ArmyUnitType.Archer] = ArmyUnit(ArmyUnitType.Archer, 100, 0); // add new unit
+        attackingArmy.units[ArmyUnitType.Soldier] = ArmyUnit(ArmyUnitType.Soldier, 200, 0); // add new unit
+        attackingArmy.units[ArmyUnitType.Knight] = ArmyUnit(ArmyUnitType.Knight, 10, 0); // add new unit
+        attackingArmy.units[ArmyUnitType.Catapult] = ArmyUnit(ArmyUnitType.Catapult, 1, 0); 
+
+        defendingArmy.units[ArmyUnitType.Militia] = ArmyUnit(ArmyUnitType.Militia, 10, 0); // add new unit
+        defendingArmy.units[ArmyUnitType.Archer] = ArmyUnit(ArmyUnitType.Archer, 50, 0); // add new unit
+        defendingArmy.units[ArmyUnitType.Soldier] = ArmyUnit(ArmyUnitType.Soldier, 100, 0); // add new unit
+        defendingArmy.units[ArmyUnitType.Knight] = ArmyUnit(ArmyUnitType.Knight, 5, 0); // add new unit
+        defendingArmy.units[ArmyUnitType.Catapult] = ArmyUnit(ArmyUnitType.Catapult, 1, 0); 
+
+        s.armyUnitTypes[ArmyUnitType.Militia] = ArmyUnitProperties({        
+            armyUnitTypeId: ArmyUnitType.Militia,
+            openAttack: 0,
+            openDefence: 100,
+            seigeAttack: 0,
+            seigeDefence: 200,
+            speed: 0,
+            priority: 100
+        });
+
+        s.armyUnitTypes[ArmyUnitType.Archer] = ArmyUnitProperties({        
+            armyUnitTypeId: ArmyUnitType.Archer,
+            openAttack: 150,
+            openDefence: 150,
+            seigeAttack: 150,
+            seigeDefence: 300,
+            speed: 200,
+            priority: 300
+        });
+
+        s.armyUnitTypes[ArmyUnitType.Soldier] = ArmyUnitProperties({        
+            armyUnitTypeId: ArmyUnitType.Soldier,
+            openAttack: 200,
+            openDefence: 200,
+            seigeAttack: 100,
+            seigeDefence: 300,
+            speed: 200,
+            priority: 200
+        });
+
+        s.armyUnitTypes[ArmyUnitType.Knight] = ArmyUnitProperties({        
+            armyUnitTypeId: ArmyUnitType.Knight,
+            openAttack: 400,
+            openDefence: 100,
+            seigeAttack: 100,
+            seigeDefence: 400,
+            speed: 300,
+            priority: 400
+        });
+
+        s.armyUnitTypes[ArmyUnitType.Catapult] = ArmyUnitProperties({        
+            armyUnitTypeId: ArmyUnitType.Catapult,
+            openAttack: 0,
+            openDefence: 0,
+            seigeAttack: 500,
+            seigeDefence: 0,
+            speed: 100,
+            priority: 500
+        });
+
+    }
+
+
+    // 
+
+    //function battle(uint256 _defendingArmyId, ArmyUnit[] memory _callUnits, uint256 _rounds) public returns(uint256 battleDone) {
+    function battle(uint256 _rounds) public {
+
+        //require(_defendingArmyId > 0, "ArmyFacet_exchangeArmy: Invalid defending army id, cannot be zero");
+        
+        // Army storage targetArmy = s.armies[_targetArmyId];
+        // Army storage sourceArmy = (_sourceArmyId > 0) ? s.armies[_sourceArmyId] : _createArmy(targetArmy.provinceId, msgSender()); // Create army if source army is 0
+        // Army storage sharesArmy = s.armyShares[sourceArmy.owner][_targetArmyId];
+
+        //require(msg.sender == sourceArmy.owner, "ArmyFacet_exchangeArmy: Not source army owner");
+        //require(sourceArmy.provinceId == targetArmy.provinceId, "ArmyFacet_exchangeArmy: Source and target army is not in the same province");
+        //require(sourceArmy.state == ArmyState.Idle, "ArmyFacet_exchangeArmy: Source Army not idle");
+        //require(targetArmy.state == ArmyState.Idle, "ArmyFacet_exchangeArmy: Target Army not idle");
+        //Army storage targetArmy = s.armies[_targetArmyId];
+        //Army storage sourceArmy = s.armies[_sourceArmyId];
+        Army storage _attackingArmy = s.armies[0];
+        Army storage _defendingArmy = s.armies[1];
+
+        //ArmyUnit[ArmyUnitTypeCount] memory attackingUnits;
+        // for(uint8 i = 0; i < ArmyUnitTypeCount; i++) {
+        //     attackingUnits[i] = attackingArmy.units[ArmyUnitType(i)];
+        // }
+
+
+        //ArmyUnit[] memory _callUnits = attackingArmy.units;
+        //require(_callUnits.length == attackingArmy.units.length, "Not equal length on attacktingUnits after memory copy");
+        //attackingArmy.verifyCallUnits(_callUnits);
+        //ArmyUnit[ArmyUnitTypeCount] memory attackingUnits = ArmyExtensions.getFullUnitArray(_callUnits);
+
+        //require(attackingUnits.length == attackingArmy.units.length, string(abi.encodePacked("Not equal length on attacktingUnits getFullUnitArray(_callUnits): ", Strings.toString(attackingUnits.length), " != ", Strings.toString(attackingArmy.units.length))));
+
+
+
+        ArmyState defendingState = _defendingArmy.state;
+        battleResult[ArmyUnitTypeCount] memory br;
+        ArmyUnitProperties[ArmyUnitTypeCount] memory armyUnitProperties;
+        ArmyUnit[ArmyUnitTypeCount] memory attackUnit;
+        ArmyUnit[ArmyUnitTypeCount] memory defenceUnit;
+        
+
+        // Load up in memory ---------
+        for(uint8 i = 1; i < ArmyUnitTypeCount; i++) {
+            br[i].armyUnitTypeId = ArmyUnitType(i);
+            armyUnitProperties[i] = s.armyUnitTypes[ArmyUnitType(i)];
+            attackUnit[i] = _attackingArmy.units[ArmyUnitType(i)];
+            defenceUnit[i] = _defendingArmy.units[ArmyUnitType(i)];
+        }
+
+        // Process rounds --------
+        for(uint256 r = 0; r < _rounds; r++) {
+
+            // Process hits
+            uint256 totalAttackHit = 0;
+            uint256 totalDefenceHit = 0;
+
+            for(uint8 i = 1; i < ArmyUnitTypeCount; i++) {
+                uint256 attack = (defendingState == ArmyState.Garrison) ? armyUnitProperties[i].seigeAttack : armyUnitProperties[i].openAttack;
+                br[i].attackHit = (attack * attackUnit[i].amount) / maxPower;
+                totalAttackHit += br[i].attackHit;
+
+                uint256 defence = (defendingState == ArmyState.Garrison) ? armyUnitProperties[i].seigeDefence : armyUnitProperties[i].openDefence;
+                br[i].defenceHit = (defence * defenceUnit[i].amount) / maxPower;
+                totalDefenceHit += br[i].defenceHit;
+            }
+
+            // Process Casualties --------
+            for(uint8 i = 1; i < ArmyUnitTypeCount; i++) {
+
+                if(totalAttackHit > 0) {
+                    if(attackUnit[i].amount >= totalAttackHit) {
+                        attackUnit[i].amount -= totalAttackHit;
+                        totalAttackHit = 0;
+                    } else {
+                        totalAttackHit -= attackUnit[i].amount;
+                        attackUnit[i].amount = 0;
+                    }
+                }
+
+                if(totalDefenceHit > 0) {
+                    if(defenceUnit[i].amount >= totalDefenceHit) {
+                        defenceUnit[i].amount -= totalDefenceHit;
+                        totalDefenceHit = 0;
+                    } else {
+                        totalDefenceHit -= defenceUnit[i].amount;
+                        defenceUnit[i].amount = 0;
+                    }
+                }
+            }
+
+            if(totalAttackHit == 0 || totalDefenceHit == 0)
+                break;
+        }
+
+        // Write back to storage
+        for(uint8 i = 1; i < ArmyUnitTypeCount; i++) {
+            _attackingArmy.units[ArmyUnitType(i)] = attackUnit[i];
+            _defendingArmy.units[ArmyUnitType(i)] = defenceUnit[i];
+        } 
+
+            
+
+        
+    }
+
+    struct battleResult {
+        ArmyUnitType armyUnitTypeId;
+        uint256 attackHit;
+        uint256 defenceHit;
+    }
+
+    event AttackResult(uint256 indexed _attackingArmyId, uint256 indexed _defendingArmyId, uint256 round, battleResult[]);
+
+    // ArmyUnit[ArmyUnitTypeCount] memory _attackingUnits,
+    function _battleRound(Army storage _attackingArmy,  Army storage _defendingArmy, uint256 _rounds) internal {
+
+               
+    }
+
+
+
+    function _battleRoundOld(Army storage _attackingArmy, ArmyUnit[ArmyUnitTypeCount] memory _attackingUnits, Army storage _defendingArmy, uint256 _round) internal returns(uint256 battleDone) {
+        // Phases
+        // 1. Attack first strike / Defence first strike - Takeout casualties.
+        // 2. Attack With catapults if defending is garrison. - Takeout casualties.
+        // 3. Attack with militia, soldiers, knights / +Defence   
+        // 4. Takout casualties 
+        battleDone = 0;
+        // PS! Militia cannot attack, only defend.
+
+        battleResult[] memory battleResults = new battleResult[](ArmyUnitTypeCount);
+        
+        // Phase 1
+        ArmyUnit memory attackingUnit = _attackingUnits[uint8(ArmyUnitType.Archer)];
+
+        battleResult memory br = _unitAttack(_attackingArmy, attackingUnit, _defendingArmy);
+        battleResults[uint8(ArmyUnitType.Archer)] = br;
+
+        battleDone |= _processCasualties(_attackingArmy, br.defenceHit);
+        battleDone |= _processCasualties(_defendingArmy, br.attackHit);
+
+        // Phase 2
+        attackingUnit = _attackingUnits[uint8(ArmyUnitType.Catapult)];
+
+        battleResult memory brCatapult = _unitAttack(_attackingArmy, attackingUnit, _defendingArmy);
+        battleResults[uint8(ArmyUnitType.Catapult)] = brCatapult;
+
+        battleDone |= _processCasualties(_attackingArmy, brCatapult.defenceHit);
+        battleDone |= _processCasualties(_defendingArmy, brCatapult.attackHit);
+
+        // Phase 3
+        attackingUnit = _attackingUnits[uint8(ArmyUnitType.Militia)];
+        battleResult memory brMilitia = _unitAttack(_attackingArmy, attackingUnit, _defendingArmy);
+        battleResults[uint8(ArmyUnitType.Militia)] = brMilitia;
+
+
+        attackingUnit = _attackingUnits[uint8(ArmyUnitType.Soldier)];
+        battleResult memory brSoldier = _unitAttack(_attackingArmy, attackingUnit, _defendingArmy);
+        battleResults[uint8(ArmyUnitType.Soldier)] = brSoldier;
+
+        attackingUnit = _attackingUnits[uint8(ArmyUnitType.Knight)];
+        battleResult memory brKnight = _unitAttack(_attackingArmy, attackingUnit, _defendingArmy);
+        battleResults[uint8(ArmyUnitType.Knight)] = brKnight;
+
+        // // Phase 4
+        battleDone |= _processCasualties(_attackingArmy, brMilitia.defenceHit+brSoldier.defenceHit+brKnight.defenceHit);
+        battleDone |= _processCasualties(_defendingArmy, brMilitia.attackHit+brSoldier.attackHit+brKnight.attackHit);
+        
+        emit AttackResult(_attackingArmy.id, _defendingArmy.id, _round, battleResults);
+
+        return battleDone;
+    }
+
+    function _unitAttack(Army storage _attackingArmy, ArmyUnit memory _callUnit, Army storage _defendingArmy) 
+        internal view returns(battleResult memory result) 
+    {
+        result.armyUnitTypeId = _callUnit.armyUnitTypeId;
+
+        ArmyUnitProperties storage armyUnitType = s.armyUnitTypes[_callUnit.armyUnitTypeId];
+        
+        ArmyUnit storage _attackingUnit = _attackingArmy.units[_callUnit.armyUnitTypeId];
+        assert(_attackingUnit.armyUnitTypeId == _callUnit.armyUnitTypeId);
+        assert(_attackingUnit.amount > 0);
+        if(_attackingUnit.amount > 0) {
+            uint256 attack = (_defendingArmy.state == ArmyState.Garrison) ? armyUnitType.seigeAttack : armyUnitType.openAttack;
+            if(attack > 0) { // Only calculate the roll if the unit is actually able to attack.
+                uint256 amount = (_attackingUnit.amount >= _callUnit.amount) ? _callUnit.amount : _attackingUnit.amount; // callunit defines the number of attacking units.
+                //result.attackHit = addGaussian(hits(attack, amount), amount);
+                result.attackHit = hits(attack, amount);
+            }
+        }
+
+        ArmyUnit storage defendingUnit = _defendingArmy.units[_attackingUnit.armyUnitTypeId];
+        if(defendingUnit.amount > 0) {
+            uint256 defence = (_defendingArmy.state == ArmyState.Garrison) ? armyUnitType.seigeDefence : armyUnitType.openDefence;
+            if(defence > 0) { 
+                //result.defenceHit = addGaussian(hits(defence, defendingUnit.amount), defendingUnit.amount);
+                result.defenceHit = hits(defence, defendingUnit.amount);
+            }
+        }
+    }
+
+
+
+    function printAttack() public view returns(ArmyUnit[ArmyUnitTypeCount] memory units)
+     {
+        Army storage army = s.armies[0];
+        for(uint8 i = 0; i < ArmyUnitTypeCount; i++) {
+            units[i] = army.units[ArmyUnitType(i)];
+        }
+         
+     }
+    function printDefence() public view returns(ArmyUnit[ArmyUnitTypeCount] memory units)
+     {
+        Army storage army = s.armies[1];
+        for(uint8 i = 0; i < ArmyUnitTypeCount; i++) {
+            units[i] = army.units[ArmyUnitType(i)];
+        }
+
+     }
+    
+    function processCasualtiesTest(uint256 _amount) public returns(uint256 state_) {
+        Army storage defendingArmy = s.armies[1];
+        state_ = _processCasualties(defendingArmy, _amount);
+    }
+
+    function _processCasualties(Army storage _army, uint256 _amount) internal returns(uint256 state_) {
+
+        if(_amount == 0) return 0;
+        for(uint8 i = 1; i < ArmyUnitTypeCount; i++) {
+            
+            ArmyUnit storage unit = _army.units[ArmyUnitType(i)];
+            if(unit.amount >= _amount) {
+                unit.amount -= _amount;
+                _amount = 0;
+                break ;
+            } else {
+                _amount -= unit.amount;
+                unit.amount = 0;
+            }
+        }
+        state_ = _amount; // 0 = There is still some army left
+    }
+
+
+
+
+    
+    function addGaussian(uint256 _hits, uint256 _diceRolls) public view returns(uint256 totalHit) {
+        totalHit = _hits;
+
+        
+        uint256 seed = getGaussian(_diceRolls, _diceRolls);
+
+        uint256 ones = countOnes(seed); 
+
+        uint256 median = (_diceRolls > 256) ? 256 / 2 : _diceRolls / 2;
+        
+        uint256 gaussian = gaussianPercent(ones, median);
+
+        uint256 extraHit = (totalHit * gaussian) / 100 ;
+
+        if(ones >= median) 
+            totalHit += extraHit; 
+        else
+            totalHit -= extraHit;
+    }
+
+
+    function gaussianPercent(uint256 ones, uint256 median) public pure returns (uint256) {
+        uint256 diff = (ones >= median) ? ones - median : median - ones;
+
+        return (diff * 100) / median;
+    }
+
+    function hits(uint256 _power, uint256 _diceRolls) public pure returns (uint256) {
+        return (_diceRolls * hitPercent(_power)) / 100;
+    }
+
+    function hitPercent(uint256 _power) public pure returns (uint256) {
+        return ((_power * 100) / maxPower);
+    }
+  
+    function getGaussian(uint256 _seed, uint256 _diceRolls) public view returns(uint256) {
+        return getGaussianSeed(random(_seed), _diceRolls);
+    }
+
+    function countOnes(uint256 n) public pure returns (uint256 count_) {
+        assembly {
+            for { } gt(n, 0) { } {
+                n := and(n, sub(n, 1))
+                count_ := add(count_, 1)
+            }
+        }
+    }
+
+
+    function random(uint256 _seed) public view returns(uint256){
+        return uint256(keccak256(abi.encodePacked(block.timestamp, _seed)));
+    }
+
+    
+    function random2(uint256 _seed) public view returns(uint256) {
+
+        return uint256(keccak256(toBytes(_seed ^ block.timestamp)));
+    }
+
+    event OnesCounted(uint256 indexed index, uint256 onces);
+
+    function randomIteration(uint256 rounds) public view returns(uint256[] memory){
+        uint256 latest = uint256(keccak256(toBytes(block.timestamp)));
+        uint256[] memory result = new uint256[](rounds);
+        for(uint i = 0; i < rounds; i++) {
+            latest ^= latest << 1;
+            //latest = random2(i);
+            result[i] = latest;
+            //result[i] = countOnes(latest);
+            //latest = random(i);
+            //emit OnesCounted(i, countOnes(latest));
+        }
+        return result;
+    }
+
+
+    function toBytes(uint256 x) public pure returns (bytes memory b) {
+       b = new bytes(32);
+        assembly { mstore(add(b, 32), x) }
+    }
+
+
+
+    function getGaussianSeed(uint256 _seed, uint256 _diceRolls) public pure returns(uint256) {
+        if(_diceRolls >= 256)
+            return _seed;
+        return _seed << (256 - _diceRolls);
+    }
+
+    function testRandom(uint256 _count) public view returns(uint256[] memory) {
+        uint256 seed = random(1);
+        uint256 seed2 = random(2);
+
+        uint256[] memory result = new uint256[](_count);
+
+        for(uint256 i = 0; i < _count; i++) 
+        {
+            seed2 = seed ^ seed2;
+            result[i] = countOnes(seed2);
+        }
+        return result;
+    }
+
+
+
+    function testOnes(uint256 _count) public view returns(uint256[2] memory result_) {
+        for(uint256 i = 0; i < _count; i++) 
+        {
+            uint256 seed = random(i);
+
+            result_[0] =countOnes(seed);
+            result_[1] = countOnes2(seed);
+        }
+    }
+
+
+    function testOnes1(uint256 _count) public view returns(uint256[] memory) {
+        uint256[] memory result = new uint256[](_count);
+
+        uint256 seed = random(1);
+        for(uint256 i = 0; i < _count; i++) 
+        {
+            seed = random2(seed);
+            result[i] = countOnes(seed);
+        }
+        return result;
+    }
+
+    function testOnes2(uint256 _count) public view returns(uint256[2] memory result_) {
+        for(uint256 i = 0; i < _count; i++) 
+        {
+            
+            result_[1] = countOnes2(random(i));
+        }
+    }
+
+
+
+
+
+    
+
+     function countOnes2(uint256 n) public pure returns (uint8 count_) {
+        uint8[32] memory lookup = [0,1,1,2, 1,2,2,3, 1,2,2,3, 2,3,3,4,  1,2,2,3, 2,3,3,4, 2,3,3,4, 3,4,4,5];
+        unchecked {
+            while (n > 0) {
+                count_ += lookup[n & 31]; // 11111
+                n = n >> 5;
+            }
+        }
+    }
+
+/* 
+0000 0
+0001 1
+0010 1
+0011 2
+
+0100 1
+0101 2
+0110 2
+0111 3
+
+1000 1
+1001 2
+1010 2
+1011 3
+
+1100 2
+1101 3
+1110 3
+1111 4
+*/
+
+
+
+}
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.4;
+
+enum ArmyUnitType {
+    None,
+    Militia,
+    Soldier,
+    Knight,
+    Archer,
+    Catapult,
+    Last
+}
+    
+    struct ArmyUnitProperties {
+        ArmyUnitType armyUnitTypeId;
+
+        uint128 openAttack;
+        uint128 openDefence;
+        uint128 seigeAttack;
+        uint128 seigeDefence;
+        uint128 speed;
+        uint128 priority;
+        
+}
+
+enum ArmyState {
+    Idle,
+    Garrison,
+    Moving,
+    Last
+}
+
+struct ArmyUnit {
+    ArmyUnitType armyUnitTypeId;
+    uint256 amount;
+    uint256 shares;
+}
+
+
+    struct Army {
+        uint256 id;
+        ArmyState state;
+
+
+        ArmyUnit[] units; // The index is the ArmyUnitType id.
+        
+        uint256 hero; // TokenId of the hero NFT.
+
+        address owner; // The owner of the army.
+        uint256 ownerArmyIndex; // The index of the army in the owner's army list.
+
+        uint256 provinceArmyIndex; // The index of the province list the army is in.
+        uint256 departureArmyIndex; // The index of the departure list the army is in.
+        
+        uint256 provinceId; // The province the army is currently in or moving to.
+        uint256 departureProvinceId; // The province the army is moving from. 
+
+        uint256 startTime;
+        uint256 endTime;
+
+        //string name; // The name of the army. Auto generated if not set. Use hero?
+    }
+
+
+    uint256 constant maxPower = 1000; // Max value of a unit.
+    uint256 constant ArmyUnitTypeCount = 6;
+
+
+library ArmyExtensions {
+    using ArmyExtensions for Army;
+
+
+  
+
+    function getUnit(Army storage self, ArmyUnitType armyUnitTypeId) internal returns (ArmyUnit storage) {
+        for (uint256 i = 0; i < self.units.length; i++) 
+            if (self.units[i].armyUnitTypeId == armyUnitTypeId) 
+                return self.units[i];
+
+        self.units.push(ArmyUnit(armyUnitTypeId, 0, 0)); // add new unit
+
+        return self.units[self.units.length-1]; // return new unit from storage
+    }
+
+    function getFullUnitArray(Army storage self) internal view returns(ArmyUnit[ArmyUnitTypeCount] memory units) {
+        return getFullUnitArray(self.units);
+    }
+
+
+    function getFullUnitArray(ArmyUnit[] memory _callUnits) internal pure returns(ArmyUnit[ArmyUnitTypeCount] memory units) {
+         for (uint256 i = 0; i < _callUnits.length; i++) 
+                units[uint8(_callUnits[i].armyUnitTypeId)] = _callUnits[i];
+    }
+
+    function verifyCallUnits(Army storage self, ArmyUnit[] memory _callUnits) internal
+    {
+         for (uint256 i = 0; i < _callUnits.length; i++) {
+             require(self.getUnit(_callUnits[i].armyUnitTypeId).amount >= _callUnits[i].amount, "ArmyFacet: Call unit amount cannot be larger than the army's unit");
+         }
+    }
+
+}

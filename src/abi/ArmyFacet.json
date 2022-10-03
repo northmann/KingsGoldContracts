@@ -1,5 +1,212 @@
 [
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "_attackingArmyId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "_defendingArmyId",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "enum ArmyState",
+            "name": "defendingState",
+            "type": "uint8"
+          },
+          {
+            "components": [
+              {
+                "internalType": "enum ArmyUnitType",
+                "name": "armyUnitTypeId",
+                "type": "uint8"
+              },
+              {
+                "components": [
+                  {
+                    "internalType": "enum ArmyUnitType",
+                    "name": "armyUnitTypeId",
+                    "type": "uint8"
+                  },
+                  {
+                    "internalType": "uint128",
+                    "name": "openAttack",
+                    "type": "uint128"
+                  },
+                  {
+                    "internalType": "uint128",
+                    "name": "openDefence",
+                    "type": "uint128"
+                  },
+                  {
+                    "internalType": "uint128",
+                    "name": "seigeAttack",
+                    "type": "uint128"
+                  },
+                  {
+                    "internalType": "uint128",
+                    "name": "seigeDefence",
+                    "type": "uint128"
+                  },
+                  {
+                    "internalType": "uint128",
+                    "name": "speed",
+                    "type": "uint128"
+                  },
+                  {
+                    "internalType": "uint128",
+                    "name": "priority",
+                    "type": "uint128"
+                  }
+                ],
+                "internalType": "struct ArmyUnitProperties",
+                "name": "armyUnitProperties",
+                "type": "tuple"
+              },
+              {
+                "components": [
+                  {
+                    "internalType": "enum ArmyUnitType",
+                    "name": "armyUnitTypeId",
+                    "type": "uint8"
+                  },
+                  {
+                    "internalType": "uint256",
+                    "name": "amount",
+                    "type": "uint256"
+                  },
+                  {
+                    "internalType": "uint256",
+                    "name": "shares",
+                    "type": "uint256"
+                  }
+                ],
+                "internalType": "struct ArmyUnit",
+                "name": "attack",
+                "type": "tuple"
+              },
+              {
+                "components": [
+                  {
+                    "internalType": "enum ArmyUnitType",
+                    "name": "armyUnitTypeId",
+                    "type": "uint8"
+                  },
+                  {
+                    "internalType": "uint256",
+                    "name": "amount",
+                    "type": "uint256"
+                  },
+                  {
+                    "internalType": "uint256",
+                    "name": "shares",
+                    "type": "uint256"
+                  }
+                ],
+                "internalType": "struct ArmyUnit",
+                "name": "defence",
+                "type": "tuple"
+              }
+            ],
+            "internalType": "struct BattleUnit[6]",
+            "name": "units",
+            "type": "tuple[6]"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "id",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "totalAttackHit",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "totalDefenceHit",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "totalAttackUnits",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "totalDefenceUnits",
+                "type": "uint256"
+              },
+              {
+                "internalType": "int256",
+                "name": "attackDeviation",
+                "type": "int256"
+              },
+              {
+                "internalType": "int256",
+                "name": "defenceDeviation",
+                "type": "int256"
+              },
+              {
+                "components": [
+                  {
+                    "internalType": "enum ArmyUnitType",
+                    "name": "armyUnitTypeId",
+                    "type": "uint8"
+                  },
+                  {
+                    "internalType": "uint256",
+                    "name": "attackHit",
+                    "type": "uint256"
+                  },
+                  {
+                    "internalType": "uint256",
+                    "name": "defenceHit",
+                    "type": "uint256"
+                  }
+                ],
+                "internalType": "struct BattleHit[6]",
+                "name": "hits",
+                "type": "tuple[6]"
+              }
+            ],
+            "internalType": "struct BattleRound[]",
+            "name": "rounds",
+            "type": "tuple[]"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct Battle",
+        "name": "battle",
+        "type": "tuple"
+      }
+    ],
+    "name": "BattleResult",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_rounds",
+        "type": "uint256"
+      }
+    ],
+    "name": "AttackArmy",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -40,6 +247,46 @@
         "internalType": "uint256",
         "name": "_sourceArmyId",
         "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "enum ArmyUnitType",
+            "name": "armyUnitTypeId",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "shares",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct ArmyUnit[]",
+        "name": "_callUnits",
+        "type": "tuple[]"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_targetArmyId",
+        "type": "uint256"
+      }
+    ],
+    "name": "exchangeArmy",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_armyId",
+        "type": "uint256"
       }
     ],
     "name": "getArmy",
@@ -55,28 +302,6 @@
             "internalType": "enum ArmyState",
             "name": "state",
             "type": "uint8"
-          },
-          {
-            "components": [
-              {
-                "internalType": "enum ArmyUnitType",
-                "name": "armyUnitTypeId",
-                "type": "uint8"
-              },
-              {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "shares",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct ArmyUnit[]",
-            "name": "units",
-            "type": "tuple[]"
           },
           {
             "internalType": "uint256",
@@ -136,42 +361,6 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_sourceArmyId",
-        "type": "uint256"
-      }
-    ],
-    "name": "getArmyUnits",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "enum ArmyUnitType",
-            "name": "armyUnitTypeId",
-            "type": "uint8"
-          },
-          {
-            "internalType": "uint256",
-            "name": "amount",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "shares",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct ArmyUnit[]",
-        "name": "units",
-        "type": "tuple[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
         "name": "provinceId",
         "type": "uint256"
       }
@@ -189,28 +378,6 @@
             "internalType": "enum ArmyState",
             "name": "state",
             "type": "uint8"
-          },
-          {
-            "components": [
-              {
-                "internalType": "enum ArmyUnitType",
-                "name": "armyUnitTypeId",
-                "type": "uint8"
-              },
-              {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "shares",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct ArmyUnit[]",
-            "name": "units",
-            "type": "tuple[]"
           },
           {
             "internalType": "uint256",
@@ -270,25 +437,26 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_sourceArmyId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_targetArmyId",
+        "name": "_seed",
         "type": "uint256"
       }
     ],
-    "name": "mergeArmy",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "name": "getPseudoGaussianDeviation",
+    "outputs": [
+      {
+        "internalType": "int256",
+        "name": "percent_",
+        "type": "int256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_sourceArmyId",
+        "name": "_armyId",
         "type": "uint256"
       },
       {
@@ -358,7 +526,7 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_sourceArmyId",
+        "name": "_armyId",
         "type": "uint256"
       },
       {
@@ -381,41 +549,6 @@
         ],
         "internalType": "struct ArmyUnit[]",
         "name": "_units",
-        "type": "tuple[]"
-      }
-    ],
-    "name": "splitArmy",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_sourceArmyId",
-        "type": "uint256"
-      },
-      {
-        "components": [
-          {
-            "internalType": "enum ArmyUnitType",
-            "name": "armyUnitTypeId",
-            "type": "uint8"
-          },
-          {
-            "internalType": "uint256",
-            "name": "amount",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "shares",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct ArmyUnit[]",
-        "name": "units",
         "type": "tuple[]"
       }
     ],

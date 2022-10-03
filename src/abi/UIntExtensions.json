@@ -1,0 +1,21 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "self",
+        "type": "uint256"
+      }
+    ],
+    "name": "countOnes",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "count_",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  }
+]

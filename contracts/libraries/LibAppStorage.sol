@@ -11,6 +11,10 @@ import "../game/AccessControlFacet.sol";
 //import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 // import "@openzeppelin/contracts/utils/introspection/ERC165Storage.sol";
 
+uint256 constant maxPower = 1000; // Max value of a unit.
+uint256 constant ArmyUnitTypeCount = 6;
+
+
 enum EventState {
     Active,
     PaidFor,
@@ -185,10 +189,8 @@ enum ArmyUnitType {
 
 enum ArmyState {
     Idle,
+    Garrison,
     Moving,
-    Attacking,
-    Defending,
-    Retreating,
     Last
 }
 
@@ -197,13 +199,14 @@ struct ArmyUnitProperties {
     ArmyUnitType armyUnitTypeId;
 
     uint128 openAttack;
-    uint128 openDefense;
+    uint128 openDefence;
     uint128 seigeAttack;
-    uint128 seigeDefense;
-    uint128 speed;
+    uint128 seigeDefence;
+    uint128 speed;  // Catapult 100, Archer 200, Knight 300, Soldier 200, Militia 0 (militia never leaves the province)
     uint128 priority;
     
 }
+
 
 struct ArmyUnit {
     ArmyUnitType armyUnitTypeId;
@@ -211,12 +214,46 @@ struct ArmyUnit {
     uint256 shares;
 }
 
+struct BattleUnit {
+    ArmyUnitType armyUnitTypeId;
+    ArmyUnitProperties armyUnitProperties;
+    ArmyUnit attack;
+    ArmyUnit defence;
+}
+
+struct BattleHit {
+    ArmyUnitType armyUnitTypeId;
+    uint256 attackHit;
+    uint256 defenceHit;
+}
+
+struct BattleRound {
+    uint256 id;
+    uint256 totalAttackHit;
+    uint256 totalDefenceHit;
+
+    uint256 totalAttackUnits;
+    uint256 totalDefenceUnits;
+    
+    int256 attackDeviation;
+    int256 defenceDeviation;
+
+    BattleHit[ArmyUnitTypeCount] hits;
+}
+
+struct Battle {
+    ArmyState defendingState;
+
+    BattleUnit[ArmyUnitTypeCount] units;
+    BattleRound[] rounds;
+}
+
 struct Army {
     uint256 id;
     ArmyState state;
 
 
-    ArmyUnit[] units; // The index is the ArmyUnitType id.
+    //ArmyUnit[] units; // The index is the ArmyUnitType id.
     
     uint256 hero; // TokenId of the hero NFT.
 
@@ -323,6 +360,8 @@ struct AppStorage {
 
     mapping(uint256 => Army) armies;
     mapping(uint256 => Hero) heroes;
+    mapping(uint256 => mapping(ArmyUnitType => ArmyUnit)) armyUnits; // The units of an army. Index is army.id & ArmyUnitType
+
 
     uint256 structureEventCount;
     uint256 armyCount;
@@ -333,6 +372,7 @@ struct AppStorage {
 }
 
 library LibAppStorage {
+
     function appStorage() internal pure returns (AppStorage storage ds) {
         assembly {
             ds.slot := 0

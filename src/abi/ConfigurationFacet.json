@@ -506,7 +506,7 @@
           },
           {
             "internalType": "uint128",
-            "name": "openDefense",
+            "name": "openDefence",
             "type": "uint128"
           },
           {
@@ -516,7 +516,7 @@
           },
           {
             "internalType": "uint128",
-            "name": "seigeDefense",
+            "name": "seigeDefence",
             "type": "uint128"
           },
           {
@@ -556,7 +556,7 @@
           },
           {
             "internalType": "uint128",
-            "name": "openDefense",
+            "name": "openDefence",
             "type": "uint128"
           },
           {
@@ -566,7 +566,7 @@
           },
           {
             "internalType": "uint128",
-            "name": "seigeDefense",
+            "name": "seigeDefence",
             "type": "uint128"
           },
           {
