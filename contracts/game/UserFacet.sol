@@ -7,9 +7,11 @@ import "../libraries/AppStorage.sol";
 import "../libraries/AppStorageExtensions.sol";
 import "../general/Game.sol";
 
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 contract UserFacet is Game {
     using AppStorageExtensions for AppStorage;
+    using EnumerableSet for EnumerableSet.AddressSet;
 
     constructor() {
     }
@@ -19,9 +21,19 @@ contract UserFacet is Game {
     // View Functions
     // --------------------------------------------------------------
 
-    function getUser(address _target) external view returns (User memory) {
-        return s.getUser(_target);
+    function getUser(address _user) external view returns (User memory) {
+        return s.getUser(_user);
     }
+
+    function getUsers() external view returns (User[] memory users_) {
+        address[] memory userIds = s.userList.values();
+        users_ = new User[](userIds.length);
+
+        for(uint256 i = 0; i < userIds.length; i++) {
+            users_[i] = s.users[userIds[i]];
+        }
+    }
+
 
     // --------------------------------------------------------------
     // External Functions
@@ -36,9 +48,9 @@ contract UserFacet is Game {
 
     error UserNotApprovedToJoinAlliance(address _alliance);
 
-    function allianceApprove(address _target) external {
-        require(_target == address(0), "Target is address(0)");
-        s.allianceApprovals[msg.sender][_target] = true;
+    function allianceApprove(address _user) external {
+        require(_user == address(0), "Target is address(0)");
+        s.allianceApprovals[msg.sender][_user] = true;
     }
 
     function isAllianceApproved(address _alliance) public view returns (bool approved) {
