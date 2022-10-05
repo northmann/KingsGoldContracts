@@ -8,11 +8,12 @@ import "../interfaces/IProvinceNFT.sol";
 import "../interfaces/ICommodity.sol";
 import "../game/AccessControlFacet.sol";
 
-//import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 // import "@openzeppelin/contracts/utils/introspection/ERC165Storage.sol";
 
 uint256 constant maxPower = 1000; // Max value of a unit.
 uint256 constant ArmyUnitTypeCount = 6;
+
 
 
 enum EventState {
@@ -129,7 +130,6 @@ struct StructureEvent {
     EventState state; // The state of the event.
     AssetType assetTypeId; // A mapping id to an asset
     uint256 provinceId; // The province this event is in.
-    uint256 provinceActiveEventIndex; // The index of the event in the province's active event list.
     uint256 multiplier; // Multiply the effect of the event. More Farms create more produce etc.
     uint256 rounds; // Repeat the event a number of rounds.
     uint256 hero; // TokenId of the hero NFT.
@@ -251,17 +251,13 @@ struct Battle {
 struct Army {
     uint256 id;
     ArmyState state;
-
-
-    //ArmyUnit[] units; // The index is the ArmyUnitType id.
-    
+   
     uint256 hero; // TokenId of the hero NFT.
 
     address owner; // The owner of the army.
-    uint256 ownerArmyIndex; // The index of the army in the owner's army list.
-
-    uint256 provinceArmyIndex; // The index of the province list the army is in.
-    uint256 departureArmyIndex; // The index of the departure list the army is in.
+    //uint256 ownerArmyIndex; // The index of the army in the owner's army list.
+    // uint256 provinceArmyIndex; // The index of the province list the army is in.
+    // uint256 departureArmyIndex; // The index of the departure list the army is in.
     
     uint256 provinceId; // The province the army is currently in or moving to.
     uint256 departureProvinceId; // The province the army is moving from. 
@@ -335,7 +331,7 @@ struct BaseSettings {
 struct AppStorage {
     mapping(address => User) users;
     mapping(address => UserCheckpoint) userCheckpoint;
-    address[] userList; // All users in the system.
+    EnumerableSet.AddressSet userList; // All users in the system.
     mapping(uint256 => Province) provinces; // Provinces are indexed by the ID from the ProvinceNFT contract
     mapping(uint256 => ProvinceCheckpoint) provinceCheckpoint; // Provinces are indexed by the ID from the ProvinceNFT contract
     uint256[] provinceList; // All provinces in the system.
@@ -343,8 +339,8 @@ struct AppStorage {
     mapping(uint256 => mapping(AssetType => Structure)) structures; // ProvinceID => StructureID (AssetTypeId) => Structure
     
     mapping(uint256 => StructureEvent) structureEvents; // Structure events are indexed by the user who created the event.
-    mapping(uint256 => uint256[]) provinceActiveStructureEventList; // All active structure events for a user.
-    mapping(uint256 => uint256[]) provinceStructureEventList; // All structure events for a user.
+    mapping(uint256 => EnumerableSet.UintSet) provinceActiveStructureTaskList; // All active structure events for a user.
+    mapping(uint256 => EnumerableSet.UintSet) provinceStructureTaskList; // All structure events for a user.
    
     mapping(address => mapping(address => bool)) allianceApprovals; // Alliances can approve other users to join their alliance.
     mapping(address => Ally[]) alliances;
@@ -352,15 +348,15 @@ struct AppStorage {
 
     mapping(ArmyUnitType => ArmyUnitProperties) armyUnitTypes;
 
-    mapping(uint256 => uint256[]) provinceArmies; // The armies in a province. This includes the garrison, arriving, and idle armies.
-    mapping(uint256 => uint256[]) departureArmies; // The departure armies in a province. Index is province.id
-    mapping(address => uint256[]) userArmies; // The departure armies in a province. Index is owner address
-    mapping(address => mapping(uint256 => Army)) armyShares; // Claims on army units after merge. Index is user address & army.id
-
+    mapping(uint256 => EnumerableSet.UintSet) provinceArmies; // The armies in a province. This includes the garrison, arriving, and idle armies.
+    mapping(uint256 => EnumerableSet.UintSet) departureArmies; // The departure armies in a province. Index is province.id
+    mapping(address => EnumerableSet.UintSet) userArmies; // The armies owned by the user. Index is owner address
+    mapping(address => EnumerableSet.UintSet) userShareArmies; // The target armies that a user has shares in. Index is owner address.
 
     mapping(uint256 => Army) armies;
     mapping(uint256 => Hero) heroes;
     mapping(uint256 => mapping(ArmyUnitType => ArmyUnit)) armyUnits; // The units of an army. Index is army.id & ArmyUnitType
+    mapping(address => mapping(uint256 => mapping(ArmyUnitType => ArmyUnit))) armyShareUnits; // The share units of an army. Index is user address & army.id & ArmyUnitType
 
 
     uint256 structureEventCount;

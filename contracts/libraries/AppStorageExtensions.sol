@@ -61,6 +61,11 @@ library AppStorageExtensions {
     // Write Functions
     // --------------------------------------------------------------
 
+    function nextArmyId(AppStorage storage self) internal returns (uint256 armyCount_) {
+        armyCount_ = ++self.armyCount;
+    }
+    
+
     function addStructureSafe(AppStorage storage self, uint256 _provinceId, AssetType _assetTypeId)
         internal
         returns (Structure storage structure)

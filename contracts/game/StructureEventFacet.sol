@@ -14,10 +14,14 @@ import "../general/Game.sol";
 import "./GameAccess.sol";
 import {LibRoles} from "../libraries/LibRoles.sol";
 
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+
+
 contract StructureEventFacet is Game, ReentrancyGuard, GameAccess {
     using AppStorageExtensions for AppStorage;
     using StructureEventExtensions for StructureEvent;
     using ResourceFactorExtensions for ResourceFactor;
+    using EnumerableSet for EnumerableSet.UintSet;
 
     struct Args {
         EventAction eventActionId;
@@ -94,8 +98,8 @@ contract StructureEventFacet is Game, ReentrancyGuard, GameAccess {
         // Spend the resouces on the behalf of the user (msg.sender)
         s.spendCommodities(e.calculatedCost);
 
-        e.provinceActiveEventIndex = s.provinceActiveStructureEventList[args.provinceId].length;
-        s.provinceActiveStructureEventList[args.provinceId].push(eventId);
+        // Add the event to the list of events
+        s.provinceActiveStructureTaskList[args.provinceId].add(eventId);
 
         s.structureEvents[eventId] = e;
 
@@ -139,7 +143,10 @@ contract StructureEventFacet is Game, ReentrancyGuard, GameAccess {
         e.endTime = block.timestamp;
 
         // Remove the event from the active list
-        e.moveActiveStructureEvent(s);
+        s.provinceActiveStructureTaskList[e.provinceId].remove(e.id);
+
+        // Add the event to the completed list
+        s.provinceStructureTaskList[e.provinceId].add(e.id);
     }
 
 }

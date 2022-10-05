@@ -197,11 +197,21 @@
     "inputs": [
       {
         "internalType": "uint256",
+        "name": "_attackingArmyId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_defendingArmyId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
         "name": "_rounds",
         "type": "uint256"
       }
     ],
-    "name": "AttackArmy",
+    "name": "attackArmy",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -315,21 +325,6 @@
           },
           {
             "internalType": "uint256",
-            "name": "ownerArmyIndex",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "provinceArmyIndex",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "departureArmyIndex",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
             "name": "provinceId",
             "type": "uint256"
           },
@@ -352,6 +347,42 @@
         "internalType": "struct Army",
         "name": "army",
         "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_armyId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getArmyUnits",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "enum ArmyUnitType",
+            "name": "armyUnitTypeId",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "amount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "shares",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct ArmyUnit[6]",
+        "name": "units",
+        "type": "tuple[6]"
       }
     ],
     "stateMutability": "view",
@@ -391,21 +422,6 @@
           },
           {
             "internalType": "uint256",
-            "name": "ownerArmyIndex",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "provinceArmyIndex",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "departureArmyIndex",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
             "name": "provinceId",
             "type": "uint256"
           },
@@ -428,25 +444,6 @@
         "internalType": "struct Army[]",
         "name": "armies",
         "type": "tuple[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_seed",
-        "type": "uint256"
-      }
-    ],
-    "name": "getPseudoGaussianDeviation",
-    "outputs": [
-      {
-        "internalType": "int256",
-        "name": "percent_",
-        "type": "int256"
       }
     ],
     "stateMutability": "view",

@@ -11,8 +11,13 @@ import "../general/Game.sol";
 import {LibRoles} from "../libraries/LibRoles.sol";
 import "./GameAccess.sol";
 
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+
+
 contract ProvinceFacet is Game, ReentrancyGuard, GameAccess {
     using AppStorageExtensions for AppStorage;
+    using EnumerableSet for EnumerableSet.UintSet;
+
 
     constructor() ReentrancyGuard() {}
 
@@ -114,16 +119,16 @@ contract ProvinceFacet is Game, ReentrancyGuard, GameAccess {
         return structures;
     }
 
-    function getProvinceActiveStructureEvents(uint256 _provinceId) public view returns (StructureEvent[] memory) {
+    function getProvinceActiveStructureTasks(uint256 _provinceId) public view returns (StructureEvent[] memory) {
         Province memory province = s.provinces[_provinceId];
         require(province.id == _provinceId, "Province id mismatch");
 
-        uint256 length = s.provinceActiveStructureEventList[_provinceId].length;
+        uint256[] memory list = s.provinceActiveStructureTaskList[_provinceId].values();
 
-        StructureEvent[] memory structureEvents = new StructureEvent[](length);
+        StructureEvent[] memory structureEvents = new StructureEvent[](list.length);
 
-        for (uint256 i = 0; i < length; i++) {
-            structureEvents[i] = s.structureEvents[s.provinceActiveStructureEventList[_provinceId][i]];
+        for (uint256 i = 0; i < list.length; i++) {
+            structureEvents[i] = s.structureEvents[list[i]];
         }
 
         return structureEvents;

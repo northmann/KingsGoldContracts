@@ -26,13 +26,13 @@ task("getProvinceStructures", "Prints getProvinceStructures json data")
     console.log(data);
   });
 
-  task("getProvinceActiveStructureEvents", "Prints getProvinceStructures json data")
+  task("getProvinceActiveStructureTasks", "Prints getProvinceStructures json data")
   .addParam("diamond", "The diamond's address")
   .addOptionalParam("id", "The Province ID number", 0, types.int)
   .setAction(async (taskArgs) => {
 
     const contract = await ethers.getContractAt('ProvinceFacet', taskArgs.diamond);
-    const data = await contract.getProvinceActiveStructureEvents(taskArgs.id);
+    const data = await contract.getProvinceActiveStructureTasks(taskArgs.id);
     console.log(data);
   });
 // --------------------------------------------------------------

@@ -9,11 +9,14 @@ import "./ProvinceExtensions.sol";
 import "./ResourceFactorExtensions.sol";
 import "./LibMeta.sol";
 
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+
 library StructureEventExtensions {
     using AppStorageExtensions for AppStorage;
     using StructureEventExtensions for StructureEvent;
     using ProvinceExtensions for Province;
     using ResourceFactorExtensions for ResourceFactor;
+    using EnumerableSet for EnumerableSet.UintSet;
     
 
     // --------------------------------------------------------------
@@ -157,23 +160,7 @@ library StructureEventExtensions {
         _province.populationTotal = _province.populationTotal - attritionAmount; // Total population decreases over time because of attrition.
     }
 
-    // Remove the event from the active list and update the index of the other events.
-    function moveActiveStructureEvent(StructureEvent storage self, AppStorage storage s) internal  {
-        uint256 lastEventIndex = s.provinceActiveStructureEventList[self.provinceId].length - 1;
-        uint256 lastEventId = s.provinceActiveStructureEventList[self.provinceId][lastEventIndex];
-        
-        s.structureEvents[lastEventId].provinceActiveEventIndex = self.provinceActiveEventIndex; // Update the index of the last event.
-
-        s.provinceActiveStructureEventList[self.provinceId][self.provinceActiveEventIndex] = 
-            s.provinceActiveStructureEventList[self.provinceId][lastEventIndex];
-        
-        s.provinceActiveStructureEventList[self.provinceId].pop();
-
-        // Add the event to the completed list
-        s.provinceStructureEventList[self.provinceId].push(self.id);
-    }
-
-    
+   
     function decreaseAvailableStructure(StructureEvent storage self, AppStorage storage s) internal {
         Structure storage structure = s.getStructure(self.provinceId, self.assetTypeId);
         require(structure.available >= self.calculatedCost.amount, "Not enough structures available");
