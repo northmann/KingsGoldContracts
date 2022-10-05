@@ -392,7 +392,68 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "provinceId",
+        "name": "_provinceId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getDepartureArmies",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "id",
+            "type": "uint256"
+          },
+          {
+            "internalType": "enum ArmyState",
+            "name": "state",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "hero",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "provinceId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "departureProvinceId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "startTime",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "endTime",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct Army[]",
+        "name": "armies",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_provinceId",
         "type": "uint256"
       }
     ],

@@ -37,8 +37,17 @@ contract ArmyFacet is Game, GameAccess, InternalCallGuard {
         army = s.armies[_armyId];
     }
 
-    function getProvinceArmies(uint256 provinceId) external view returns (Army[] memory armies) {
-        uint256[] memory armyList = s.provinceArmies[provinceId].values();
+    function getProvinceArmies(uint256 _provinceId) external view returns (Army[] memory armies) {
+        uint256[] memory armyList = s.provinceArmies[_provinceId].values();
+
+        armies = new Army[](armyList.length);
+        for (uint256 i = 0; i < armyList.length; i++) {
+            armies[i] = s.armies[armyList[i]];
+        }
+    }
+
+    function getDepartureArmies(uint256 _provinceId) external view returns (Army[] memory armies) {
+        uint256[] memory armyList = s.departureArmies[_provinceId].values();
 
         armies = new Army[](armyList.length);
         for (uint256 i = 0; i < armyList.length; i++) {
