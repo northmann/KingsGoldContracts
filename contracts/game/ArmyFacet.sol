@@ -37,22 +37,16 @@ contract ArmyFacet is Game, GameAccess, InternalCallGuard {
         army = s.armies[_armyId];
     }
 
-    function getProvinceArmies(uint256 _provinceId) external view returns (Army[] memory armies) {
-        uint256[] memory armyList = s.provinceArmies[_provinceId].values();
-
-        armies = new Army[](armyList.length);
-        for (uint256 i = 0; i < armyList.length; i++) {
-            armies[i] = s.armies[armyList[i]];
-        }
+    function getProvinceArmies(uint256 _provinceId) external view returns (Army[] memory armies_) {
+        armies_ = _getArmies(s.provinceArmies[_provinceId].values());
     }
 
-    function getDepartureArmies(uint256 _provinceId) external view returns (Army[] memory armies) {
-        uint256[] memory armyList = s.departureArmies[_provinceId].values();
+    function getDepartureArmies(uint256 _provinceId) external view returns (Army[] memory armies_) {
+        armies_ = _getArmies(s.departureArmies[_provinceId].values());
+    }
 
-        armies = new Army[](armyList.length);
-        for (uint256 i = 0; i < armyList.length; i++) {
-            armies[i] = s.armies[armyList[i]];
-        }
+    function getUserArmies(address _user) external view returns (Army[] memory armies_) {
+        armies_ = _getArmies(s.userArmies[_user].values());
     }
 
     function getArmyUnits(uint256 _armyId) external view returns (ArmyUnit[ArmyUnitTypeCount] memory units) {
@@ -62,6 +56,7 @@ contract ArmyFacet is Game, GameAccess, InternalCallGuard {
             units[i] = s.armyUnits[_armyId][ArmyUnitType(i)];
         }
     }
+
 
 
     
@@ -317,6 +312,13 @@ contract ArmyFacet is Game, GameAccess, InternalCallGuard {
    function _getPseudoGaussianDeviation(uint256 _seed) internal view returns(int256 percent_) {
         uint256 r = uint256(keccak256(abi.encodePacked(_seed, block.timestamp)));
         percent_ = ((int256(r.countOnes()) - 128) * 100) / 128;
+    }
+
+    function _getArmies(uint256[] memory _armyIds) internal view returns (Army[] memory armies) {
+        armies = new Army[](_armyIds.length);
+        for (uint256 i = 0; i < _armyIds.length; i++) {
+            armies[i] = s.armies[_armyIds[i]];
+        }
     }
 
 
