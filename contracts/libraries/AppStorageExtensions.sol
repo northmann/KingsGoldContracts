@@ -3,19 +3,26 @@
 pragma solidity >0.8.4;
 import "hardhat/console.sol";
 
-import "./LibAppStorage.sol";
+import "./AppStorage.sol";
 import "./LibMeta.sol";
 import "./StructureEventExtensions.sol";
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 
 library AppStorageExtensions {
     using StructureEventExtensions for StructureEvent;
     using AppStorageExtensions for AppStorage;
+    using EnumerableSet for EnumerableSet.UintSet;
 
 
     // --------------------------------------------------------------
     // View Functions
     // --------------------------------------------------------------
 
+    function appStorage() internal pure returns (AppStorage storage ds) {
+        assembly {
+            ds.slot := 0
+        }
+    }
 
     function getAsset(AppStorage storage self, AssetType _assetTypeId) internal view returns (Asset storage) {
         return self.assets[_assetTypeId];
@@ -74,31 +81,8 @@ library AppStorageExtensions {
         if(structure.assetTypeId == AssetType.None) {
             structure.assetTypeId = _assetTypeId;
 
-            Province storage province = getProvince(self, _provinceId); 
-            province.structureList.push(_assetTypeId);
-
-            self.provinceCheckpoint[_provinceId].structures = block.timestamp;
+            self.provinceStructureList[_provinceId].add(uint256(_assetTypeId));
         }
-    }
-
- 
-    function createProvince(AppStorage storage self, uint256 _id, string memory _name, address _target) internal  returns(Province storage) {
-        require(self.provinces[_id].id == 0, "Province already exists");
-
-        Province memory province = self.provinceTemplate;
-        province.id = _id;
-        province.name = _name;
-        province.owner = _target;
-        province.populationAvailable = 100;
-        province.populationTotal = 100;
-
-        self.provinces[_id] = province;
-        self.provinceList.push(_id);
-        self.users[_target].provinces.push(_id);
-
-        self.provinceCheckpoint[_id].province = block.timestamp;
-
-        return self.provinces[_id];
     }
 
 

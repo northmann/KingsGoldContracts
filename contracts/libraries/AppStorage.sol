@@ -9,7 +9,6 @@ import "../interfaces/ICommodity.sol";
 import "../game/AccessControlFacet.sol";
 
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
-// import "@openzeppelin/contracts/utils/introspection/ERC165Storage.sol";
 
 uint256 constant maxPower = 1000; // Max value of a unit.
 uint256 constant ArmyUnitTypeCount = 6;
@@ -165,7 +164,7 @@ struct User {
     uint256 allianceFee; // Should never exceed 100%. The fee the user pays to the alliance.
     uint256 vassalFee; // Should never exceed 100%. The fee that a vassal pays to the owner.
     
-    uint256[] provinces;
+    //uint256[] provinces;
     //uint256[] armyList;
 
     //address[] allies;
@@ -255,9 +254,6 @@ struct Army {
     uint256 hero; // TokenId of the hero NFT.
 
     address owner; // The owner of the army.
-    //uint256 ownerArmyIndex; // The index of the army in the owner's army list.
-    // uint256 provinceArmyIndex; // The index of the province list the army is in.
-    // uint256 departureArmyIndex; // The index of the departure list the army is in.
     
     uint256 provinceId; // The province the army is currently in or moving to.
     uint256 departureProvinceId; // The province the army is moving from. 
@@ -269,27 +265,29 @@ struct Army {
 }
 
 
+struct Position {
+    uint128 x;
+    uint128 y;
+}
+
 struct Province {
     uint256 id;
     string name;
     address owner;
     address vassal;
-    uint32 positionX;
-    uint32 positionY;
-    uint32 plains; // Food
-    uint32 forest; // Wood
-    uint32 mountain; // Stone
-    uint32 hills; // Gold and iron ore
+    Position position;
+
+    uint64 plains; // Food
+    uint64 forest; // Wood
+    uint64 mountain; // Stone
+    uint64 hills; // Gold and iron ore
+
     uint256 populationTotal;
     uint256 populationAvailable;
     uint256 garrisonId;
-    //uint256[] activeStructureEventList;
     uint256 deposit; // The amount of gold deposited in the province. This gold is claimable by the owner when the province is destroyed.
     uint256 vassalFee;
     uint256 level; // The level of the province. This is the level of the highest structure in the province.
-
-    AssetType[] structureList;
-    //uint256[] armyList; // The armies in the province. Move to mapping as this can get very large. 
 }
 
 
@@ -330,15 +328,21 @@ struct BaseSettings {
 
 struct AppStorage {
     mapping(address => User) users;
-    mapping(address => UserCheckpoint) userCheckpoint;
+    mapping(address => EnumerableSet.UintSet) userProvinces;
     EnumerableSet.AddressSet userList; // All users in the system.
+
+    mapping(address => UserCheckpoint) userCheckpoint;
+
     mapping(uint256 => Province) provinces; // Provinces are indexed by the ID from the ProvinceNFT contract
+    EnumerableSet.UintSet provinceList; // All provinces in the system.
+
     mapping(uint256 => ProvinceCheckpoint) provinceCheckpoint; // Provinces are indexed by the ID from the ProvinceNFT contract
-    uint256[] provinceList; // All provinces in the system.
     mapping(AssetType => Asset) assets; // Assets are indexed by the AssetType enum.
     mapping(uint256 => mapping(AssetType => Structure)) structures; // ProvinceID => StructureID (AssetTypeId) => Structure
+
     
     mapping(uint256 => StructureEvent) structureEvents; // Structure events are indexed by the user who created the event.
+    mapping(uint256 => EnumerableSet.UintSet) provinceStructureList; // ProvinceID => StructureID (AssetTypeId) 
     mapping(uint256 => EnumerableSet.UintSet) provinceActiveStructureTaskList; // All active structure events for a user.
     mapping(uint256 => EnumerableSet.UintSet) provinceStructureTaskList; // All structure events for a user.
    
@@ -367,11 +371,3 @@ struct AppStorage {
     BaseSettings baseSettings;
 }
 
-library LibAppStorage {
-
-    function appStorage() internal pure returns (AppStorage storage ds) {
-        assembly {
-            ds.slot := 0
-        }
-    }
-}

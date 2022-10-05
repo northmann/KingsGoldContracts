@@ -33,6 +33,7 @@ exports.ArmyUnitDefault = {
 exports.ArmyUnit = {
     armyUnitTypeId: ArmyUnitType.None,
     amount: 0,
+    shares: 0,
 };
 exports.armyUnitTypes = {
     [ArmyUnitType.None]: {

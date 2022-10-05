@@ -4,7 +4,7 @@ import "hardhat/console.sol";
 
 //import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-import "../libraries/LibAppStorage.sol";
+import "../libraries/AppStorage.sol";
 import "../libraries/AppStorageExtensions.sol";
 import { LibRoles } from "../libraries/LibRoles.sol";
 import "./GameAccess.sol";

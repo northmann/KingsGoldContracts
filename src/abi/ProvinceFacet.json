@@ -5,6 +5,43 @@
     "type": "constructor"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "uint128",
+            "name": "x",
+            "type": "uint128"
+          },
+          {
+            "internalType": "uint128",
+            "name": "y",
+            "type": "uint128"
+          }
+        ],
+        "indexed": true,
+        "internalType": "struct Position",
+        "name": "position",
+        "type": "tuple"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      }
+    ],
+    "name": "ProvinceMinted",
+    "type": "event"
+  },
+  {
     "inputs": [
       {
         "internalType": "string",
@@ -32,7 +69,7 @@
       },
       {
         "internalType": "address",
-        "name": "_target",
+        "name": "_user",
         "type": "address"
       }
     ],
@@ -80,34 +117,41 @@
             "type": "address"
           },
           {
-            "internalType": "uint32",
-            "name": "positionX",
-            "type": "uint32"
+            "components": [
+              {
+                "internalType": "uint128",
+                "name": "x",
+                "type": "uint128"
+              },
+              {
+                "internalType": "uint128",
+                "name": "y",
+                "type": "uint128"
+              }
+            ],
+            "internalType": "struct Position",
+            "name": "position",
+            "type": "tuple"
           },
           {
-            "internalType": "uint32",
-            "name": "positionY",
-            "type": "uint32"
-          },
-          {
-            "internalType": "uint32",
+            "internalType": "uint64",
             "name": "plains",
-            "type": "uint32"
+            "type": "uint64"
           },
           {
-            "internalType": "uint32",
+            "internalType": "uint64",
             "name": "forest",
-            "type": "uint32"
+            "type": "uint64"
           },
           {
-            "internalType": "uint32",
+            "internalType": "uint64",
             "name": "mountain",
-            "type": "uint32"
+            "type": "uint64"
           },
           {
-            "internalType": "uint32",
+            "internalType": "uint64",
             "name": "hills",
-            "type": "uint32"
+            "type": "uint64"
           },
           {
             "internalType": "uint256",
@@ -138,11 +182,6 @@
             "internalType": "uint256",
             "name": "level",
             "type": "uint256"
-          },
-          {
-            "internalType": "enum AssetType[]",
-            "name": "structureList",
-            "type": "uint8[]"
           }
         ],
         "internalType": "struct Province",
@@ -441,7 +480,217 @@
           }
         ],
         "internalType": "struct Structure[]",
-        "name": "",
+        "name": "structures_",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getProvinces",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "id",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "vassal",
+            "type": "address"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint128",
+                "name": "x",
+                "type": "uint128"
+              },
+              {
+                "internalType": "uint128",
+                "name": "y",
+                "type": "uint128"
+              }
+            ],
+            "internalType": "struct Position",
+            "name": "position",
+            "type": "tuple"
+          },
+          {
+            "internalType": "uint64",
+            "name": "plains",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint64",
+            "name": "forest",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint64",
+            "name": "mountain",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint64",
+            "name": "hills",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint256",
+            "name": "populationTotal",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "populationAvailable",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "garrisonId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "deposit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "vassalFee",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "level",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct Province[]",
+        "name": "provinces_",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      }
+    ],
+    "name": "getUserProvinces",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "id",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "vassal",
+            "type": "address"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint128",
+                "name": "x",
+                "type": "uint128"
+              },
+              {
+                "internalType": "uint128",
+                "name": "y",
+                "type": "uint128"
+              }
+            ],
+            "internalType": "struct Position",
+            "name": "position",
+            "type": "tuple"
+          },
+          {
+            "internalType": "uint64",
+            "name": "plains",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint64",
+            "name": "forest",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint64",
+            "name": "mountain",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint64",
+            "name": "hills",
+            "type": "uint64"
+          },
+          {
+            "internalType": "uint256",
+            "name": "populationTotal",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "populationAvailable",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "garrisonId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "deposit",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "vassalFee",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "level",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct Province[]",
+        "name": "provinces_",
         "type": "tuple[]"
       }
     ],

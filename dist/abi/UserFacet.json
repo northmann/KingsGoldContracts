@@ -87,11 +87,6 @@
                         "internalType": "uint256[]",
                         "name": "provinces",
                         "type": "uint256[]"
-                    },
-                    {
-                        "internalType": "uint256[]",
-                        "name": "armyList",
-                        "type": "uint256[]"
                     }
                 ],
                 "internalType": "struct User",

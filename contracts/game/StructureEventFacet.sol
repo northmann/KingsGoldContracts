@@ -3,7 +3,7 @@
 pragma solidity >0.8.4;
 import "hardhat/console.sol";
 
-import "../libraries/LibAppStorage.sol";
+import "../libraries/AppStorage.sol";
 import "../libraries/AppStorageExtensions.sol";
 import "../libraries/StructureEventExtensions.sol";
 import "../libraries/ResourceFactorExtensions.sol";

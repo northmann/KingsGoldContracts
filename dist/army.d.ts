@@ -28,6 +28,7 @@ export declare const ArmyUnitDefault: {
 export declare const ArmyUnit: {
     armyUnitTypeId: ArmyUnitType;
     amount: number;
+    shares: number;
 };
 export declare const armyUnitTypes: any;
 export declare function getArmyUnitTypeRawData(): any;

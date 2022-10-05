@@ -3,7 +3,7 @@
 pragma solidity >0.8.4;
 import "hardhat/console.sol";
 
-import "./LibAppStorage.sol";
+import "./AppStorage.sol";
 import "./AppStorageExtensions.sol";
 import "./ProvinceExtensions.sol";
 import "./ResourceFactorExtensions.sol";
@@ -77,7 +77,7 @@ library StructureEventExtensions {
             self.calculatedReward.amount = amount;
 
             Province storage province = s.getProvince(self.provinceId);
-            province.addReward(self.calculatedReward, false); // Not taxed because the user did not produce anything.
+            province.addReward(self.calculatedReward, false, s); // Not taxed because the user did not produce anything.
         }
 
         Structure storage structure = s.addStructureSafe(self.provinceId, self.assetTypeId);
@@ -102,7 +102,7 @@ library StructureEventExtensions {
 
         // Add the reward to the province alliance, owner, and vassal
         Province storage province = s.getProvince(self.provinceId);
-        province.addReward(self.calculatedReward, true); // Taxed because the user did produce something.
+        province.addReward(self.calculatedReward, true, s); // Taxed because the user did produce something.
     }   
 
     function dismantle(StructureEvent storage self, AppStorage storage s) internal  returns(uint256 amount) {
@@ -128,7 +128,12 @@ library StructureEventExtensions {
         structure.total = structure.total - amount;
 
         Province storage province = s.getProvince(self.provinceId);
-        province.addReward(self.calculatedReward, true); // Taxed because the user did produce some commodity.
+        province.addReward(self.calculatedReward, true, s); // Taxed because the user did produce some commodity.
+
+        if(structure.total == 0) {
+            s.structures[self.provinceId][self.assetTypeId].assetTypeId = AssetType.None; // Delete the structure.
+            s.provinceStructureList[self.provinceId].remove(uint256(self.assetTypeId)); // Remove the structure from the list.
+        }
     }
 
 
@@ -147,6 +152,11 @@ library StructureEventExtensions {
         Structure storage structure = s.getStructure(self.provinceId, self.assetTypeId);
         structure.available = structure.available - amount;
         structure.total = structure.total - amount;
+
+        if(structure.total == 0) {
+            s.structures[self.provinceId][self.assetTypeId].assetTypeId = AssetType.None; // Delete the structure.
+            s.provinceStructureList[self.provinceId].remove(uint256(self.assetTypeId)); // Remove the structure from the list.
+        }
     }
     
 

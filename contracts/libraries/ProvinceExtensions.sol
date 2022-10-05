@@ -3,7 +3,7 @@
 pragma solidity >0.8.4;
 import "hardhat/console.sol";
 
-import "./LibAppStorage.sol";
+import "./AppStorage.sol";
 import "./AppStorageExtensions.sol";
 import "./ResourceFactorExtensions.sol";
 
@@ -24,8 +24,7 @@ library ProvinceExtensions {
     // State Functions
     // --------------------------------------------------------------
 
-    function addReward(Province storage self, ResourceFactor memory _reward, bool taxed) internal {
-        AppStorage storage s = LibAppStorage.appStorage();
+    function addReward(Province storage self, ResourceFactor memory _reward, bool taxed, AppStorage storage s) internal {
 
         // Add population reward to the province
         if (_reward.manPower > 0) {
@@ -44,7 +43,7 @@ library ProvinceExtensions {
 
             // Add a part of the reward to the king of the alliance
             ResourceFactor memory alliancePart = _reward.fee(alliance.allianceFee);
-            mintResources(owner.alliance, alliancePart);
+            mintResources(owner.alliance, alliancePart, s);
 
             restPart = _reward.sub(alliancePart);
         }
@@ -54,19 +53,18 @@ library ProvinceExtensions {
             vassalFee = taxed ? vassalFee : 0; // If taxed is false then the vassal fee is 0
 
             ResourceFactor memory ownerFee = restPart.fee(vassalFee);
-            mintResources(self.owner, ownerFee);
+            mintResources(self.owner, ownerFee, s);
 
             // Whatever is left is for the vassal
             ResourceFactor memory vassalPart = restPart.sub(ownerFee);
-            mintResources(self.vassal, vassalPart);
+            mintResources(self.vassal, vassalPart, s);
         } else {
             // There is no vassal so the rest is for the owner
-            mintResources(self.owner, restPart);
+            mintResources(self.owner, restPart, s);
         }
     }
 
-    function mintResources(address _target, ResourceFactor memory _reward) internal {
-        AppStorage storage s = LibAppStorage.appStorage();
+    function mintResources(address _target, ResourceFactor memory _reward, AppStorage storage s) internal {
 
         if (_reward.food > 0) s.baseSettings.food.mint(_target, _reward.food);
 

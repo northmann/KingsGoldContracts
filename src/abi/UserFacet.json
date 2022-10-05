@@ -82,11 +82,6 @@
             "internalType": "uint256",
             "name": "vassalFee",
             "type": "uint256"
-          },
-          {
-            "internalType": "uint256[]",
-            "name": "provinces",
-            "type": "uint256[]"
           }
         ],
         "internalType": "struct User",

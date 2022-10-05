@@ -11,7 +11,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
 
 import "../interfaces/ITreasury.sol";
-import "../libraries/LibAppStorage.sol";
+import "../libraries/AppStorage.sol";
 import "../general/ReentrancyGuard.sol";
 import "../general/Game.sol";
 
